@@ -89,8 +89,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         "Pronóstico": resultado
     }
 
-def predecir_partido(pais, liga, equipo_local, equipo_visita):
-    archivo = os.path.join(RUTA_LIGAS, LIGAS[pais][liga])
-    df = pd.read_excel(archivo)
+def predecir_partido(archivo_excel, equipo_local, equipo_visita):
+    df = pd.read_excel(archivo_excel)
     return rockongo1_prediccion(df, equipo_local, equipo_visita)
+
 

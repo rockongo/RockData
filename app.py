@@ -5,8 +5,8 @@ from rockongo_core import predecir_partido
 
 app = Flask(__name__)
 
-# Ruta donde están los archivos .xlsx
-RUTA_LIGAS = r"C:\Users\raque\desktop\ligas_datas\Ligas"
+# Ruta donde están los archivos .xlsx (relativa a la carpeta del script)
+RUTA_LIGAS = os.path.join(os.path.dirname(__file__), "Ligas")
 
 # Diccionario para desplegables
 ligas = {
@@ -24,7 +24,7 @@ ligas = {
         "MLS": "Liga_MLS_2025.xlsx"
     },
     "Noruega": {
-        "Eliteserien": "Liga_Noruega_2025.xlsx"
+        "Eliteserien": "Liga_noruega_2025.xlsx"
     },
     "Ecuador": {
         "Liga Pro": "Liga_ecuador_2025.xlsx"
@@ -45,7 +45,8 @@ def index():
         equipo_local = request.form["equipo_local"]
         equipo_visita = request.form["equipo_visita"]
 
-        resultado = predecir_partido(pais, liga, equipo_local, equipo_visita)
+        archivo_excel = os.path.join(RUTA_LIGAS, ligas[pais][liga])
+        resultado = predecir_partido(archivo_excel, equipo_local, equipo_visita)
 
     return render_template("index.html", paises=paises, resultado=resultado)
 
@@ -75,9 +76,6 @@ def get_equipos():
     except:
         return jsonify([])
 
-import os
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
-
