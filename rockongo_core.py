@@ -1,0 +1,96 @@
+import pandas as pd
+import os
+
+# Ruta donde están guardados todos los Excel de ligas
+RUTA_LIGAS = r"C:\Users\raque\desktop\ligas_datas\Ligas"
+
+LIGAS = {
+    "Chile": {
+        "Primera A": "Primera_A_2025.xlsx",
+        "Primera B": "Primera_B_2025.xlsx"
+    },
+    "Bolivia": {
+        "Primera A": "Liga_bolivia_2025.xlsx"
+    },
+    "Perú": {
+        "Primera A": "Liga_peruana_2025.xlsx"
+    },
+    "USA": {
+        "MLS": "Liga_MLS_2025.xlsx"
+    },
+    "Noruega": {
+        "Eliteserien": "Liga_Noruega_2025.xlsx"
+    },
+    "Ecuador": {
+        "Liga Pro": "Liga_ecuador_2025.xlsx"
+    },
+    "Colombia": {
+        "Primera A": "Liga_colombia_2025.xlsx"
+    }
+}
+
+def rockongo1_prediccion(df, equipo_local, equipo_visita):
+    df = df.sort_values('Fecha')
+    local_partidos = df[df['Local'] == equipo_local].tail(10)
+    visita_partidos = df[df['Visita'] == equipo_visita].tail(10)
+
+    def calcular_promedios(partidos, tipo):
+        if partidos.empty:
+            return {"goles": 0, "goles_1T": 0, "goles_2T": 0, "corners": 0, "amarillas": 0, "rojas": 0}
+        return {
+            "goles": partidos[f"Goles {tipo}"].mean(),
+            "goles_1T": partidos[f"Goles 1T {tipo}"].mean(),
+            "goles_2T": partidos[f"Goles 2T {tipo}"].mean(),
+            "corners": partidos[f"Corners {tipo}"].mean(),
+            "amarillas": partidos[f"Amarillas {tipo}"].mean(),
+            "rojas": partidos[f"Rojas {tipo}"].mean(),
+        }
+
+    stats_local = calcular_promedios(local_partidos, "Local")
+    stats_visita = calcular_promedios(visita_partidos, "Visita")
+
+    def calcular_localia_real(df, equipo_local, equipo_visita):
+        df = df.sort_values('Fecha')
+        local_partidos = df[df['Local'] == equipo_local].tail(10)
+        visita_partidos = df[df['Visita'] == equipo_visita].tail(10)
+        victorias_local = (local_partidos['Goles Local'] > local_partidos['Goles Visita']).sum()
+        victorias_visita = (visita_partidos['Goles Visita'] > visita_partidos['Goles Local']).sum()
+        porcentaje_local = (victorias_local / len(local_partidos)) * 100 if len(local_partidos) > 0 else 0
+        porcentaje_visita = (victorias_visita / len(visita_partidos)) * 100 if len(visita_partidos) > 0 else 0
+        influencia = 0
+        if porcentaje_local - porcentaje_visita > 20:
+            influencia = 0.5
+        elif porcentaje_visita - porcentaje_local > 20:
+            influencia = -0.5
+        return influencia, porcentaje_local, porcentaje_visita
+
+    localia_bonus, fort_local, fort_visita = calcular_localia_real(df, equipo_local, equipo_visita)
+
+    puntaje_local = stats_local["goles"] - (stats_local["amarillas"] * 0.1 + stats_local["rojas"] * 0.3)
+    puntaje_visita = stats_visita["goles"] - (stats_visita["amarillas"] * 0.1 + stats_visita["rojas"] * 0.3)
+    puntaje_local += localia_bonus
+
+    if abs(puntaje_local - puntaje_visita) < 0.4:
+        resultado = "Empate"
+    elif puntaje_local > puntaje_visita:
+        resultado = "Local"
+    else:
+        resultado = "Visita"
+
+    return {
+        "Goles 1T": round(stats_local["goles_1T"] + stats_visita["goles_1T"], 2),
+        "Goles 2T": round(stats_local["goles_2T"] + stats_visita["goles_2T"], 2),
+        "Tarjetas Promedio": round(stats_local["amarillas"] + stats_visita["amarillas"], 2),
+        "Rojas": round(stats_local["rojas"] + stats_visita["rojas"], 2),
+        "Corners": round(stats_local["corners"] + stats_visita["corners"], 2),
+        "Goles Totales": round(stats_local["goles"] + stats_visita["goles"], 2),
+        "Fortaleza Local": round(fort_local, 2),
+        "Fortaleza Visita": round(fort_visita, 2),
+        "Pronóstico": resultado
+    }
+
+def predecir_partido(pais, liga, equipo_local, equipo_visita):
+    archivo = os.path.join(RUTA_LIGAS, LIGAS[pais][liga])
+    df = pd.read_excel(archivo)
+    return rockongo1_prediccion(df, equipo_local, equipo_visita)
+
