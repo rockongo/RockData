@@ -75,10 +75,6 @@ def get_equipos():
         return jsonify(equipos)
     except:
         return jsonify([])
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
 from flask import jsonify
 import json
 
@@ -87,5 +83,9 @@ def forma_reciente():
     with open('static/simulacion_forma_reciente.json') as f:
         data = json.load(f)
     return jsonify(data)
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
 
 
