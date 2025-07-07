@@ -1,22 +1,19 @@
-import pandas as pd
-from rockongo_core import simulacion_forma_reciente
+import json
 
-# Carga el archivo de una liga
-df = pd.read_excel("Ligas/Primera_A_2025.xlsx")  # cambia por la liga que desees probar
+# Ruta al archivo JSON que ya tienes en static/
+ruta = "static/simulacion_forma_reciente.json"
 
-# Equipos a comparar
-equipo_local = "Colo Colo"
-equipo_visita = "Universidad de Chile"
+# Leer el JSON
+with open(ruta, "r", encoding="utf-8") as f:
+    data = json.load(f)
 
-# Llamar a la función
-resultado = simulacion_forma_reciente(df, equipo_local, equipo_visita)
+# Acceder directamente a los datos dentro de "forma_reciente"
+forma = data.get("forma_reciente", {})
 
-# Mostrar el resultado
-print("===== SIMULACIÓN DE FORMA RECIENTE =====")
-print("LOCAL - Últimos 5 partidos:")
-for k, v in resultado["Local (últimos 5)"].items():
-    print(f"{k}: {v}")
+# Mostrar datos por consola
+for equipo, stats in forma.items():
+    print(f"\n🔷 {equipo.capitalize()}")
+    for k, v in stats.items():
+        print(f"  {k}: {v}")
 
-print("\nVISITA - Últimos 5 partidos:")
-for k, v in resultado["Visita (últimos 5)"].items():
-    print(f"{k}: {v}")
+print("\n✅ Simulación cargada correctamente.")

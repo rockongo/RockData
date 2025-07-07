@@ -167,6 +167,38 @@
         });
     });
 </script>
+<!-- Botón -->
+<button onclick="verFormaReciente()">📊 Ver forma reciente</button>
+
+<!-- Contenedor de resultados -->
+<div id="resultadosForma" style="margin-top: 20px;"></div>
+
+<!-- Script -->
+<script>
+function verFormaReciente() {
+    fetch('/forma_reciente')
+    .then(response => response.json())
+    .then(data => {
+        const resultadosDiv = document.getElementById('resultadosForma');
+        const forma = data.forma_reciente;
+
+        let html = '<h3>📊 Forma Reciente</h3>';
+        ['local', 'visita'].forEach(equipo => {
+            html += `<h4>${equipo.toUpperCase()}</h4><ul>`;
+            for (const [clave, valor] of Object.entries(forma[equipo])) {
+                html += `<li><b>${clave}</b>: ${valor}</li>`;
+            }
+            html += '</ul>';
+        });
+
+        resultadosDiv.innerHTML = html;
+    })
+    .catch(err => {
+        alert("Error al cargar forma reciente");
+        console.error(err);
+    });
+}
+</script>
 
 </body>
 </html>

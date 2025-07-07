@@ -82,16 +82,11 @@ if __name__ == "__main__":
 from flask import jsonify
 import json
 
-@app.route('/simulacion_forma_reciente')
-def simulacion_forma_reciente():
-    try:
-        import os
+@app.route('/forma_reciente')
+def forma_reciente():
+    ruta_json = os.path.join('static', 'simulacion_forma_reciente.json')
+    with open(ruta_json, 'r', encoding='utf-8') as f:
+        datos = json.load(f)
+    return jsonify(datos)
 
-ruta_archivo = os.path.join("static", "simulacion_forma_reciente.json")
-with open(ruta_archivo, encoding="utf-8") as f:
-
-            data = json.load(f)
-        return jsonify({'forma_reciente': data})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
