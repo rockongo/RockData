@@ -85,7 +85,11 @@ import json
 @app.route('/simulacion_forma_reciente')
 def simulacion_forma_reciente():
     try:
-        with open('simulacion_forma_reciente.json', encoding='utf-8') as f:
+        import os
+
+ruta_archivo = os.path.join("static", "simulacion_forma_reciente.json")
+with open(ruta_archivo, encoding="utf-8") as f:
+
             data = json.load(f)
         return jsonify({'forma_reciente': data})
     except Exception as e:
