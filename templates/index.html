@@ -104,7 +104,7 @@
     box.style.display = box.style.display === "none" ? "block" : "none";
   }
 
-  fetch("/simulacion_forma_reciente.json")
+  fetch("/forma_reciente")
     .then(r => r.json())
     .then(data => {
       const f = data.forma_reciente;
@@ -168,14 +168,14 @@
     });
 </script>
 <!-- Botón -->
-<button onclick="verFormaReciente()">📊 Ver forma reciente</button>
+
 
 <!-- Contenedor de resultados -->
-<div id="resultadosForma" style="margin-top: 20px;"></div>
+
 
 <!-- Script -->
 <script>
-function verFormaReciente() {
+
     fetch('/forma_reciente')
     .then(response => response.json())
     .then(data => {
