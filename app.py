@@ -84,9 +84,8 @@ import json
 
 @app.route('/forma_reciente')
 def forma_reciente():
-    ruta_json = os.path.join('static', 'simulacion_forma_reciente.json')
-    with open(ruta_json, 'r', encoding='utf-8') as f:
-        datos = json.load(f)
-    return jsonify(datos)
+    with open('static/simulacion_forma_reciente.json') as f:
+        data = json.load(f)
+    return jsonify(data)
 
 
