@@ -92,5 +92,51 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 def predecir_partido(archivo_excel, equipo_local, equipo_visita):
     df = pd.read_excel(archivo_excel)
     return rockongo1_prediccion(df, equipo_local, equipo_visita)
+def simulacion_forma_reciente(df, equipo_local, equipo_visita):
+    df = df.sort_values('Fecha')
+
+    ultimos_5_local = df[(df['Local'] == equipo_local) | (df['Visita'] == equipo_local)].tail(5)
+    ultimos_5_visita = df[(df['Local'] == equipo_visita) | (df['Visita'] == equipo_visita)].tail(5)
+
+    def calcular_estadisticas(partidos, equipo):
+        goles = []
+        goles_1T = []
+        goles_2T = []
+        corners = []
+        amarillas = []
+        rojas = []
+
+        for _, row in partidos.iterrows():
+            if row['Local'] == equipo:
+                goles.append(row['Goles Local'])
+                goles_1T.append(row['Goles 1T Local'])
+                goles_2T.append(row['Goles 2T Local'])
+                corners.append(row['Corners Local'])
+                amarillas.append(row['Amarillas Local'])
+                rojas.append(row['Rojas Local'])
+            elif row['Visita'] == equipo:
+                goles.append(row['Goles Visita'])
+                goles_1T.append(row['Goles 1T Visita'])
+                goles_2T.append(row['Goles 2T Visita'])
+                corners.append(row['Corners Visita'])
+                amarillas.append(row['Amarillas Visita'])
+                rojas.append(row['Rojas Visita'])
+
+        return {
+            "Goles": round(sum(goles) / len(goles), 2) if goles else 0,
+            "Goles 1T": round(sum(goles_1T) / len(goles_1T), 2) if goles_1T else 0,
+            "Goles 2T": round(sum(goles_2T) / len(goles_2T), 2) if goles_2T else 0,
+            "Corners": round(sum(corners) / len(corners), 2) if corners else 0,
+            "Amarillas": round(sum(amarillas) / len(amarillas), 2) if amarillas else 0,
+            "Rojas": round(sum(rojas) / len(rojas), 2) if rojas else 0,
+        }
+
+    stats_local = calcular_estadisticas(ultimos_5_local, equipo_local)
+    stats_visita = calcular_estadisticas(ultimos_5_visita, equipo_visita)
+
+    return {
+        "Local (últimos 5)": stats_local,
+        "Visita (últimos 5)": stats_visita
+    }
 
 
