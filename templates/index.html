@@ -1,205 +1,89 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Rockongo1 Predictor</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8" />
+  <title>RockData</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="bg-light">
-
-<div class="container mt-5">
-    <!-- Encabezado ROCKDATA -->
-<div class="text-center mb-4">
-  <img src="{{ url_for('static', filename='logo_rockdata.png') }}" alt="RockData Logo" width="150" class="mb-2">
-    <p style="font-family: 'Playfair Display', serif; font-style: italic; font-weight: bold; font-size: 1.2rem;" class="text-muted">
-    No adivinamos. Calculamos.
-  </p>
-</div>
-
-
-    <div class="card shadow p-4 mb-4">
-        <form method="post">
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label for="pais" class="form-label">País:</label>
-                    <select name="pais" id="pais" class="form-select" required>
-                        <option value="">-- Selecciona un país --</option>
-                        {% for p in paises %}
-                            <option value="{{ p }}">{{ p }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="liga" class="form-label">Liga:</label>
-                    <select name="liga" id="liga" class="form-select" required disabled>
-                        <option value="">-- Selecciona una liga --</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="equipo_local" class="form-label">Equipo Local:</label>
-                    <select name="equipo_local" id="equipo_local" class="form-select" required disabled>
-                        <option value="">-- Selecciona equipo local --</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <label for="equipo_visita" class="form-label">Equipo Visita:</label>
-                    <select name="equipo_visita" id="equipo_visita" class="form-select" required disabled>
-                        <option value="">-- Selecciona equipo visita --</option>
-                    </select>
-                </div>
-                <div class="col-md-6 d-grid">
-                    <label class="form-label invisible">.</label>
-                    <button type="submit" class="btn btn-primary btn-lg">🔍 Predecir</button>
-                </div>
-            </div>
-        </form>
+  <div class="container mt-5">
+    <div class="text-center mb-4">
+      <img src="{{ url_for('static', filename='logo_rockdata.png') }}" alt="RockData Logo" width="150">
+      <h1 class="display-5 fw-bold text-dark">ROCKDATA</h1>
+      <p class="text-muted fst-italic">No adivinamos. Calculamos.</p>
     </div>
 
+    <!-- Resultados de predicción principal -->
     {% if resultado %}
-        <div class="card shadow p-4">
-  <div class="text-center mb-4 mt-5">
-    <img src="{{ url_for('static', filename='logo_rockdata.png') }}" alt="RockData Logo" width="160" class="mb-2">
-    <h1 class="display-5 fw-bold text-dark">ROCKDATA</h1>
-    <p style="font-family: 'Playfair Display', serif; font-style: italic; font-weight: bold; font-size: 1.2rem;" class="text-muted">
-      No adivinamos. Calculamos.
-    </p>
-  </div>
-            <h4 class="mb-3 text-primary">📊 Resultados de Predicción</h4>
-            <ul class="list-group">
-                <li class="list-group-item">⚽ Goles en Primer Tiempo: <strong>{{ resultado['Goles 1T'] }}</strong></li>
-                <li class="list-group-item">⚽ Goles en Segundo Tiempo: <strong>{{ resultado['Goles 2T'] }}</strong></li>
-                <li class="list-group-item">🎯 Total Goles Esperados: <strong>{{ resultado['Goles Totales'] }}</strong></li>
-                <li class="list-group-item">🟨 Tarjetas Amarillas: <strong>{{ resultado['Tarjetas Promedio'] }}</strong></li>
-                <li class="list-group-item">🟥 Tarjetas Rojas: <strong>{{ resultado['Rojas'] }}</strong></li>
-                <li class="list-group-item">🏳️ Córners Totales: <strong>{{ resultado['Corners'] }}</strong></li>
-                <li class="list-group-item">🏠 Fortaleza Local (últimos 10): <strong>{{ resultado['Fortaleza Local'] }}%</strong></li>
-                <li class="list-group-item">🛫 Fortaleza Visita (últimos 10): <strong>{{ resultado['Fortaleza Visita'] }}%</strong></li>
-                <li class="list-group-item bg-success-subtle">🧠 <strong>Pronóstico Final: {{ resultado['Pronóstico'] }}</strong></li>
-            </ul>
-        </div>
+    <div class="card shadow p-4">
+      <h4 class="mb-3 text-primary">📊 Resultados de Predicción</h4>
+      <ul class="list-group">
+        <li class="list-group-item">⚽ Goles en Primer Tiempo: <strong>{{ resultado['Goles 1T'] }}</strong></li>
+        <li class="list-group-item">⚽ Goles en Segundo Tiempo: <strong>{{ resultado['Goles 2T'] }}</strong></li>
+        <li class="list-group-item">🎯 Total Goles Esperados: <strong>{{ resultado['Goles Totales'] }}</strong></li>
+        <li class="list-group-item">🟨 Tarjetas Amarillas: <strong>{{ resultado['Tarjetas Promedio'] }}</strong></li>
+        <li class="list-group-item">🟥 Tarjetas Rojas: <strong>{{ resultado['Rojas'] }}</strong></li>
+        <li class="list-group-item">🏳️ Córners Totales: <strong>{{ resultado['Corners'] }}</strong></li>
+        <li class="list-group-item">🏠 Fortaleza Local (últimos 10): <strong>{{ resultado['Fortaleza Local'] }}%</strong></li>
+        <li class="list-group-item">🛫 Fortaleza Visita (últimos 10): <strong>{{ resultado['Fortaleza Visita'] }}%</strong></li>
+        <li class="list-group-item bg-success-subtle">🧠 <strong>Pronóstico Final: {{ resultado['Pronóstico'] }}</strong></li>
+      </ul>
+    </div>
     {% endif %}
-<!-- Botón para mostrar la simulación -->
-<div style="display: flex; justify-content: flex-end; margin-top: 10px;">
-  <button onclick="toggleSimulacion()" style="padding: 6px 12px; background-color: #eef6fb; border: none; border-radius: 5px; cursor: pointer;">
-    📊 Ver forma reciente
-  </button>
-</div>
 
-<!-- Contenedor oculto de la simulación -->
-<div id="simulacionBox" style="display: none; margin-top: 10px; border: 1px solid #ddd; padding: 10px; border-radius: 5px; background-color: #f9f9f9;">
-  <h5>🕵️ Simulación por Forma Reciente</h5>
-  <div id="formaLocal"></div>
-  <div id="formaVisita" style="margin-top: 8px;"></div>
-</div>
+    <!-- Botón único para forma reciente -->
+    <div class="text-end mt-3">
+      <button class="btn btn-outline-primary btn-sm" onclick="mostrarSimulacion()">📊 Ver forma reciente</button>
+    </div>
 
-<script>
-  function toggleSimulacion() {
-    const box = document.getElementById("simulacionBox");
-    box.style.display = box.style.display === "none" ? "block" : "none";
-  }
+    <!-- Contenedor que se llena dinámicamente -->
+    <div id="simulacion-container" class="mt-4" style="display: none;">
+      <h5>📊 Simulación por Forma Reciente</h5>
+      <div id="simulacion-datos" class="border rounded p-3 bg-light">
+        <p>Cargando datos...</p>
+      </div>
+    </div>
+  </div>
 
-  fetch("/simulacion_forma_reciente.json")
-    .then(r => r.json())
-    .then(data => {
-      const f = data.forma_reciente;
-      document.getElementById("formaLocal").innerHTML = `
-        <strong>LOCAL – Últimos 5 partidos:</strong><br>
-        Goles: ${f.local.goles} | Goles 1T: ${f.local.goles_1t} | Goles 2T: ${f.local.goles_2t}<br>
-        Córners: ${f.local.corners} | Amarillas: ${f.local.amarillas} | Rojas: ${f.local.rojas}
-      `;
-      document.getElementById("formaVisita").innerHTML = `
-        <strong>VISITA – Últimos 5 partidos:</strong><br>
-        Goles: ${f.visita.goles} | Goles 1T: ${f.visita.goles_1t} | Goles 2T: ${f.visita.goles_2t}<br>
-        Córners: ${f.visita.corners} | Amarillas: ${f.visita.amarillas} | Rojas: ${f.visita.rojas}
-      `;
-    });
-</script>
+  <script>
+    function mostrarSimulacion() {
+      fetch('/static/simulacion_forma_reciente.json')
+        .then(response => response.json())
+        .then(data => {
+          const statsLocal = data.forma_reciente.local;
+          const statsVisita = data.forma_reciente.visita;
+          const contenedor = document.getElementById("simulacion-datos");
 
-</div>
+          contenedor.innerHTML = `
+            <h6><strong>LOCAL – Últimos 5 partidos</strong></h6>
+            <ul>
+              <li>Goles: ${statsLocal.goles}</li>
+              <li>Goles 1T: ${statsLocal.goles_1t}</li>
+              <li>Goles 2T: ${statsLocal.goles_2t}</li>
+              <li>Córners: ${statsLocal.corners}</li>
+              <li>Amarillas: ${statsLocal.amarillas}</li>
+              <li>Rojas: ${statsLocal.rojas}</li>
+            </ul>
+            <h6><strong>VISITA – Últimos 5 partidos</strong></h6>
+            <ul>
+              <li>Goles: ${statsVisita.goles}</li>
+              <li>Goles 1T: ${statsVisita.goles_1t}</li>
+              <li>Goles 2T: ${statsVisita.goles_2t}</li>
+              <li>Córners: ${statsVisita.corners}</li>
+              <li>Amarillas: ${statsVisita.amarillas}</li>
+              <li>Rojas: ${statsVisita.rojas}</li>
+            </ul>
+          `;
 
-<script>
-    $(document).ready(function () {
-        $("#pais").change(function () {
-            let pais = $(this).val();
-            $("#liga").prop("disabled", true).html('<option>-- Cargando ligas --</option>');
-            $("#equipo_local, #equipo_visita").prop("disabled", true).html('<option>-- Esperando liga --</option>');
-
-            $.ajax({
-                url: "/get_ligas",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ pais: pais }),
-                success: function (ligas) {
-                    let options = '<option value="">-- Selecciona una liga --</option>';
-                    ligas.forEach(liga => {
-                        options += `<option value="${liga}">${liga}</option>`;
-                    });
-                    $("#liga").html(options).prop("disabled", false);
-                }
-            });
+          document.getElementById("simulacion-container").style.display = "block";
+        })
+        .catch(error => {
+          console.error("Error al cargar la simulación:", error);
+          document.getElementById("simulacion-datos").innerHTML = "<p>Error al cargar datos.</p>";
         });
-
-        $("#liga").change(function () {
-            let pais = $("#pais").val();
-            let liga = $(this).val();
-
-            $("#equipo_local, #equipo_visita").prop("disabled", true).html('<option>-- Cargando equipos --</option>');
-
-            $.ajax({
-                url: "/get_equipos",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ pais: pais, liga: liga }),
-                success: function (equipos) {
-                    let options = '<option value="">-- Selecciona equipo --</option>';
-                    equipos.forEach(equipo => {
-                        options += `<option value="${equipo}">${equipo}</option>`;
-                    });
-                    $("#equipo_local, #equipo_visita").html(options).prop("disabled", false);
-                }
-            });
-        });
-    });
-</script>
-<!-- Botón -->
-<button onclick="verFormaReciente()">📊 Ver forma reciente</button>
-
-<!-- Contenedor de resultados -->
-<div id="resultadosForma" style="margin-top: 20px;"></div>
-
-<!-- Script -->
-<script>
-function verFormaReciente() {
-    fetch('/forma_reciente')
-    .then(response => response.json())
-    .then(data => {
-        const resultadosDiv = document.getElementById('resultadosForma');
-        const forma = data.forma_reciente;
-
-        let html = '<h3>📊 Forma Reciente</h3>';
-        ['local', 'visita'].forEach(equipo => {
-            html += `<h4>${equipo.toUpperCase()}</h4><ul>`;
-            for (const [clave, valor] of Object.entries(forma[equipo])) {
-                html += `<li><b>${clave}</b>: ${valor}</li>`;
-            }
-            html += '</ul>';
-        });
-
-        resultadosDiv.innerHTML = html;
-    })
-    .catch(err => {
-        alert("Error al cargar forma reciente");
-        console.error(err);
-    });
-}
-</script>
-
+    }
+  </script>
 </body>
 </html>
-
