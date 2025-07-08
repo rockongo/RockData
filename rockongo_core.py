@@ -138,5 +138,42 @@ def simulacion_forma_reciente(df, equipo_local, equipo_visita):
         "Local (últimos 5)": stats_local,
         "Visita (últimos 5)": stats_visita
     }
+def generar_sugerencias(archivo_excel, equipo_local, equipo_visita):
+    df = pd.read_excel(archivo_excel)
+    df = df.sort_values('Fecha')
+
+    local_partidos = df[df['Local'] == equipo_local].tail(10)
+    visita_partidos = df[df['Visita'] == equipo_visita].tail(10)
+
+    def promediar(partidos, campo):
+        return round(partidos[campo].mean(), 2) if not partidos.empty else 0
+
+    goles = promediar(local_partidos, 'Goles Local') + promediar(visita_partidos, 'Goles Visita')
+    corners = promediar(local_partidos, 'Corners Local') + promediar(visita_partidos, 'Corners Visita')
+    tarjetas = promediar(local_partidos, 'Amarillas Local') + promediar(visita_partidos, 'Amarillas Visita')
+
+    sugerencias = []
+
+    # Goles
+    if goles >= 3:
+        sugerencias.append("🧠 Más de 2.5 goles")
+    elif goles <= 2:
+        sugerencias.append("🧠 Menos de 2.5 goles")
+
+    # Córners
+    if corners >= 10:
+        sugerencias.append("🧠 Más de 9.5 córners")
+    elif corners <= 9:
+        sugerencias.append("🧠 Menos de 9.5 córners")
+
+    # Si hay muchas tarjetas también podemos sugerirlo
+    if tarjetas >= 6:
+        sugerencias.append("🧠 Más de 5.5 tarjetas")
+    elif tarjetas <= 5:
+        sugerencias.append("🧠 Menos de 5.5 tarjetas")
+
+    # Devolver solo las 2 más seguras
+    return sugerencias[:2]
+
 
 

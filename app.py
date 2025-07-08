@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 import pandas as pd
 import os
-from rockongo_core import predecir_partido
+import json
+from rockongo_core import predecir_partido, generar_sugerencias
 
 app = Flask(__name__)
 
@@ -37,6 +38,7 @@ ligas = {
 @app.route("/", methods=["GET", "POST"])
 def index():
     resultado = None
+    sugerencias = []
     paises = list(ligas.keys())
 
     if request.method == "POST":
@@ -48,7 +50,10 @@ def index():
         archivo_excel = os.path.join(RUTA_LIGAS, ligas[pais][liga])
         resultado = predecir_partido(archivo_excel, equipo_local, equipo_visita)
 
-    return render_template("index.html", paises=paises, resultado=resultado)
+        if resultado:
+            sugerencias = generar_sugerencias(archivo_excel, equipo_local, equipo_visita)
+
+    return render_template("index.html", paises=paises, resultado=resultado, sugerencias=sugerencias)
 
 @app.route("/get_ligas", methods=["POST"])
 def get_ligas():
@@ -75,8 +80,6 @@ def get_equipos():
         return jsonify(equipos)
     except:
         return jsonify([])
-from flask import jsonify
-import json
 
 @app.route('/forma_reciente')
 def forma_reciente():
@@ -87,5 +90,3 @@ def forma_reciente():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
-
-

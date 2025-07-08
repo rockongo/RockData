@@ -82,6 +82,17 @@
                 <li class="list-group-item">🛫 Fortaleza Visita (últimos 10): <strong>{{ resultado['Fortaleza Visita'] }}%</strong></li>
                 <li class="list-group-item bg-success-subtle">🧠 <strong>Pronóstico Final: {{ resultado['Pronóstico'] }}</strong></li>
             </ul>
+{% if sugerencias %}
+<div class="card shadow p-3 mt-4">
+    <h5 class="card-title text-primary">🧠 Sugerencias de Apuesta</h5>
+    <ul class="list-group list-group-flush">
+        {% for sugerencia in sugerencias %}
+            <li class="list-group-item">✔️ {{ sugerencia }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
         </div>
     {% endif %}
 <!-- Botón para mostrar la simulación -->
