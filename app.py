@@ -1,10 +1,13 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from datetime import timedelta
 import pandas as pd
 import os
 import json
 from rockongo_core import predecir_partido, generar_sugerencias
 
 app = Flask(__name__)
+app.secret_key = "Racg@1981"  # clave de acceso
+app.permanent_session_lifetime = timedelta(days=7)
 
 # Ruta donde están los archivos .xlsx (relativa a la carpeta del script)
 RUTA_LIGAS = os.path.join(os.path.dirname(__file__), "Ligas")
@@ -35,8 +38,26 @@ ligas = {
     }
 }
 
+# === LOGIN ===
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        clave_ingresada = request.form.get("clave")
+        if clave_ingresada == "Racg@1981":
+            session.permanent = True
+            session["autenticado"] = True
+            return redirect(url_for("index"))
+        else:
+            return render_template("login.html", error="Clave incorrecta")
+    return render_template("login.html")
+
+
+# === PÁGINA PRINCIPAL ===
 @app.route("/", methods=["GET", "POST"])
 def index():
+    if not session.get("autenticado"):
+        return redirect(url_for("login"))
+
     resultado = None
     sugerencias = []
     paises = list(ligas.keys())
@@ -55,6 +76,8 @@ def index():
 
     return render_template("index.html", paises=paises, resultado=resultado, sugerencias=sugerencias)
 
+
+# === API: Obtener ligas por país ===
 @app.route("/get_ligas", methods=["POST"])
 def get_ligas():
     data = request.get_json()
@@ -62,6 +85,8 @@ def get_ligas():
     ligas_pais = list(ligas.get(pais, {}).keys())
     return jsonify(ligas_pais)
 
+
+# === API: Obtener equipos por liga ===
 @app.route("/get_equipos", methods=["POST"])
 def get_equipos():
     data = request.get_json()
@@ -81,12 +106,17 @@ def get_equipos():
     except:
         return jsonify([])
 
+
+# === API: Mostrar forma reciente ===
 @app.route('/forma_reciente')
 def forma_reciente():
     with open('static/simulacion_forma_reciente.json') as f:
         data = json.load(f)
     return jsonify(data)
 
+
+# === EJECUCIÓN LOCAL ===
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
