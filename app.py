@@ -245,6 +245,11 @@ def crear_orden():
         else:
             return jsonify({'error': 'Error al crear orden', 'detalle': response.text}), 500
 
+    except Exception as e:
+        print("❌ Excepción general:", str(e))
+        return jsonify({'error': 'Excepción interna', 'detalle': str(e)}), 500
+
+
     
 
 # Despliegue forzado para Render - 9 julio
