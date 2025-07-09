@@ -213,15 +213,11 @@ def crear_orden():
             'confirmationMethod': "1",            
         }
 
-
-
-
         print("📦 Payload antes de firma:", payload)
 
         ordered_keys = [
             'amount', 'apiKey', 'commerceOrder', 'confirmationMethod',
-            'currency', 'email', 'subject', 'urlCallback',
-            'urlConfirmation', 'urlReturn'
+            'currency', 'email', 'subject', 'urlCallback', 'urlConfirmation', 'urlReturn'
         ]
 
         sorted_items = [(k, payload[k]) for k in ordered_keys]
@@ -246,6 +242,10 @@ def crear_orden():
     except Exception as e:
         print("❌ Excepción general:", str(e))
         return jsonify({'error': 'Excepción interna', 'detalle': str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 
     
