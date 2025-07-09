@@ -206,12 +206,19 @@ def crear_orden():
     signature = hashlib.sha256((concatenated + FLOW_SECRET_KEY).encode('utf-8')).hexdigest()
     payload['s'] = signature
 
-    response = requests.post(FLOW_CREATE_URL, json=payload)
+    try:
+        response = requests.post(FLOW_CREATE_URL, json=payload)
+        print("📤 Enviado a Flow:", payload)
+        print("📥 Respuesta:", response.text)
 
-    if response.status_code == 200:
-        return jsonify(response.json())
-    else:
-        return jsonify({'error': 'Error al crear orden', 'detalle': response.text}), 500
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({'error': 'Error al crear orden', 'detalle': response.text}), 500
+    except Exception as e:
+        print("❌ Excepción:", str(e))
+        return jsonify({'error': 'Excepción interna', 'detalle': str(e)}), 500
+
 
 # === EJECUCIÓN LOCAL ===
 if __name__ == "__main__":
