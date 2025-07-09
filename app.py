@@ -211,8 +211,7 @@ def crear_orden():
             'payerEmail': email,
             'urlReturn': 'https://rockdata.onrender.com/retorno',
             'urlConfirmation': 'https://rockdata.onrender.com/confirmacion',
-            'confirmationMethod': "1",
-            'paymentMethod': '9'
+            'confirmationMethod': "1",            
         }
 
 
@@ -222,7 +221,7 @@ def crear_orden():
 
         ordered_keys = [
             'amount', 'apiKey', 'commerceOrder', 'confirmationMethod',
-            'currency', 'email', 'payerEmail', 'payerName', 'paymentMethod',
+            'currency', 'email', 'payerEmail', 'payerName',
             'subject', 'urlConfirmation', 'urlReturn'
         ]
 
