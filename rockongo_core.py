@@ -31,7 +31,7 @@ LIGAS = {
 
 def rockongo1_prediccion(df, equipo_local, equipo_visita):
     df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
-df = df.sort_values('Fecha')
+    df = df.sort_values('Fecha')
     local_partidos = df[df['Local'] == equipo_local].tail(10)
     visita_partidos = df[df['Visita'] == equipo_visita].tail(10)
 
@@ -52,7 +52,7 @@ df = df.sort_values('Fecha')
 
     def calcular_localia_real(df, equipo_local, equipo_visita):
         df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
-df = df.sort_values('Fecha')
+        df = df.sort_values('Fecha')
         local_partidos = df[df['Local'] == equipo_local].tail(10)
         visita_partidos = df[df['Visita'] == equipo_visita].tail(10)
         victorias_local = (local_partidos['Goles Local'] > local_partidos['Goles Visita']).sum()
@@ -94,9 +94,10 @@ df = df.sort_values('Fecha')
 def predecir_partido(archivo_excel, equipo_local, equipo_visita):
     df = pd.read_excel(archivo_excel)
     return rockongo1_prediccion(df, equipo_local, equipo_visita)
+
 def simulacion_forma_reciente(df, equipo_local, equipo_visita):
     df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
-df = df.sort_values('Fecha')
+    df = df.sort_values('Fecha')
 
     ultimos_5_local = df[(df['Local'] == equipo_local) | (df['Visita'] == equipo_local)].tail(5)
     ultimos_5_visita = df[(df['Local'] == equipo_visita) | (df['Visita'] == equipo_visita)].tail(5)
@@ -141,10 +142,11 @@ df = df.sort_values('Fecha')
         "Local (últimos 5)": stats_local,
         "Visita (últimos 5)": stats_visita
     }
+
 def generar_sugerencias(archivo_excel, equipo_local, equipo_visita):
     df = pd.read_excel(archivo_excel)
     df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
-df = df.sort_values('Fecha')
+    df = df.sort_values('Fecha')
 
     local_partidos = df[df['Local'] == equipo_local].tail(10)
     visita_partidos = df[df['Visita'] == equipo_visita].tail(10)
@@ -158,27 +160,19 @@ df = df.sort_values('Fecha')
 
     sugerencias = []
 
-    # Goles
     if goles >= 3:
         sugerencias.append("🧠 Más de 2.5 goles")
     elif goles <= 2:
         sugerencias.append("🧠 Menos de 2.5 goles")
 
-    # Córners
     if corners >= 10:
         sugerencias.append("🧠 Más de 9.5 córners")
     elif corners <= 9:
         sugerencias.append("🧠 Menos de 9.5 córners")
 
-    # Si hay muchas tarjetas también podemos sugerirlo
     if tarjetas >= 6:
         sugerencias.append("🧠 Más de 5.5 tarjetas")
     elif tarjetas <= 5:
         sugerencias.append("🧠 Menos de 5.5 tarjetas")
 
-    # Devolver solo las 2 más seguras
     return sugerencias[:2]
-
-
-
-
