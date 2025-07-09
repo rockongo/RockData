@@ -234,7 +234,7 @@ def crear_orden():
         print("❌ Excepción general:", str(e))
         return jsonify({'error': 'Excepción interna', 'detalle': str(e)}), 500
 
-
+# Despliegue forzado para Render - 9 julio
 
 
 
