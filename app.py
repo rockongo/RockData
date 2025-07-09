@@ -185,39 +185,48 @@ FLOW_CREATE_URL = 'https://www.flow.cl/api/payment/create'
 
 @app.route('/crear_orden', methods=['POST'])
 def crear_orden():
-    data = request.json
-    email = data.get('email')
-    monto = data.get('monto', 1990)
-
-    payload = {
-        'apiKey': FLOW_API_KEY,
-        'commerceOrder': 'ORD' + str(int.from_bytes(os.urandom(4), 'big')),
-        'subject': 'Acceso mensual a RockData',
-        'amount': monto,
-        'email': email,
-        'urlReturn': 'https://rockdata.onrender.com/retorno',
-        'urlConfirmation': 'https://rockdata.onrender.com/confirmacion',
-        'confirmationMethod': 1
-    }
-
-    # Crear firma
-    sorted_items = sorted(payload.items())
-    concatenated = '&'.join(f"{k}={v}" for k, v in sorted_items)
-    signature = hashlib.sha256((concatenated + FLOW_SECRET_KEY).encode('utf-8')).hexdigest()
-    payload['s'] = signature
-
     try:
+        data = request.json
+        email = data.get('email')
+        monto = data.get('monto', 1990)
+
+        print("📨 Recibido JSON:", data)
+
+        order_id = 'ORD' + str(int.from_bytes(os.urandom(4), 'big'))
+        payload = {
+            'apiKey': FLOW_API_KEY,
+            'commerceOrder': order_id,
+            'subject': 'Acceso mensual a RockData',
+            'amount': monto,
+            'email': email,
+            'urlReturn': 'https://rockdata.onrender.com/retorno',
+            'urlConfirmation': 'https://rockdata.onrender.com/confirmacion',
+            'confirmationMethod': 1
+        }
+
+        print("📦 Payload antes de firma:", payload)
+
+        sorted_items = sorted(payload.items())
+        concatenated = '&'.join(f"{k}={v}" for k, v in sorted_items)
+        print("🔑 Cadena para firmar:", concatenated)
+
+        signature = hashlib.sha256((concatenated + FLOW_SECRET_KEY).encode('utf-8')).hexdigest()
+        payload['s'] = signature
+
+        print("✅ Payload con firma:", payload)
+
         response = requests.post(FLOW_CREATE_URL, json=payload)
-        print("📤 Enviado a Flow:", payload)
-        print("📥 Respuesta:", response.text)
+        print("📥 Respuesta Flow:", response.text)
 
         if response.status_code == 200:
             return jsonify(response.json())
         else:
             return jsonify({'error': 'Error al crear orden', 'detalle': response.text}), 500
+
     except Exception as e:
-        print("❌ Excepción:", str(e))
+        print("❌ Excepción general:", str(e))
         return jsonify({'error': 'Excepción interna', 'detalle': str(e)}), 500
+
 
 
 # === EJECUCIÓN LOCAL ===
