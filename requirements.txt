@@ -3,4 +3,4 @@ flask_sqlalchemy
 pandas
 openpyxl
 werkzeug
-
+requests
