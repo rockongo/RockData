@@ -30,7 +30,8 @@ LIGAS = {
 }
 
 def rockongo1_prediccion(df, equipo_local, equipo_visita):
-    df = df.sort_values('Fecha')
+    df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
+df = df.sort_values('Fecha')
     local_partidos = df[df['Local'] == equipo_local].tail(10)
     visita_partidos = df[df['Visita'] == equipo_visita].tail(10)
 
@@ -50,7 +51,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     stats_visita = calcular_promedios(visita_partidos, "Visita")
 
     def calcular_localia_real(df, equipo_local, equipo_visita):
-        df = df.sort_values('Fecha')
+        df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
+df = df.sort_values('Fecha')
         local_partidos = df[df['Local'] == equipo_local].tail(10)
         visita_partidos = df[df['Visita'] == equipo_visita].tail(10)
         victorias_local = (local_partidos['Goles Local'] > local_partidos['Goles Visita']).sum()
@@ -93,7 +95,8 @@ def predecir_partido(archivo_excel, equipo_local, equipo_visita):
     df = pd.read_excel(archivo_excel)
     return rockongo1_prediccion(df, equipo_local, equipo_visita)
 def simulacion_forma_reciente(df, equipo_local, equipo_visita):
-    df = df.sort_values('Fecha')
+    df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
+df = df.sort_values('Fecha')
 
     ultimos_5_local = df[(df['Local'] == equipo_local) | (df['Visita'] == equipo_local)].tail(5)
     ultimos_5_visita = df[(df['Local'] == equipo_visita) | (df['Visita'] == equipo_visita)].tail(5)
@@ -140,7 +143,8 @@ def simulacion_forma_reciente(df, equipo_local, equipo_visita):
     }
 def generar_sugerencias(archivo_excel, equipo_local, equipo_visita):
     df = pd.read_excel(archivo_excel)
-    df = df.sort_values('Fecha')
+    df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
+df = df.sort_values('Fecha')
 
     local_partidos = df[df['Local'] == equipo_local].tail(10)
     visita_partidos = df[df['Visita'] == equipo_visita].tail(10)
@@ -174,6 +178,7 @@ def generar_sugerencias(archivo_excel, equipo_local, equipo_visita):
 
     # Devolver solo las 2 más seguras
     return sugerencias[:2]
+
 
 
 
