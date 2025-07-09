@@ -138,3 +138,33 @@ for archivo, config in ligas_config.items():
         print(f"✅ {len(nuevas_filas)} partidos agregados a {archivo}")
     else:
         print("✅ No hay nuevos partidos para agregar.")
+# === AGREGAR / ACTUALIZAR COLUMNA 'Resultado' ===
+def agregar_resultado_a_filas_nuevas():
+    for archivo in ligas_config:
+        path_excel = os.path.join(RUTA_LIGAS, archivo)
+        if not os.path.exists(path_excel):
+            continue
+
+        try:
+            df = pd.read_excel(path_excel)
+
+            if 'Goles Local' in df.columns and 'Goles Visita' in df.columns:
+                # Si no existe la columna, crearla vacía
+                if 'Resultado' not in df.columns:
+                    df['Resultado'] = ''
+
+                # Calcular solo en filas vacías
+                df['Resultado'] = df.apply(lambda row: (
+                    'L' if row['Goles Local'] > row['Goles Visita'] else
+                    'V' if row['Goles Local'] < row['Goles Visita'] else
+                    'E'
+                ) if pd.isna(row['Resultado']) or row['Resultado'] == '' else row['Resultado'], axis=1)
+
+                df.to_excel(path_excel, index=False)
+                print(f"🟨 Resultado actualizado en {archivo}")
+        except Exception as e:
+            print(f"❌ Error al actualizar Resultado en {archivo}: {e}")
+
+# Ejecutar al final del proceso
+agregar_resultado_a_filas_nuevas()
+
