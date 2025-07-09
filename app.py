@@ -63,10 +63,16 @@ def registro():
         nombre = request.form["nombre"]
         email = request.form["email"]
         password = request.form["password"]
+        codigo_acceso = request.form["codigo_acceso"]
 
-        # Validar que no exista el usuario
+        # Clave de acceso secreta para crear cuentas (modifícala si lo deseas)
+        CLAVE_REGISTRO = "Rock2025"
+
+        if codigo_acceso != CLAVE_REGISTRO:
+            return "Código de acceso inválido. No estás autorizado a registrarte."
+
         if Usuario.query.filter_by(email=email).first():
-            return "Ya existe un usuario con ese correo."
+            return "Ese correo ya está registrado."
 
         nuevo_usuario = Usuario(nombre=nombre, email=email)
         nuevo_usuario.set_password(password)
