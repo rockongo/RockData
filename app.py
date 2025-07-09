@@ -204,12 +204,13 @@ def crear_orden():
             'apiKey': FLOW_API_KEY,
             'commerceOrder': order_id,
             'subject': 'Acceso mensual a RockData',
-            'amount': monto,
+            'amount': str(monto),
             'email': email,
             'urlReturn': 'https://rockdata.onrender.com/retorno',
             'urlConfirmation': 'https://rockdata.onrender.com/confirmacion',
-            'confirmationMethod': 1
+            'confirmationMethod': "1"
         }
+
 
         print("📦 Payload antes de firma:", payload)
 
