@@ -186,9 +186,16 @@ FLOW_CREATE_URL = 'https://www.flow.cl/api/payment/create'
 @app.route('/crear_orden', methods=['POST'])
 def crear_orden():
     try:
-        data = request.json
+        data = request.get_json()
+        print("📨 Recibido JSON:", data)
+
+        if not data or 'email' not in data:
+            print("❌ JSON inválido o faltan campos obligatorios.")
+            return jsonify({'error': 'Falta el email o JSON malformado'}), 400
+
         email = data.get('email')
         monto = data.get('monto', 1990)
+
 
         print("📨 Recibido JSON:", data)
 
