@@ -106,15 +106,6 @@ def get_equipos():
     except:
         return jsonify([])
 
-
-# === API: Mostrar forma reciente ===
-@app.route('/forma_reciente')
-def forma_reciente():
-    with open('static/simulacion_forma_reciente.json') as f:
-        data = json.load(f)
-    return jsonify(data)
-
-
 # === EJECUCIÓN LOCAL ===
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))

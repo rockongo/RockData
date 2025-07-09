@@ -96,41 +96,6 @@
         </div>
     {% endif %}
 <!-- Botón para mostrar la simulación -->
-<div style="display: flex; justify-content: flex-end; margin-top: 10px;">
-  <button onclick="toggleSimulacion()" style="padding: 6px 12px; background-color: #eef6fb; border: none; border-radius: 5px; cursor: pointer;">
-    📊 Ver forma reciente
-  </button>
-</div>
-
-<!-- Contenedor oculto de la simulación -->
-<div id="simulacionBox" style="display: none; margin-top: 10px; border: 1px solid #ddd; padding: 10px; border-radius: 5px; background-color: #f9f9f9;">
-  <h5>🕵️ Simulación por Forma Reciente</h5>
-  <div id="formaLocal"></div>
-  <div id="formaVisita" style="margin-top: 8px;"></div>
-</div>
-
-<script>
-  function toggleSimulacion() {
-    const box = document.getElementById("simulacionBox");
-    box.style.display = box.style.display === "none" ? "block" : "none";
-  }
-
-  fetch("/forma_reciente")
-    .then(r => r.json())
-    .then(data => {
-      const f = data.forma_reciente;
-      document.getElementById("formaLocal").innerHTML = `
-        <strong>LOCAL – Últimos 5 partidos:</strong><br>
-        Goles: ${f.local.goles} | Goles 1T: ${f.local.goles_1t} | Goles 2T: ${f.local.goles_2t}<br>
-        Córners: ${f.local.corners} | Amarillas: ${f.local.amarillas} | Rojas: ${f.local.rojas}
-      `;
-      document.getElementById("formaVisita").innerHTML = `
-        <strong>VISITA – Últimos 5 partidos:</strong><br>
-        Goles: ${f.visita.goles} | Goles 1T: ${f.visita.goles_1t} | Goles 2T: ${f.visita.goles_2t}<br>
-        Córners: ${f.visita.corners} | Amarillas: ${f.visita.amarillas} | Rojas: ${f.visita.rojas}
-      `;
-    });
-</script>
 
 </div>
 
@@ -185,31 +150,6 @@
 
 
 <!-- Script -->
-<script>
-
-    fetch('/forma_reciente')
-    .then(response => response.json())
-    .then(data => {
-        const resultadosDiv = document.getElementById('resultadosForma');
-        const forma = data.forma_reciente;
-
-        let html = '<h3>📊 Forma Reciente</h3>';
-        ['local', 'visita'].forEach(equipo => {
-            html += `<h4>${equipo.toUpperCase()}</h4><ul>`;
-            for (const [clave, valor] of Object.entries(forma[equipo])) {
-                html += `<li><b>${clave}</b>: ${valor}</li>`;
-            }
-            html += '</ul>';
-        });
-
-        resultadosDiv.innerHTML = html;
-    })
-    .catch(err => {
-        alert("Error al cargar forma reciente");
-        console.error(err);
-    });
-}
-</script>
 
 </body>
 </html>
