@@ -208,7 +208,8 @@ def crear_orden():
             'email': email,
             'urlReturn': 'https://rockdata.onrender.com/retorno',
             'urlConfirmation': 'https://rockdata.onrender.com/confirmacion',
-            'confirmationMethod': "1"
+            'confirmationMethod': "1",
+            'paymentMethod': '9'
         }
 
 
