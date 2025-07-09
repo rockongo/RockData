@@ -215,7 +215,13 @@ def crear_orden():
 
         print("📦 Payload antes de firma:", payload)
 
-        sorted_items = sorted(payload.items())
+        ordered_keys = [
+            'amount', 'apiKey', 'commerceOrder', 'confirmationMethod',
+            'email', 'paymentMethod', 'subject', 'urlConfirmation', 'urlReturn'
+]
+
+        sorted_items = [(k, payload[k]) for k in ordered_keys]
+
         concatenated = '&'.join(f"{k}={v}" for k, v in sorted_items)
         print("🔑 Cadena para firmar:", concatenated)
 
