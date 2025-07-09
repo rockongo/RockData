@@ -207,6 +207,7 @@ def crear_orden():
             'amount': str(monto),
             'currency': 'CLP',
             'email': email,
+            'paymentMethod': '9',
             'payerName': 'Cliente RockData',
             'payerEmail': email,
             'urlReturn': 'https://rockdata.onrender.com/retorno',
@@ -222,12 +223,13 @@ def crear_orden():
         ordered_keys = [
             'amount', 'apiKey', 'commerceOrder', 'confirmationMethod',
             'currency', 'email', 'payerEmail', 'payerName',
-            'subject', 'urlConfirmation', 'urlReturn'
+            'paymentMethod', 'subject', 'urlConfirmation', 'urlReturn'
         ]
 
         sorted_items = [(k, payload[k]) for k in ordered_keys]
 
         concatenated = '&'.join(f"{k}={v}" for k, v in sorted_items)
+
         print("🔑 Cadena para firmar:", concatenated)
 
         signature = hashlib.sha256((concatenated + FLOW_SECRET_KEY).encode('utf-8')).hexdigest()
@@ -243,9 +245,7 @@ def crear_orden():
         else:
             return jsonify({'error': 'Error al crear orden', 'detalle': response.text}), 500
 
-    except Exception as e:
-        print("❌ Excepción general:", str(e))
-        return jsonify({'error': 'Excepción interna', 'detalle': str(e)}), 500
+    
 
 # Despliegue forzado para Render - 9 julio
 
