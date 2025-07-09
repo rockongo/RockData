@@ -207,12 +207,8 @@ def crear_orden():
             'amount': str(monto),
             'currency': 'CLP',
             'email': email,
-            'paymentMethod': '9',
-            'payerName': 'Cliente RockData',
-            'payerEmail': email,
             'urlReturn': 'https://rockdata.onrender.com/retorno',
             'urlConfirmation': 'https://rockdata.onrender.com/confirmacion',
-            'urlCallback': 'https://rockdata.onrender.com/confirmacion',
             'confirmationMethod': "1",            
         }
 
@@ -223,8 +219,7 @@ def crear_orden():
 
         ordered_keys = [
             'amount', 'apiKey', 'commerceOrder', 'confirmationMethod',
-            'currency', 'email', 'payerEmail', 'payerName', 'paymentMethod', 
-            'subject', 'urlCallback', 'urlConfirmation', 'urlReturn'
+            'currency', 'email', 'subject', 'urlConfirmation', 'urlReturn'
         ]
 
         sorted_items = [(k, payload[k]) for k in ordered_keys]
