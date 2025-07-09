@@ -72,7 +72,13 @@ def index():
         resultado = predecir_partido(archivo_excel, equipo_local, equipo_visita)
 
         if resultado:
-            sugerencias = generar_sugerencias(archivo_excel, equipo_local, equipo_visita)
+            sugerencias = generar_sugerencias(
+                resultado["Goles Totales"],
+                resultado["Corners"],
+                resultado["Tarjetas Promedio"],
+                resultado["Rojas"]
+            )
+
 
     return render_template("index.html", paises=paises, resultado=resultado, sugerencias=sugerencias)
 
