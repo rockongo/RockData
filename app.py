@@ -30,6 +30,7 @@ class Usuario(db.Model):
 
 with app.app_context():
     db.create_all()
+RUTA_LIGAS = os.path.join(os.path.dirname(__file__), "Ligas")
 ligas = {
     "Chile": {
         "Primera A": "Primera_A_2025.xlsx",
@@ -155,10 +156,13 @@ def get_equipos():
     ruta_archivo = os.path.join(RUTA_LIGAS, archivo_nombre)
 
     try:
+        print("📁 Leyendo archivo:", ruta_archivo)  # <--- AGREGAR ESTO
         df = pd.read_excel(ruta_archivo)
         equipos = sorted(set(df["Local"].dropna().unique()) | set(df["Visita"].dropna().unique()))
+        print("✅ Equipos encontrados:", equipos)   # <--- AGREGAR ESTO
         return jsonify(equipos)
-    except:
+    except Exception as e:
+        print("❌ ERROR leyendo Excel:", e)         # <--- AGREGAR ESTO
         return jsonify([])
 
 # === EJECUCIÓN LOCAL ===
