@@ -27,6 +27,11 @@ class Usuario(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.contrasena_hash, password)
+class CodigoAcceso(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    codigo = db.Column(db.String(100), unique=True, nullable=False)
+    usado = db.Column(db.Boolean, default=False)
+
 
 with app.app_context():
     db.create_all()
@@ -170,6 +175,43 @@ def get_equipos():
     except Exception as e:
         print("❌ ERROR leyendo Excel:", e)         # <--- AGREGAR ESTO
         return jsonify([])
+# === RUTA: CREAR ORDEN DE PAGO FLOW ===
+import requests
+import hashlib
+
+FLOW_API_KEY = '305FEDAC-E69B-4D0E-A71C-9A28A3320L4F'
+FLOW_SECRET_KEY = 'b515dd6df6252d41ccd2de5e7793d154d6c30957'
+FLOW_CREATE_URL = 'https://www.flow.cl/api/payment/create'
+
+@app.route('/crear_orden', methods=['POST'])
+def crear_orden():
+    data = request.json
+    email = data.get('email')
+    monto = data.get('monto', 1990)
+
+    payload = {
+        'apiKey': FLOW_API_KEY,
+        'commerceOrder': 'ORD' + str(int.from_bytes(os.urandom(4), 'big')),
+        'subject': 'Acceso mensual a RockData',
+        'amount': monto,
+        'email': email,
+        'urlReturn': 'https://rockdata.onrender.com/retorno',
+        'urlConfirmation': 'https://rockdata.onrender.com/confirmacion',
+        'confirmationMethod': 1
+    }
+
+    # Crear firma
+    sorted_items = sorted(payload.items())
+    concatenated = '&'.join(f"{k}={v}" for k, v in sorted_items)
+    signature = hashlib.sha256((concatenated + FLOW_SECRET_KEY).encode('utf-8')).hexdigest()
+    payload['s'] = signature
+
+    response = requests.post(FLOW_CREATE_URL, json=payload)
+
+    if response.status_code == 200:
+        return jsonify(response.json())
+    else:
+        return jsonify({'error': 'Error al crear orden', 'detalle': response.text}), 500
 
 # === EJECUCIÓN LOCAL ===
 if __name__ == "__main__":
