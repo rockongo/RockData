@@ -30,8 +30,11 @@ class Usuario(db.Model):
 
 with app.app_context():
     db.create_all()
-
-	
+ligas = {
+    "Chile": {
+        "Primera A": "Primera_A_2025.xlsx",
+        "Primera B": "Primera_B_2025.xlsx"
+    },	
     "Bolivia": {
         "Primera A": "Liga_bolivia_2025.xlsx"
     },
