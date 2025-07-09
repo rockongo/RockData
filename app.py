@@ -90,7 +90,7 @@ def login():
             session["usuario_email"] = usuario.email
             return redirect(url_for("index"))
         else:
-            return "Credenciales incorrectas"
+            return render_template("login.html", error="Credenciales incorrectas")
 
     return render_template("login.html")
 
