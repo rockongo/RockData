@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pago recibido</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding-top: 80px; background-color: #f8f9fa; }
+        h2 { color: #28a745; }
+        p.codigo { font-size: 24px; color: #000; font-weight: bold; margin-top: 20px; }
+        a { display: inline-block; margin-top: 30px; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h2>✅ ¡Gracias por tu pago!</h2>
+    <p>Tu orden ha sido procesada correctamente.</p>
+
+    {% if codigo %}
+        <p>Este es tu código de activación:</p>
+        <p class="codigo">{{ codigo }}</p>
+        <p>Cópialo y pégalo en la página de activación.</p>
+    {% else %}
+        <p>Si ya pagaste, espera unos segundos o recarga esta página.</p>
+    {% endif %}
+
+    <a href="/">Volver al inicio</a>
+</body>
+</html>

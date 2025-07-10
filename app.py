@@ -197,6 +197,7 @@ def crear_orden():
         email = "contacto.rockdata@gmail.com"
         monto = "5000"
         order_id = 'ORD' + str(int.from_bytes(os.urandom(4), 'big'))
+        subject = "Acceso mensual RockData"
 
         payload = {
             "apiKey": FLOW_API_KEY,
@@ -307,6 +308,65 @@ def retorno_pago():
     db.session.add(nuevo)
     db.session.commit()
     return render_template("codigo_entregado.html", codigo=nuevo_codigo)
+
+@app.route("/post_pago")
+def post_pago():
+    codigo = session.pop("codigo_generado", None)
+    return render_template("post_pago.html", codigo=codigo)
+
+
+@app.route('/confirmacion', methods=['POST'])
+def confirmacion_pago():
+    try:
+        token = request.form.get("token")
+        if not token:
+            return "Token no recibido", 400
+
+        # Consulta a Flow para obtener detalles del pago
+        url_estado = "https://www.flow.cl/api/payment/getStatus"
+        api_key = FLOW_API_KEY
+
+        # Crear la firma
+        cadena = f"apiKey={api_key}&token={token}"
+        firma = hmac.new(
+            FLOW_SECRET_KEY.encode("utf-8"),
+            cadena.encode("utf-8"),
+            hashlib.sha256
+        ).hexdigest()
+
+        # Armar el payload
+        payload = {
+            "apiKey": api_key,
+            "token": token,
+            "s": firma
+        }
+
+        # Hacer la consulta a Flow
+        response = requests.post(url_estado, data=payload)
+        datos = response.json()
+
+        # Validar si el pago fue exitoso (status = 1)
+        if datos.get("status") == 1:
+            print("✅ Pago confirmado por Flow")
+
+            # Generar y guardar nuevo código
+            nuevo_codigo = generar_codigo_unico()
+            codigo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
+            db.session.add(codigo)
+            db.session.commit()
+
+            session["codigo_generado"] = nuevo_codigo
+
+
+            print("🔐 Código generado:", nuevo_codigo)
+
+
+            # Aquí puedes generar el código de activación si quieres (paso 4)
+
+            return "OK", 200  # Flow espera este texto exacto
+        else:
+            print("⚠️ Pago no confirmado. Estado:", datos.get("status"))
+            return "NO_OK", 400
 
 
 
