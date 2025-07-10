@@ -113,37 +113,36 @@ def logout():
 
 # === PÁGINA PRINCIPAL ===
 @app.route("/", methods=["GET", "POST"])
-def index():
-    if "usuario_id" not in session:
-        return redirect(url_for("login"))
+def inicio():
+    if "usuario_id" in session:
+        usuario = Usuario.query.get(session["usuario_id"])
+        if usuario and usuario.cuenta_activada:
+            # Ya autenticado y activado → mostrar app
+            resultado = None
+            sugerencias = []
+            paises = list(ligas.keys())
 
-    # Verificar si el usuario tiene la cuenta activada
-    usuario = Usuario.query.get(session["usuario_id"])
-    if not usuario or not usuario.cuenta_activada:
-        return redirect(url_for("activar"))
+            if request.method == "POST":
+                pais = request.form["pais"]
+                liga = request.form["liga"]
+                equipo_local = request.form["equipo_local"]
+                equipo_visita = request.form["equipo_visita"]
 
-    resultado = None
-    sugerencias = []
-    paises = list(ligas.keys())
+                archivo_excel = os.path.join(RUTA_LIGAS, ligas[pais][liga])
+                resultado = predecir_partido(archivo_excel, equipo_local, equipo_visita)
 
-    if request.method == "POST":
-        pais = request.form["pais"]
-        liga = request.form["liga"]
-        equipo_local = request.form["equipo_local"]
-        equipo_visita = request.form["equipo_visita"]
+                if resultado:
+                    sugerencias = generar_sugerencias(
+                        resultado["Goles Totales"],
+                        resultado["Corners"],
+                        resultado["Tarjetas Promedio"],
+                        resultado["Rojas"]
+                    )
 
-        archivo_excel = os.path.join(RUTA_LIGAS, ligas[pais][liga])
-        resultado = predecir_partido(archivo_excel, equipo_local, equipo_visita)
+            return render_template("index.html", paises=paises, resultado=resultado, sugerencias=sugerencias)
 
-        if resultado:
-            sugerencias = generar_sugerencias(
-                resultado["Goles Totales"],
-                resultado["Corners"],
-                resultado["Tarjetas Promedio"],
-                resultado["Rojas"]
-            )
-
-    return render_template("index.html", paises=paises, resultado=resultado, sugerencias=sugerencias)
+    # Si no está autenticado → mostrar login
+    return redirect(url_for("login"))
 
 
 # === API: Obtener ligas por país ===
@@ -284,6 +283,27 @@ def activar():
             mensaje = "Código inválido o ya usado."
 
     return render_template("activar.html", mensaje=mensaje)
+
+import random
+import string
+
+def generar_codigo_unico():
+    while True:
+        codigo = "-".join(
+            "".join(random.choices(string.digits, k=4)) for _ in range(3)
+        )
+        # Verifica que no exista en la base de datos
+        if not CodigoAcceso.query.filter_by(codigo=codigo).first():
+            return codigo
+
+@app.route("/retorno")
+def retorno_pago():
+    # Aquí podrías validar que el pago realmente fue exitoso, si Flow lo permite
+    nuevo_codigo = generar_codigo_unico()
+    nuevo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
+    db.session.add(nuevo)
+    db.session.commit()
+    return render_template("codigo_entregado.html", codigo=nuevo_codigo)
 
 
 
