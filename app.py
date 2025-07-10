@@ -242,6 +242,22 @@ def crear_orden():
 
         # Agregar firma como "s"
         payload["s"] = firma
+        
+                # DEBUG: Verificar contenido firmado
+        print("===== DATOS PARA DEBUG FLOW =====")
+        for campo in orden_firma:
+            print(f"{campo} = '{payload[campo]}'")
+
+        print("\nString firmado:")
+        print(cadena)
+
+        print("\nFirma generada:")
+        print(firma)
+
+        print("\nPayload enviado:")
+        print(payload)
+        print("=================================\n")
+
 
         # Enviar POST a Flow
         response = requests.post(FLOW_CREATE_URL, data=payload)
