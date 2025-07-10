@@ -192,7 +192,7 @@ import requests
 def crear_orden():
     try:
         email = "contacto.rockdata@gmail.com"
-        monto = 5000
+        monto = "5000"
         order_id = 'ORD' + str(int.from_bytes(os.urandom(4), 'big'))
 
         payload = {
@@ -202,8 +202,7 @@ def crear_orden():
             "amount": str(monto),
             "currency": "CLP",
             "email": email,
-            "urlConfirmation": "https://rockdata.onrender.com/confirmacion",
-            "urlCallback": "https://rockdata.onrender.com/confirmacion",
+            "urlConfirmation": "https://rockdata.onrender.com/confirmacion",            
             "urlReturn": "https://rockdata.onrender.com/post_pago",
             "confirmationMethod": "1"
         }
@@ -215,8 +214,7 @@ def crear_orden():
             "confirmationMethod",
             "currency",
             "email",
-            "subject",
-            "urlCallback",
+            "subject",            
             "urlConfirmation",
             "urlReturn"
         ]
