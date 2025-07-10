@@ -8,34 +8,69 @@ from rockongo_core import predecir_partido, generar_sugerencias
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///usuarios.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
-app.secret_key = "Racg@1981"  # clave de acceso
-app.permanent_session_lifetime = timedelta(days=7)
-# Crear la base de datos si no existe
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    contrasena_hash = db.Column(db.String(200), nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    codigo_unico = db.Column(db.String(20), unique=True, nullable=True)
+    cuenta_activada = db.Column(db.Boolean, default=False)
 
     def set_password(self, password):
-        self.contrasena_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.contrasena_hash, password)
+        return check_password_hash(self.password_hash, password)
+
 class CodigoAcceso(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     codigo = db.Column(db.String(100), unique=True, nullable=False)
     usado = db.Column(db.Boolean, default=False)
 
+app.secret_key = "Racg@1981"  # clave de acceso
+app.permanent_session_lifetime = timedelta(days=7)
 
 with app.app_context():
     db.create_all()
+
+with app.app_context():
+    db.create_all()
+
+# Ruta de registro
+@app.route("/registro", methods=["GET", "POST"])
+def registro():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+        codigo_ingresado = request.form.get("codigo_acceso")
+
+        # Verifica si el email ya está registrado
+        if Usuario.query.filter_by(email=email).first():
+            return render_template("registro.html", error="El correo ya está registrado.")
+
+        # Verifica si el código es válido y no usado
+        codigo = CodigoAcceso.query.filter_by(codigo=codigo_ingresado, usado=False).first()
+        if not codigo:
+            return render_template("registro.html", error="Código de acceso inválido o ya utilizado.")
+
+        # Crear el usuario
+        nuevo_usuario = Usuario(email=email, cuenta_activada=True, codigo_unico=codigo_ingresado)
+        nuevo_usuario.set_password(password)
+        db.session.add(nuevo_usuario)
+
+        # Marcar el código como usado
+        codigo.usado = True
+        db.session.commit()
+
+        return redirect(url_for("login"))  # Redirige al login
+
+    return render_template("registro.html")
+
+
 RUTA_LIGAS = os.path.join(os.path.dirname(__file__), "Ligas")
 ligas = {
     "Chile": {
@@ -117,8 +152,13 @@ def logout():
 # === PÁGINA PRINCIPAL ===
 @app.route("/", methods=["GET", "POST"])
 def index():
-    if not session.get("autenticado"):
+    if "usuario_id" not in session:
         return redirect(url_for("login"))
+
+    # Verificar si el usuario tiene la cuenta activada
+    usuario = Usuario.query.get(session["usuario_id"])
+    if not usuario or not usuario.cuenta_activada:
+        return redirect(url_for("activar"))
 
     resultado = None
     sugerencias = []
@@ -140,7 +180,6 @@ def index():
                 resultado["Tarjetas Promedio"],
                 resultado["Rojas"]
             )
-
 
     return render_template("index.html", paises=paises, resultado=resultado, sugerencias=sugerencias)
 
@@ -248,11 +287,67 @@ def crear_orden():
 if __name__ == '__main__':
     app.run(debug=True)
 
+@app.route("/registro", methods=["GET", "POST"])
+def registro():
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+
+        # Verifica si el correo ya existe
+        if Usuario.query.filter_by(email=email).first():
+            return "⚠️ Ya existe un usuario con ese email"
+
+        # Crea nuevo usuario
+        nuevo = Usuario(email=email)
+        nuevo.set_password(password)
+        db.session.add(nuevo)
+        db.session.commit()
+
+        return "✅ Registro exitoso. Pronto recibirás tu código de activación."
+
+    return render_template("registro.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+
+        usuario = Usuario.query.filter_by(email=email).first()
+        if usuario and usuario.check_password(password):
+            if not usuario.cuenta_activada:
+                return render_template("login.html", error="Cuenta no activada. Ingresa tu código.")
+            session["usuario_id"] = usuario.id
+            return redirect(url_for("home"))
+        else:
+            return render_template("login.html", error="Correo o contraseña incorrectos.")
+    return render_template("login.html")
+
+@app.route("/activar", methods=["GET", "POST"])
+def activar():
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+
+    mensaje = None
+
+    if request.method == "POST":
+        codigo_ingresado = request.form["codigo"].strip()
+        codigo = CodigoAcceso.query.filter_by(codigo=codigo_ingresado, usado=False).first()
+        usuario = Usuario.query.get(session["usuario_id"])
+
+        if codigo and usuario:
+            usuario.cuenta_activada = True
+            codigo.usado = True
+            db.session.commit()
+            mensaje = "Cuenta activada con éxito. Ya puedes usar RockData."
+        else:
+            mensaje = "Código inválido o ya usado."
+
+    return render_template("activar.html", mensaje=mensaje)
 
 
-    
 
-# Despliegue forzado para Render - 9 julio
+
 
 
 
