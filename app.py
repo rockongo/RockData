@@ -263,26 +263,6 @@ def crear_orden():
 if __name__ == '__main__':
     app.run(debug=True)
 
-@app.route("/registro", methods=["GET", "POST"])
-def registro():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
-
-        # Verifica si el correo ya existe
-        if Usuario.query.filter_by(email=email).first():
-            return "⚠️ Ya existe un usuario con ese email"
-
-        # Crea nuevo usuario
-        nuevo = Usuario(email=email)
-        nuevo.set_password(password)
-        db.session.add(nuevo)
-        db.session.commit()
-
-        return "✅ Registro exitoso. Pronto recibirás tu código de activación."
-
-    return render_template("registro.html")
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
