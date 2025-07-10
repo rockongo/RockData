@@ -184,6 +184,8 @@ FLOW_API_KEY = '305FEDAC-E69B-4D0E-A71C-9A28A3320L4F'
 FLOW_SECRET_KEY = 'b515dd6df6252d41ccd2de5e7793d154d6c30957'
 FLOW_CREATE_URL = 'https://www.flow.cl/api/payment/create'
 
+import hashlib
+
 @app.route('/crear_orden', methods=['POST'])
 def crear_orden():
     try:
@@ -198,38 +200,38 @@ def crear_orden():
             "amount": str(monto),
             "currency": "CLP",
             "email": email,
-            "urlReturn": "https://rockdata.onrender.com/post_pago",
             "urlConfirmation": "https://rockdata.onrender.com/confirmacion",
-            "urlCallback": "https://rockdata.onrender.com/confirmacion",
-            "confirmationMethod": "1"
+            "urlReturn": "https://rockdata.onrender.com/post_pago"
         }
 
-        orden_firma = [
-            "amount",
+        # Campo de firma requerido (el orden es crucial)
+        campos_firma = [
             "apiKey",
             "commerceOrder",
-            "confirmationMethod",
-            "currency",
-            "email",
             "subject",
-            "urlCallback",
+            "currency",
+            "amount",
+            "email",
             "urlConfirmation",
             "urlReturn"
         ]
 
-        cadena = "&".join(f"{campo}={payload[campo]}" for campo in orden_firma)
-        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
+        cadena = "&".join(f"{campo}={payload[campo]}" for campo in campos_firma)
+        firma = hashlib.sha256((cadena + FLOW_SECRET_KEY).encode('utf-8')).hexdigest()
         payload["s"] = firma
 
-        response = requests.post(FLOW_CREATE_URL, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            return redirect(data["url"])
+        # Enviar solicitud a Flow
+        response = requests.post("https://www.flow.cl/api/payment/create", data=payload)
+        resultado = response.json()
+
+        if "url" in resultado:
+            return redirect(resultado["url"])
         else:
-            return "Error al crear la orden", 500
+            return f"Error al crear orden: {resultado}"
 
     except Exception as e:
-        return f"Error interno: {str(e)}", 500
+        return f"Error inesperado: {str(e)}"
+
 
 
     except Exception as e:
