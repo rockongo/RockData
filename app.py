@@ -202,7 +202,7 @@ def crear_orden():
         payload = {
             "apiKey": FLOW_API_KEY,
             "commerceOrder": order_id,
-            "subject": "Acceso mensual a RockData",
+            "subject": subject,
             "amount": monto,
             "currency": "CLP",
             "email": email,
