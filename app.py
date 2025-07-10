@@ -260,7 +260,9 @@ def crear_orden():
 
 
         # Enviar POST a Flow
-        response = requests.post(FLOW_CREATE_URL, data=payload)
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        response = requests.post(FLOW_CREATE_URL, data=payload, headers=headers)
+
         resultado = response.json()
 
         if "url" in resultado:
