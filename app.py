@@ -101,21 +101,7 @@ ligas = {
 
 
 # === RUTA: LOGIN ===
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
 
-        usuario = Usuario.query.filter_by(email=email).first()
-        if usuario and usuario.check_password(password):
-            session["autenticado"] = True
-            session["usuario_email"] = usuario.email
-            return redirect(url_for("index"))
-        else:
-            return render_template("login.html", error="Credenciales incorrectas")
-
-    return render_template("login.html")
 
 # === RUTA: LOGOUT ===
 @app.route("/logout")
