@@ -3,6 +3,7 @@ from datetime import timedelta
 import pandas as pd
 import os
 import json
+import hmac
 from rockongo_core import predecir_partido, generar_sugerencias
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
