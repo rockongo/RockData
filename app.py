@@ -201,7 +201,7 @@ def crear_orden():
 
         email = "contacto.rockdata@gmail.com"
         monto = "5000"
-        subject = "Acceso-mensual-RockData"
+        subject = "RockData"
         order_id = 'ORD' + str(int.from_bytes(os.urandom(4), 'big'))
 
         # Payload base
