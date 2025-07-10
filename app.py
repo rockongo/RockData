@@ -225,7 +225,7 @@ def crear_orden():
 
         print("✅ Payload con firma:", payload)
 
-        response = requests.post(FLOW_CREATE_URL, json=payload)
+        response = requests.post(FLOW_CREATE_URL, data=payload)
         print("📥 Respuesta Flow:", response.text)
 
         if response.status_code == 200:
