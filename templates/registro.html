@@ -9,6 +9,18 @@
 <div class="container mt-5">
     <div class="card p-4 shadow">
         <h2 class="mb-4 text-center">Crea tu cuenta en RockData</h2>
+
+        <!-- Botón de pago separado -->
+        <div class="mb-4 text-center">
+            <form action="/crear_orden" method="POST">
+                <button type="submit" class="btn btn-success btn-lg">
+                    💳 Pagar ahora para obtener tu código de acceso
+                </button>
+            </form>
+            <p class="mt-2 text-muted">Después de pagar, recibirás un código único que te permitirá completar el registro.</p>
+        </div>
+
+        <!-- Formulario de registro -->
         <form method="POST">
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre completo</label>
@@ -26,8 +38,9 @@
                 <label for="codigo_acceso" class="form-label">Código de acceso</label>
                 <input type="text" class="form-control" id="codigo_acceso" name="codigo_acceso" required>
             </div>
-            <button type="submit" class="btn btn-success w-100">Registrarse</button>
+            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
         </form>
+
         <div class="mt-3 text-center">
             <a href="/login">¿Ya tienes cuenta? Inicia sesión</a>
         </div>
