@@ -184,20 +184,14 @@ FLOW_SECRET_KEY = 'b515dd6df6252d41ccd2de5e7793d154d6c30957'
 FLOW_CREATE_URL = 'https://www.flow.cl/api/payment/create'
 
 @app.route('/crear_orden', methods=['POST'])
-def crear_orden():
+def crear_orden():	
     try:
-        data = request.get_json()
-        print("📨 Recibido JSON:", data)
+        # Email y monto fijo
+        email = "contacto.rockdata@gmail.com"
+        monto = 5000
 
-        if not data or 'email' not in data:
-            print("❌ JSON inválido o faltan campos obligatorios.")
-            return jsonify({'error': 'Falta el email o JSON malformado'}), 400
-
-        email = data.get('email')
-        monto = data.get('monto', 1990)
-
-
-        print("📨 Recibido JSON:", data)
+        print("📨 Email usado:", email)
+        print("💰 Monto:", monto)
 
         order_id = 'ORD' + str(int.from_bytes(os.urandom(4), 'big'))
         payload = {
