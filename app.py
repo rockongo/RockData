@@ -223,7 +223,7 @@ def crear_orden():
 
         cadena = "&".join(f"{campo}={payload[campo]}" for campo in orden_firma)
         firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
-        payload["signature"] = firma
+        payload["s"] = firma
 
         # Enviar solicitud
         response = requests.post(FLOW_CREATE_URL, data=payload)
