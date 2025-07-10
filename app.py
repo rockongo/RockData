@@ -176,17 +176,20 @@ def get_equipos():
     except Exception as e:
         print("❌ ERROR leyendo Excel:", e)         # <--- AGREGAR ESTO
         return jsonify([])
+
+
 # === RUTA: CREAR ORDEN DE PAGO FLOW ===
+
+
+import os
 import requests
-import hashlib
-
-FLOW_API_KEY = '305FEDAC-E69B-4D0E-A71C-9A28A3320L4F'
-FLOW_SECRET_KEY = 'b515dd6df6252d41ccd2de5e7793d154d6c30957'
-FLOW_CREATE_URL = 'https://www.flow.cl/api/payment/create'
-
 import hashlib
 import hmac
-import requests
+from flask import redirect, request
+
+FLOW_API_KEY = '305FEDAC-E69B-4D0E-A71C-9A28A3320L4F'
+FLOW_SECRET_KEY = 'b515dd6df625d41ccd2de5e7793d154d6c30957'
+FLOW_CREATE_URL = 'https://www.flow.cl/api/payment/create'
 
 @app.route('/crear_orden', methods=['POST'])
 def crear_orden():
@@ -199,14 +202,15 @@ def crear_orden():
             "apiKey": FLOW_API_KEY,
             "commerceOrder": order_id,
             "subject": "Acceso mensual a RockData",
-            "amount": str(monto),
+            "amount": monto,
             "currency": "CLP",
             "email": email,
-            "urlConfirmation": "https://rockdata.onrender.com/confirmacion",            
+            "urlConfirmation": "https://rockdata.onrender.com/confirmacion",
             "urlReturn": "https://rockdata.onrender.com/post_pago",
             "confirmationMethod": "1"
         }
 
+        # Orden exacto que requiere Flow
         orden_firma = [
             "amount",
             "apiKey",
@@ -214,27 +218,34 @@ def crear_orden():
             "confirmationMethod",
             "currency",
             "email",
-            "subject",            
+            "subject",
             "urlConfirmation",
             "urlReturn"
         ]
 
+        # Crear la cadena de firma
         cadena = "&".join(f"{campo}={payload[campo]}" for campo in orden_firma)
-        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
-        payload["s"] = firma
 
-        # Enviar solicitud
+        # Crear firma HMAC-SHA256
+        firma = hmac.new(
+            FLOW_SECRET_KEY.encode('utf-8'),
+            cadena.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
+
+        payload["s"] = firma  # NO usar "signature"
+
+        # Enviar solicitud a Flow
         response = requests.post(FLOW_CREATE_URL, data=payload)
         resultado = response.json()
 
         if "url" in resultado:
             return redirect(resultado["url"])
         else:
-            return f"Error al crear orden: {resultado}"
+            return f"❌ Error al crear orden: {resultado}"
 
     except Exception as e:
-        return f"Error inesperado: {str(e)}"
-
+        return f"⚠️ Error inesperado: {str(e)}"
   
 
 @app.route("/login", methods=["GET", "POST"])
