@@ -193,36 +193,43 @@ def crear_orden():
         print("📨 Email usado:", email)
         print("💰 Monto:", monto)
 
+        
         order_id = 'ORD' + str(int.from_bytes(os.urandom(4), 'big'))
         payload = {
-            'apiKey': FLOW_API_KEY,
-            'commerceOrder': order_id,
-            'subject': 'Acceso mensual a RockData',
-            'amount': str(monto),
-            'currency': 'CLP',
-            'email': email,
-            'urlReturn': 'https://rockdata.onrender.com/retorno',
-            'urlConfirmation': 'https://rockdata.onrender.com/confirmacion',
-            'urlCallback': 'https://rockdata.onrender.com/confirmacion',
-            'confirmationMethod': "1",            
+            "apiKey": FLOW_API_KEY,
+            "commerceOrder": order_id,
+            "subject": "Acceso mensual a RockData",
+            "amount": str(monto),
+            "currency": "CLP",
+            "email": email,
+            "urlReturn": "https://rockdata.onrender.com/retorno",
+            "urlConfirmation": "https://rockdata.onrender.com/confirmacion",
+            "urlCallback": "https://rockdata.onrender.com/confirmacion",
+            "confirmationMethod": "1"
         }
 
         print("📦 Payload antes de firma:", payload)
 
-        ordered_keys = [
-            'amount', 'apiKey', 'commerceOrder', 'confirmationMethod',
-            'currency', 'email', 'subject', 'urlCallback', 'urlConfirmation', 'urlReturn'
+        orden_firma = [
+            "amount",
+            "apiKey",
+            "commerceOrder",
+            "confirmationMethod",
+            "currency",
+            "email",
+            "subject",
+            "urlCallback",
+            "urlConfirmation",
+            "urlReturn"
         ]
 
-        sorted_items = [(k, payload[k]) for k in ordered_keys]
+        cadena = "&".join(f"{campo}={payload[campo]}" for campo in orden_firma)
+        print("🔑 Cadena para firmar:", cadena)
 
-        concatenated = '&'.join(f"{k}={v}" for k, v in sorted_items)
+        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
+        payload["s"] = firma
 
-        print("🔑 Cadena para firmar:", concatenated)
-
-        signature = hashlib.sha256((concatenated + FLOW_SECRET_KEY).encode('utf-8')).hexdigest()
-        payload['s'] = signature
-
+        
         print("✅ Payload con firma:", payload)
 
         response = requests.post(FLOW_CREATE_URL, data=payload)
