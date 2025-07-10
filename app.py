@@ -185,17 +185,12 @@ FLOW_SECRET_KEY = 'b515dd6df6252d41ccd2de5e7793d154d6c30957'
 FLOW_CREATE_URL = 'https://www.flow.cl/api/payment/create'
 
 @app.route('/crear_orden', methods=['POST'])
-def crear_orden():	
+def crear_orden():
     try:
-        # Email y monto fijo
         email = "contacto.rockdata@gmail.com"
         monto = 5000
-
-        print("📨 Email usado:", email)
-        print("💰 Monto:", monto)
-
-        
         order_id = 'ORD' + str(int.from_bytes(os.urandom(4), 'big'))
+
         payload = {
             "apiKey": FLOW_API_KEY,
             "commerceOrder": order_id,
@@ -203,13 +198,11 @@ def crear_orden():
             "amount": str(monto),
             "currency": "CLP",
             "email": email,
-            "urlReturn": "https://rockdata.onrender.com/retorno",
+            "urlReturn": "https://rockdata.onrender.com/post_pago",
             "urlConfirmation": "https://rockdata.onrender.com/confirmacion",
             "urlCallback": "https://rockdata.onrender.com/confirmacion",
             "confirmationMethod": "1"
         }
-
-        print("📦 Payload antes de firma:", payload)
 
         orden_firma = [
             "amount",
@@ -225,21 +218,19 @@ def crear_orden():
         ]
 
         cadena = "&".join(f"{campo}={payload[campo]}" for campo in orden_firma)
-        print("🔑 Cadena para firmar:", cadena)
-
         firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
         payload["s"] = firma
 
-        
-        print("✅ Payload con firma:", payload)
-
         response = requests.post(FLOW_CREATE_URL, data=payload)
-        print("📥 Respuesta Flow:", response.text)
-
         if response.status_code == 200:
-            return jsonify(response.json())
+            data = response.json()
+            return redirect(data["url"])
         else:
-            return jsonify({'error': 'Error al crear orden', 'detalle': response.text}), 500
+            return "Error al crear la orden", 500
+
+    except Exception as e:
+        return f"Error interno: {str(e)}", 500
+
 
     except Exception as e:
         print("❌ Excepción general:", str(e))
@@ -283,7 +274,7 @@ def activar():
             mensaje = "Código inválido o ya usado."
 
     return render_template("activar.html", mensaje=mensaje)
-
+	
 import random
 import string
 
