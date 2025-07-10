@@ -98,31 +98,7 @@ ligas = {
 }
 
 # === RUTA: REGISTRO ===
-@app.route("/registro", methods=["GET", "POST"])
-def registro():
-    if request.method == "POST":
-        nombre = request.form["nombre"]
-        email = request.form["email"]
-        password = request.form["password"]
-        codigo_acceso = request.form["codigo_acceso"]
 
-        # Clave de acceso secreta para crear cuentas (modifícala si lo deseas)
-        CLAVE_REGISTRO = "Rock2025"
-
-        if codigo_acceso != CLAVE_REGISTRO:
-            return "Código de acceso inválido. No estás autorizado a registrarte."
-
-        if Usuario.query.filter_by(email=email).first():
-            return "Ese correo ya está registrado."
-
-        nuevo_usuario = Usuario(nombre=nombre, email=email)
-        nuevo_usuario.set_password(password)
-        db.session.add(nuevo_usuario)
-        db.session.commit()
-
-        return redirect(url_for("login"))
-
-    return render_template("registro.html")
 
 # === RUTA: LOGIN ===
 @app.route("/login", methods=["GET", "POST"])
