@@ -185,6 +185,8 @@ FLOW_SECRET_KEY = 'b515dd6df6252d41ccd2de5e7793d154d6c30957'
 FLOW_CREATE_URL = 'https://www.flow.cl/api/payment/create'
 
 import hashlib
+import hmac
+import requests
 
 @app.route('/crear_orden', methods=['POST'])
 def crear_orden():
@@ -201,27 +203,30 @@ def crear_orden():
             "currency": "CLP",
             "email": email,
             "urlConfirmation": "https://rockdata.onrender.com/confirmacion",
-            "urlReturn": "https://rockdata.onrender.com/post_pago"
+            "urlCallback": "https://rockdata.onrender.com/confirmacion",
+            "urlReturn": "https://rockdata.onrender.com/post_pago",
+            "confirmationMethod": "1"
         }
 
-        # Campo de firma requerido (el orden es crucial)
-        campos_firma = [
+        orden_firma = [
+            "amount",
             "apiKey",
             "commerceOrder",
-            "subject",
+            "confirmationMethod",
             "currency",
-            "amount",
             "email",
+            "subject",
+            "urlCallback",
             "urlConfirmation",
             "urlReturn"
         ]
 
-        cadena = "&".join(f"{campo}={payload[campo]}" for campo in campos_firma)
-        firma = hashlib.sha256((cadena + FLOW_SECRET_KEY).encode('utf-8')).hexdigest()
-        payload["s"] = firma
+        cadena = "&".join(f"{campo}={payload[campo]}" for campo in orden_firma)
+        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
+        payload["signature"] = firma
 
-        # Enviar solicitud a Flow
-        response = requests.post("https://www.flow.cl/api/payment/create", data=payload)
+        # Enviar solicitud
+        response = requests.post(FLOW_CREATE_URL, data=payload)
         resultado = response.json()
 
         if "url" in resultado:
@@ -232,11 +237,7 @@ def crear_orden():
     except Exception as e:
         return f"Error inesperado: {str(e)}"
 
-
-
-    except Exception as e:
-        print("❌ Excepción general:", str(e))
-        return jsonify({'error': 'Excepción interna', 'detalle': str(e)}), 500
+  
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
