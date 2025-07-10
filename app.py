@@ -194,11 +194,17 @@ FLOW_CREATE_URL = 'https://www.flow.cl/api/payment/create'
 @app.route('/crear_orden', methods=['POST'])
 def crear_orden():
     try:
+        import os
+        import requests
+        import hmac
+        import hashlib
+
         email = "contacto.rockdata@gmail.com"
         monto = "5000"
-        order_id = 'ORD' + str(int.from_bytes(os.urandom(4), 'big'))
         subject = "Acceso mensual RockData"
+        order_id = 'ORD' + str(int.from_bytes(os.urandom(4), 'big'))
 
+        # Payload base
         payload = {
             "apiKey": FLOW_API_KEY,
             "commerceOrder": order_id,
@@ -211,7 +217,7 @@ def crear_orden():
             "confirmationMethod": "1"
         }
 
-        # Orden exacto que requiere Flow
+        # Orden estricto para firma (según docs oficiales)
         orden_firma = [
             "amount",
             "apiKey",
@@ -224,19 +230,20 @@ def crear_orden():
             "urlReturn"
         ]
 
-        # Crear la cadena de firma
+        # Generar cadena de firma sin errores
         cadena = "&".join(f"{campo}={payload[campo]}" for campo in orden_firma)
 
-        # Crear firma HMAC-SHA256
+        # Crear firma
         firma = hmac.new(
-            FLOW_SECRET_KEY.encode('utf-8'),
-            cadena.encode('utf-8'),
+            FLOW_SECRET_KEY.encode("utf-8"),
+            cadena.encode("utf-8"),
             hashlib.sha256
         ).hexdigest()
 
-        payload["s"] = firma  # NO usar "signature"
+        # Agregar firma como "s"
+        payload["s"] = firma
 
-        # Enviar solicitud a Flow
+        # Enviar POST a Flow
         response = requests.post(FLOW_CREATE_URL, data=payload)
         resultado = response.json()
 
@@ -247,6 +254,7 @@ def crear_orden():
 
     except Exception as e:
         return f"⚠️ Error inesperado: {str(e)}"
+
   
 
 @app.route("/login", methods=["GET", "POST"])
