@@ -188,7 +188,7 @@ import hmac
 from flask import redirect, request
 
 FLOW_API_KEY = '305FEDAC-E69B-4D0E-A71C-9A28A3320L4F'
-FLOW_SECRET_KEY = 'b515dd6df625d41ccd2de5e7793d154d6c30957'
+FLOW_SECRET_KEY = 'b515dd6df6252d41ccd2de5e7793d154d6c30957'
 FLOW_CREATE_URL = 'https://www.flow.cl/api/payment/create'
 
 @app.route('/crear_orden', methods=['POST'])
