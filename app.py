@@ -246,9 +246,6 @@ def crear_orden():
         print("❌ Excepción general:", str(e))
         return jsonify({'error': 'Excepción interna', 'detalle': str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -260,9 +257,10 @@ def login():
             if not usuario.cuenta_activada:
                 return render_template("login.html", error="Cuenta no activada. Ingresa tu código.")
             session["usuario_id"] = usuario.id
-            return redirect(url_for("home"))
+            return redirect(url_for("index"))
         else:
             return render_template("login.html", error="Correo o contraseña incorrectos.")
+    
     return render_template("login.html")
 
 @app.route("/activar", methods=["GET", "POST"])
@@ -287,6 +285,10 @@ def activar():
 
     return render_template("activar.html", mensaje=mensaje)
 
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 
 
