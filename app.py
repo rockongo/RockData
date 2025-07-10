@@ -326,7 +326,7 @@ def confirmacion_pago():
         url_estado = "https://www.flow.cl/api/payment/getStatus"
         api_key = FLOW_API_KEY
 
-        # Crear la firma
+        # Crear la firma	
         cadena = f"apiKey={api_key}&token={token}"
         firma = hmac.new(
             FLOW_SECRET_KEY.encode("utf-8"),
@@ -361,13 +361,14 @@ def confirmacion_pago():
             print("🔐 Código generado:", nuevo_codigo)
 
 
-            # Aquí puedes generar el código de activación si quieres (paso 4)
-
             return "OK", 200  # Flow espera este texto exacto
         else:
             print("⚠️ Pago no confirmado. Estado:", datos.get("status"))
             return "NO_OK", 400
 
+    except Exception as e:
+        print("❌ Error en confirmación:", str(e))
+        return "ERROR", 500
 
 
 if __name__ == "__main__":
