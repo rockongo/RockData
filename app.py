@@ -161,12 +161,30 @@ def inicio():
                 resultado = predecir_partido(archivo_excel, equipo_local, equipo_visita)
 
                 if resultado:
-                    sugerencias = generar_sugerencias(
-                        resultado["Goles Totales"],
-                        resultado["Corners"],
-                        resultado["Tarjetas Promedio"],
-                        resultado["Rojas"]
-                    )
+                    resultado = {
+                        "Local": {
+                            "Goles": resultado["Goles Local"],
+                            "Goles 1T": resultado["Goles 1T Local"],
+                            "Goles 2T": resultado["Goles 2T Local"],
+                            "Córners": resultado["Córners Local"],
+                            "Amarillas": resultado["Amarillas Local"],
+                            "Rojas": resultado["Rojas Local"],
+                        },
+                        "Visita": {
+                            "Goles": resultado["Goles Visita"],
+                            "Goles 1T": resultado["Goles 1T Visita"],
+                            "Goles 2T": resultado["Goles 2T Visita"],
+                            "Córners": resultado["Córners Visita"],
+                            "Amarillas": resultado["Amarillas Visita"],
+                            "Rojas": resultado["Rojas Visita"],
+                        },
+                        "Goles Totales": resultado["Goles Totales"],
+                        "Corners": resultado["Córners Local"] + resultado["Córners Visita"],
+                        "Tarjetas Promedio": (resultado["Amarillas Local"] + resultado["Amarillas Visita"]) / 2,
+                        "Rojas": resultado["Rojas Local"] + resultado["Rojas Visita"],
+                        "Pronóstico Final": resultado["Pronóstico Final"]
+                    }
+
 
             return render_template("rockdata_2.html",
                 resultado=resultado,
