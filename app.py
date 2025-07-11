@@ -292,6 +292,8 @@ def crear_orden():
         resultado = response.json()
 
         # Verificación del resultado
+        print("[FLOW DEBUG]", resultado)
+
         if "url" in resultado:
             return redirect(resultado["url"])
         else:
