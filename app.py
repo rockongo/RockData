@@ -148,6 +148,8 @@ def inicio():
             resultado = None
             sugerencias = []
             paises = list(ligas.keys())
+            equipo_local = None
+            equipo_visita = None
 
             if request.method == "POST":
                 pais = request.form["pais"]
@@ -172,9 +174,10 @@ def inicio():
                 paises=paises,
                 equipo_local=equipo_local,
                 equipo_visita=equipo_visita
-)
+            )
 
     return redirect(url_for("login"))
+
 
 # === API ===
 @app.route("/get_ligas", methods=["POST"])
