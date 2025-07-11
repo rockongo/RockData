@@ -67,26 +67,33 @@ def registro():
         email = request.form.get("email")
         password = request.form.get("password")
         nombre = request.form.get("nombre")  # aunque no lo uses, evita que cause errores
-
         codigo_ingresado = request.form.get("codigo_acceso")
 
+        print(f"[DEBUG] Email: {email}, Código ingresado: {codigo_ingresado}")
+
         if Usuario.query.filter_by(email=email).first():
+            print(f"[REGISTRO] Correo ya registrado: {email}")
             return render_template("registro.html", error="El correo ya está registrado.")
 
         codigo = CodigoAcceso.query.filter_by(codigo=codigo_ingresado, usado=0).first()
         if not codigo:
+            print(f"[REGISTRO] Código inválido o ya usado: {codigo_ingresado}")
             return render_template("registro.html", error="Código de acceso inválido o ya utilizado.")
+        else:
+            print(f"[REGISTRO] Código válido: {codigo_ingresado}")
 
         nuevo_usuario = Usuario(email=email, cuenta_activada=True, codigo_unico=codigo_ingresado)
         nuevo_usuario.set_password(password)
         db.session.add(nuevo_usuario)
 
+        print(f"[REGISTRO] Registrando usuario {email} con código {codigo_ingresado}")
         codigo.usado = True
         db.session.commit()
 
         return redirect(url_for("login"))
 
     return render_template("registro.html")
+
 
 # === RUTA: ACTIVAR ===
 @app.route("/activar", methods=["GET", "POST"])
