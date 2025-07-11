@@ -163,28 +163,28 @@ def inicio():
                 print("DEBUG RESULTADO ===>", resultado)
 
                 if resultado:
-                    resultado = {
+                    resultado_dict = {
                         "Local": {
-                            "Goles": resultado.get("Goles Local", 0),
-                            "Goles 1T": resultado.get("Goles 1T Local", 0),
-                            "Goles 2T": resultado.get("Goles 2T Local", 0),
-                            "Córners": resultado.get("Córners Local", 0),
-                            "Amarillas": resultado.get("Amarillas Local", 0),
-                            "Rojas": resultado.get("Rojas Local", 0),
+                            "Goles": round(resultado["Goles Totales"] / 2, 2),
+                            "Goles 1T": round(resultado["Goles 1T"] / 2, 2),
+                            "Goles 2T": round(resultado["Goles 2T"] / 2, 2),
+                            "Córners": round(resultado["Corners"] / 2, 2),
+                            "Amarillas": round(resultado["Tarjetas Promedio"], 2),
+                            "Rojas": round(resultado["Rojas"] / 2, 2),
                         },
                         "Visita": {
-                            "Goles": resultado.get("Goles Visita", 0),
-                            "Goles 1T": resultado.get("Goles 1T Visita", 0),
-                            "Goles 2T": resultado.get("Goles 2T Visita", 0),
-                            "Córners": resultado.get("Córners Visita", 0),
-                            "Amarillas": resultado.get("Amarillas Visita", 0),
-                            "Rojas": resultado.get("Rojas Visita", 0),
+                            "Goles": round(resultado["Goles Totales"] / 2, 2),
+                            "Goles 1T": round(resultado["Goles 1T"] / 2, 2),
+                            "Goles 2T": round(resultado["Goles 2T"] / 2, 2),
+                            "Córners": round(resultado["Corners"] / 2, 2),
+                            "Amarillas": round(resultado["Tarjetas Promedio"], 2),
+                            "Rojas": round(resultado["Rojas"] / 2, 2),
                         },
-                        "Goles Totales": resultado.get("Goles Totales", 0),
-                        "Corners": resultado.get("Córners Local", 0) + resultado.get("Córners Visita", 0),
-                        "Tarjetas Promedio": (resultado.get("Amarillas Local", 0) + resultado.get("Amarillas Visita", 0)) / 2,
-                        "Rojas": resultado.get("Rojas Local", 0) + resultado.get("Rojas Visita", 0),
-                        "Pronóstico Final": resultado.get("Pronóstico Final", "-")
+                        "Goles Totales": resultado["Goles Totales"],
+                        "Corners": resultado["Corners"],
+                        "Tarjetas Promedio": resultado["Tarjetas Promedio"],
+                        "Rojas": resultado["Rojas"],
+                        "Pronóstico Final": resultado["Pronóstico"]
                     }
 
                     sugerencias = generar_sugerencias(
@@ -195,14 +195,13 @@ def inicio():
                     )
 
                     return render_template("rockdata_2.html", 
-                        resultado=resultado,
+                        resultado=resultado_dict,
                         sugerencias=sugerencias,
                         paises=paises,
                         equipo_local=equipo_local,
                         equipo_visita=equipo_visita
                     )
 
-            # Si no hay resultado o no se ha hecho POST
             return render_template("index.html", 
                 resultado=None,
                 sugerencias=[],
@@ -212,6 +211,7 @@ def inicio():
             )
 
     return redirect(url_for("login"))
+
 
 
 # === API ===
