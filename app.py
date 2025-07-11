@@ -288,6 +288,7 @@ def crear_orden():
 
         # === ENVÍO A FLOW ===
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        print("[FLOW REQUEST DATA] Enviando a Flow:", payload)
         response = requests.post(FLOW_CREATE_URL, data=payload, headers=headers)
         resultado = response.json()
 
