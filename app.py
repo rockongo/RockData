@@ -67,7 +67,7 @@ def registro():
         email = request.form.get("email")
         password = request.form.get("password")
         nombre = request.form.get("nombre")  # aunque no lo uses, evita que cause errores
-        codigo_ingresado = request.form.get("codigo_acceso")
+        codigo_ingresado = request.form.get("codigo_acceso", "").strip()
 
         print(f"[DEBUG] Email: {email}, Código ingresado: {codigo_ingresado}")
 
