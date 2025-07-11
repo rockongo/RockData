@@ -66,6 +66,8 @@ def registro():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
+        nombre = request.form.get("nombre")  # aunque no lo uses, evita que cause errores
+
         codigo_ingresado = request.form.get("codigo_acceso")
 
         if Usuario.query.filter_by(email=email).first():
