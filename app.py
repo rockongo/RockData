@@ -397,6 +397,35 @@ def debug_codigos():
     else:
         return "❌ Código no encontrado en la base activa"
 
+# === ADMIN: Generar código manual protegido ===
+@app.route("/admin/crear_codigo", methods=["GET", "POST"])
+def admin_crear_codigo():
+    CLAVE_SECRETA = "rockadmin2025"
+
+    if request.method == "POST":
+        clave = request.form.get("clave")
+        if clave != CLAVE_SECRETA:
+            return "❌ Clave incorrecta", 403
+
+        # Generar nuevo código único
+        while True:
+            nuevo_codigo = "-".join("".join(random.choices(string.digits, k=4)) for _ in range(3))
+            if not CodigoAcceso.query.filter_by(codigo=nuevo_codigo).first():
+                break
+
+        nuevo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
+        db.session.add(nuevo)
+        db.session.commit()
+
+        return f"✅ Código generado: {nuevo_codigo}"
+
+    return """
+    <form method='POST'>
+        <input type='password' name='clave' placeholder='Clave admin' required>
+        <button type='submit'>Generar código</button>
+    </form>
+    """
+
 
 # === INIT DB ===
 with app.app_context():
