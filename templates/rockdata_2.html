@@ -73,7 +73,7 @@
 
   <!-- Logo -->
   <div class="text-center mb-2">
-    <img src="{{ url_for('static', filename='logo_rockdata.png') }}" width="120" class="mb-1">
+    <img src="{{ url_for('static', filename='logo_rockdata.png') }}" width="200" class="mb-1 d-block mx-auto">
     <p class="titulo-rockdata">No adivinamos. Calculamos.</p>
   </div>
 
@@ -89,8 +89,8 @@
       <div class="seccion">
         <h5 class="mb-3 text-primary">{{ equipo_local }}</h5>
         <div class="estadistica">⚽ Goles: {{ resultado['Local']['Goles'] }}</div>
-        <div class="estadistica">🕐 1T: {{ resultado['Local']['Goles 1T'] }}</div>
-        <div class="estadistica">⏱️ 2T: {{ resultado['Local']['Goles 2T'] }}</div>
+        <div class="estadistica">% ⚽ Goles 1T: {{ resultado['Local']['Goles 1T'] }}</div>
+        <div class="estadistica">% ⚽ Goles 2T: {{ resultado['Local']['Goles 2T'] }}</div>
         <div class="estadistica">🚩 Córners: {{ resultado['Local']['Córners'] }}</div>
         <div class="estadistica">🟨 Amarillas: {{ resultado['Local']['Amarillas'] }}</div>
         <div class="estadistica">🟥 Rojas: {{ resultado['Local']['Rojas'] }}</div>
@@ -102,8 +102,8 @@
       <div class="seccion">
         <h5 class="mb-3 text-danger">{{ equipo_visita }}</h5>
         <div class="estadistica">⚽ Goles: {{ resultado['Visita']['Goles'] }}</div>
-        <div class="estadistica">🕐 1T: {{ resultado['Visita']['Goles 1T'] }}</div>
-        <div class="estadistica">⏱️ 2T: {{ resultado['Visita']['Goles 2T'] }}</div>
+        <div class="estadistica">% ⚽ Goles 1T: {{ resultado['Visita']['Goles 1T'] }}</div>
+        <div class="estadistica">% ⚽ Goles 2T: {{ resultado['Visita']['Goles 2T'] }}</div>
         <div class="estadistica">🚩 Córners: {{ resultado['Visita']['Córners'] }}</div>
         <div class="estadistica">🟨 Amarillas: {{ resultado['Visita']['Amarillas'] }}</div>
         <div class="estadistica">🟥 Rojas: {{ resultado['Visita']['Rojas'] }}</div>
