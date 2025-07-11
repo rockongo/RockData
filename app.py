@@ -259,16 +259,17 @@ FLOW_SECRET_KEY = "b515dd6df6252d41ccd2de5e7793d154d6c30957"
 FLOW_CREATE_URL = "https://www.flow.cl/api/payment/create"
 
 from collections import OrderedDict
+from urllib.parse import urlencode
 
 @app.route("/crear_orden", methods=["POST"])
 def crear_orden():
     try:
         email = "contacto.rockdata@gmail.com"
-        monto = "5500"
+        monto = "5000"
         subject = "Acceso mensual a RockData (plan estándar)"
         order_id = "ORD" + str(int.from_bytes(os.urandom(4), "big"))
 
-        # Usar OrderedDict desde el principio
+        # === PARÁMETROS ORDENADOS ===
         payload = OrderedDict(sorted({
             "apiKey": FLOW_API_KEY,
             "commerceOrder": order_id,
@@ -281,20 +282,20 @@ def crear_orden():
             "confirmationMethod": "1"
         }.items()))
 
-        # Generar cadena firmada
+        # === FIRMA ===
         cadena = "".join(f"{k}{v}" for k, v in payload.items())
-        print("[FLOW CADENA PARA FIRMAR]", cadena)
-
         firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
         payload["s"] = firma
 
-        # Enviar exactamente la misma estructura ordenada
+        # === ENVÍO ===
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
-        print("[FLOW REQUEST DATA] Enviando a Flow:", payload)
-        response = requests.post(FLOW_CREATE_URL, data=payload, headers=headers)
-        resultado = response.json()
+        data_encoded = urlencode(payload)
 
-        print("[FLOW DEBUG]", resultado)
+        print("[FLOW DEBUG] Payload firmado:", data_encoded)
+
+        response = requests.post(FLOW_CREATE_URL, data=data_encoded, headers=headers)
+        resultado = response.json()
+        print("[FLOW DEBUG] Respuesta de Flow:", resultado)
 
         if "url" in resultado:
             return redirect(resultado["url"])
@@ -303,6 +304,7 @@ def crear_orden():
 
     except Exception as e:
         return f"⚠️ Error inesperado: {str(e)}"
+
 
 
 
