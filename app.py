@@ -294,6 +294,45 @@ def confirmacion_pago():
     except Exception as e:
         return "ERROR", 500
 
+@app.route("/recuperar_contrasena", methods=["GET", "POST"])
+def recuperar_contrasena():
+    mensaje = None
+
+    if request.method == "POST":
+        email = request.form.get("email")
+        usuario = Usuario.query.filter_by(email=email).first()
+
+        if usuario:
+            session["recuperar_id"] = usuario.id
+            return redirect(url_for("nueva_contrasena"))
+        else:
+            mensaje = "❌ Correo no encontrado. Verifica e intenta de nuevo."
+
+    return render_template("recuperar_contrasena.html", mensaje=mensaje)
+
+@app.route("/nueva_contrasena", methods=["GET", "POST"])
+def nueva_contrasena():
+    mensaje = None
+
+    if "recuperar_id" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        nueva = request.form.get("nueva")
+        repetir = request.form.get("repetir")
+
+        if nueva != repetir:
+            mensaje = "❌ Las contraseñas no coinciden."
+        else:
+            usuario = Usuario.query.get(session["recuperar_id"])
+            usuario.set_password(nueva)
+            db.session.commit()
+            session.pop("recuperar_id", None)
+            return redirect(url_for("login"))
+
+    return render_template("nueva_contrasena.html", mensaje=mensaje)
+
+
 # === INIT DB ===
 with app.app_context():
     db.create_all()
