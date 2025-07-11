@@ -389,6 +389,15 @@ def nueva_contrasena():
     return render_template("nueva_contrasena.html", mensaje=mensaje)
 
 
+@app.route("/debug_codigos")
+def debug_codigos():
+    codigo = CodigoAcceso.query.filter_by(codigo="1069-4074-7553").first()
+    if codigo:
+        return f"Código encontrado. Usado = {codigo.usado}"
+    else:
+        return "❌ Código no encontrado en la base activa"
+
+
 # === INIT DB ===
 with app.app_context():
     db.create_all()
