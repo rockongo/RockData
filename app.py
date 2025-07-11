@@ -160,29 +160,31 @@ def inicio():
                 archivo_excel = os.path.join(RUTA_LIGAS, ligas[pais][liga])
                 resultado = predecir_partido(archivo_excel, equipo_local, equipo_visita)
 
-                if resultado:
+                print("DEBUG RESULTADO ===>", resultado)
+
+                if resultado and "Goles Local" in resultado:
                     resultado = {
                         "Local": {
-                            "Goles": resultado["Goles Local"],
-                            "Goles 1T": resultado["Goles 1T Local"],
-                            "Goles 2T": resultado["Goles 2T Local"],
-                            "Córners": resultado["Córners Local"],
-                            "Amarillas": resultado["Amarillas Local"],
-                            "Rojas": resultado["Rojas Local"],
+                            "Goles": resultado.get("Goles Local", 0),
+                            "Goles 1T": resultado.get("Goles 1T Local", 0),
+                            "Goles 2T": resultado.get("Goles 2T Local", 0),
+                            "Córners": resultado.get("Córners Local", 0),
+                            "Amarillas": resultado.get("Amarillas Local", 0),
+                            "Rojas": resultado.get("Rojas Local", 0),
                         },
                         "Visita": {
-                            "Goles": resultado["Goles Visita"],
-                            "Goles 1T": resultado["Goles 1T Visita"],
-                            "Goles 2T": resultado["Goles 2T Visita"],
-                            "Córners": resultado["Córners Visita"],
-                            "Amarillas": resultado["Amarillas Visita"],
-                            "Rojas": resultado["Rojas Visita"],
+                            "Goles": resultado.get("Goles Visita", 0),
+                            "Goles 1T": resultado.get("Goles 1T Visita", 0),
+                            "Goles 2T": resultado.get("Goles 2T Visita", 0),
+                            "Córners": resultado.get("Córners Visita", 0),
+                            "Amarillas": resultado.get("Amarillas Visita", 0),
+                            "Rojas": resultado.get("Rojas Visita", 0),
                         },
-                        "Goles Totales": resultado["Goles Totales"],
-                        "Corners": resultado["Córners Local"] + resultado["Córners Visita"],
-                        "Tarjetas Promedio": (resultado["Amarillas Local"] + resultado["Amarillas Visita"]) / 2,
-                        "Rojas": resultado["Rojas Local"] + resultado["Rojas Visita"],
-                        "Pronóstico Final": resultado["Pronóstico Final"]
+                        "Goles Totales": resultado.get("Goles Totales", 0),
+                        "Corners": resultado.get("Córners Local", 0) + resultado.get("Córners Visita", 0),
+                        "Tarjetas Promedio": (resultado.get("Amarillas Local", 0) + resultado.get("Amarillas Visita", 0)) / 2,
+                        "Rojas": resultado.get("Rojas Local", 0) + resultado.get("Rojas Visita", 0),
+                        "Pronóstico Final": resultado.get("Pronóstico Final", "-")
                     }
 
                     sugerencias = generar_sugerencias(
@@ -210,7 +212,6 @@ def inicio():
             )
 
     return redirect(url_for("login"))
-
 
 
 # === API ===
