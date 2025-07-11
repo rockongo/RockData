@@ -265,37 +265,37 @@ from urllib.parse import urlencode
 def crear_orden():
     try:
         email = "contacto.rockdata@gmail.com"
-        monto = "5000"
+        monto = "5500"
         subject = "Acceso mensual a RockData (plan estándar)"
         order_id = "ORD" + str(int.from_bytes(os.urandom(4), "big"))
 
-        # === PARÁMETROS ORDENADOS ===
-        payload = OrderedDict(sorted({
+        # Parámetros originales
+        datos = {
+            "amount": monto,
             "apiKey": FLOW_API_KEY,
             "commerceOrder": order_id,
-            "subject": subject,
-            "amount": monto,
+            "confirmationMethod": "1",
             "currency": "CLP",
             "email": email,
+            "subject": subject,
             "urlConfirmation": "https://rockdata.onrender.com/confirmacion",
-            "urlReturn": "https://rockdata.onrender.com/post_pago",
-            "confirmationMethod": "1"
-        }.items()))
+            "urlReturn": "https://rockdata.onrender.com/post_pago"
+        }
 
-        # === FIRMA ===
-        cadena = "".join(f"{k}{v}" for k, v in payload.items())
-        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
-        payload["s"] = firma
+        # Ordenar alfabéticamente para la firma
+        datos_ordenados = dict(sorted(datos.items()))
+        cadena_firma = "".join(f"{k}{v}" for k, v in datos_ordenados.items())
 
-        # === ENVÍO ===
+        # Generar firma
+        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena_firma.encode(), hashlib.sha256).hexdigest()
+        datos["s"] = firma  # agregar firma
+
+        # Enviar a Flow
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
-        data_encoded = urlencode(payload)
+        response = requests.post(FLOW_CREATE_URL, data=datos, headers=headers)
 
-        print("[FLOW DEBUG] Payload firmado:", data_encoded)
-
-        response = requests.post(FLOW_CREATE_URL, data=data_encoded, headers=headers)
         resultado = response.json()
-        print("[FLOW DEBUG] Respuesta de Flow:", resultado)
+        print("[FLOW DEBUG RESPONSE]", resultado)
 
         if "url" in resultado:
             return redirect(resultado["url"])
@@ -304,6 +304,7 @@ def crear_orden():
 
     except Exception as e:
         return f"⚠️ Error inesperado: {str(e)}"
+
 
 
 
