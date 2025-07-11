@@ -1,18 +1,25 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 from datetime import timedelta
 import pandas as pd
 import os
 import json
 import hmac
-from rockongo_core import predecir_partido, generar_sugerencias
+import hashlib
+import random
+import string
+import requests
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from rockongo_core import predecir_partido, generar_sugerencias
 
 app = Flask(__name__)
+app.secret_key = "Racg@1981"
+app.permanent_session_lifetime = timedelta(days=7)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///usuarios.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
+# MODELOS
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -31,16 +38,27 @@ class CodigoAcceso(db.Model):
     codigo = db.Column(db.String(100), unique=True, nullable=False)
     usado = db.Column(db.Boolean, default=False)
 
-app.secret_key = "Racg@1981"  # clave de acceso
-app.permanent_session_lifetime = timedelta(days=7)
+# === RUTA: LOGIN ===
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
 
-with app.app_context():
-    db.create_all()
+        usuario = Usuario.query.filter_by(email=email).first()
 
-with app.app_context():
-    db.create_all()
+        if usuario and usuario.check_password(password):
+            if usuario.cuenta_activada:
+                session['usuario_id'] = usuario.id
+                return redirect(url_for('inicio'))
+            else:
+                flash('Tu cuenta aún no ha sido activada.', 'danger')
+        else:
+            flash('Correo o contraseña incorrectos.', 'danger')
 
-# Ruta de registro
+    return render_template('login.html')
+
+# === RUTA: REGISTRO ===
 @app.route("/registro", methods=["GET", "POST"])
 def registro():
     if request.method == "POST":
@@ -48,29 +66,54 @@ def registro():
         password = request.form.get("password")
         codigo_ingresado = request.form.get("codigo_acceso")
 
-        # Verifica si el email ya está registrado
         if Usuario.query.filter_by(email=email).first():
             return render_template("registro.html", error="El correo ya está registrado.")
 
-        # Verifica si el código es válido y no usado
         codigo = CodigoAcceso.query.filter_by(codigo=codigo_ingresado, usado=False).first()
         if not codigo:
             return render_template("registro.html", error="Código de acceso inválido o ya utilizado.")
 
-        # Crear el usuario
         nuevo_usuario = Usuario(email=email, cuenta_activada=True, codigo_unico=codigo_ingresado)
         nuevo_usuario.set_password(password)
         db.session.add(nuevo_usuario)
 
-        # Marcar el código como usado
         codigo.usado = True
         db.session.commit()
 
-        return redirect(url_for("login"))  # Redirige al login
+        return redirect(url_for("login"))
 
     return render_template("registro.html")
 
+# === RUTA: ACTIVAR ===
+@app.route("/activar", methods=["GET", "POST"])
+def activar():
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
 
+    mensaje = None
+
+    if request.method == "POST":
+        codigo_ingresado = request.form["codigo"].strip()
+        codigo = CodigoAcceso.query.filter_by(codigo=codigo_ingresado, usado=False).first()
+        usuario = Usuario.query.get(session["usuario_id"])
+
+        if codigo and usuario:
+            usuario.cuenta_activada = True
+            codigo.usado = True
+            db.session.commit()
+            mensaje = "Cuenta activada con éxito. Ya puedes usar RockData."
+        else:
+            mensaje = "Código inválido o ya usado."
+
+    return render_template("activar.html", mensaje=mensaje)
+
+# === RUTA: LOGOUT ===
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
+# === LÓGICA PRINCIPAL ===
 RUTA_LIGAS = os.path.join(os.path.dirname(__file__), "Ligas")
 ligas = {
     "Chile": {
@@ -97,27 +140,11 @@ ligas = {
     }
 }
 
-# === RUTA: REGISTRO ===
-
-
-# === RUTA: LOGIN ===
-
-
-# === RUTA: LOGOUT ===
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("login"))
-
-
-
-# === PÁGINA PRINCIPAL ===
 @app.route("/", methods=["GET", "POST"])
 def inicio():
     if "usuario_id" in session:
         usuario = Usuario.query.get(session["usuario_id"])
         if usuario and usuario.cuenta_activada:
-            # Ya autenticado y activado → mostrar app
             resultado = None
             sugerencias = []
             paises = list(ligas.keys())
@@ -141,11 +168,9 @@ def inicio():
 
             return render_template("index.html", paises=paises, resultado=resultado, sugerencias=sugerencias)
 
-    # Si no está autenticado → mostrar login
     return redirect(url_for("login"))
 
-
-# === API: Obtener ligas por país ===
+# === API ===
 @app.route("/get_ligas", methods=["POST"])
 def get_ligas():
     data = request.get_json()
@@ -153,8 +178,6 @@ def get_ligas():
     ligas_pais = list(ligas.get(pais, {}).keys())
     return jsonify(ligas_pais)
 
-
-# === API: Obtener equipos por liga ===
 @app.route("/get_equipos", methods=["POST"])
 def get_equipos():
     data = request.get_json()
@@ -168,43 +191,25 @@ def get_equipos():
     ruta_archivo = os.path.join(RUTA_LIGAS, archivo_nombre)
 
     try:
-        print("📁 Leyendo archivo:", ruta_archivo)  # <--- AGREGAR ESTO
         df = pd.read_excel(ruta_archivo)
         equipos = sorted(set(df["Local"].dropna().unique()) | set(df["Visita"].dropna().unique()))
-        print("✅ Equipos encontrados:", equipos)   # <--- AGREGAR ESTO
         return jsonify(equipos)
     except Exception as e:
-        print("❌ ERROR leyendo Excel:", e)         # <--- AGREGAR ESTO
         return jsonify([])
 
+# === CREAR ORDEN DE PAGO FLOW ===
+FLOW_API_KEY = "305FEDAC-E69B-4D0E-A71C-9A28A3320L4F"
+FLOW_SECRET_KEY = "b515dd6df6252d41ccd2de5e7793d154d6c30957"
+FLOW_CREATE_URL = "https://www.flow.cl/api/payment/create"
 
-# === RUTA: CREAR ORDEN DE PAGO FLOW ===
-
-
-import os
-import requests
-import hashlib
-import hmac
-from flask import redirect, request
-
-FLOW_API_KEY = '305FEDAC-E69B-4D0E-A71C-9A28A3320L4F'
-FLOW_SECRET_KEY = 'b515dd6df6252d41ccd2de5e7793d154d6c30957'
-FLOW_CREATE_URL = 'https://www.flow.cl/api/payment/create'
-
-@app.route('/crear_orden', methods=['POST'])
+@app.route("/crear_orden", methods=["POST"])
 def crear_orden():
     try:
-        import os
-        import requests
-        import hmac
-        import hashlib
-
         email = "contacto.rockdata@gmail.com"
         monto = "5000"
         subject = "RockData"
-        order_id = 'ORD' + str(int.from_bytes(os.urandom(4), 'big'))
+        order_id = "ORD" + str(int.from_bytes(os.urandom(4), "big"))
 
-        # Payload base
         payload = {
             "apiKey": FLOW_API_KEY,
             "commerceOrder": order_id,
@@ -217,49 +222,14 @@ def crear_orden():
             "confirmationMethod": "1"
         }
 
-        # Orden estricto para firma (según docs oficiales)
         orden_firma = [
-            "amount",
-            "apiKey",
-            "commerceOrder",
-            "confirmationMethod",
-            "currency",
-            "email",
-            "subject",
-            "urlConfirmation",
-            "urlReturn"
+            "amount", "apiKey", "commerceOrder", "confirmationMethod",
+            "currency", "email", "subject", "urlConfirmation", "urlReturn"
         ]
-
-        # Generar cadena de firma sin errores
         cadena = "&".join(f"{campo}={payload[campo]}" for campo in orden_firma)
-
-        # Crear firma
-        firma = hmac.new(
-            FLOW_SECRET_KEY.encode("utf-8"),
-            cadena.encode("utf-8"),
-            hashlib.sha256
-        ).hexdigest()
-
-        # Agregar firma como "s"
+        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
         payload["s"] = firma
-        
-                # DEBUG: Verificar contenido firmado
-        print("===== DATOS PARA DEBUG FLOW =====")
-        for campo in orden_firma:
-            print(f"{campo} = '{payload[campo]}'")
 
-        print("\nString firmado:")
-        print(cadena)
-
-        print("\nFirma generada:")
-        print(firma)
-
-        print("\nPayload enviado:")
-        print(payload)
-        print("=================================\n")
-
-
-        # Enviar POST a Flow
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         response = requests.post(FLOW_CREATE_URL, data=payload, headers=headers)
 
@@ -273,62 +243,15 @@ def crear_orden():
     except Exception as e:
         return f"⚠️ Error inesperado: {str(e)}"
 
-  
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
-
-        usuario = Usuario.query.filter_by(email=email).first()
-        if usuario and usuario.check_password(password):
-            if not usuario.cuenta_activada:
-                return render_template("login.html", error="Cuenta no activada. Ingresa tu código.")
-            session["usuario_id"] = usuario.id
-            return redirect(url_for("index"))
-        else:
-            return render_template("login.html", error="Correo o contraseña incorrectos.")
-    
-    return render_template("login.html")
-
-@app.route("/activar", methods=["GET", "POST"])
-def activar():
-    if "usuario_id" not in session:
-        return redirect(url_for("login"))
-
-    mensaje = None
-
-    if request.method == "POST":
-        codigo_ingresado = request.form["codigo"].strip()
-        codigo = CodigoAcceso.query.filter_by(codigo=codigo_ingresado, usado=False).first()
-        usuario = Usuario.query.get(session["usuario_id"])
-
-        if codigo and usuario:
-            usuario.cuenta_activada = True
-            codigo.usado = True
-            db.session.commit()
-            mensaje = "Cuenta activada con éxito. Ya puedes usar RockData."
-        else:
-            mensaje = "Código inválido o ya usado."
-
-    return render_template("activar.html", mensaje=mensaje)
-	
-import random
-import string
-
+# === CONFIRMACIÓN DE PAGO FLOW ===
 def generar_codigo_unico():
     while True:
-        codigo = "-".join(
-            "".join(random.choices(string.digits, k=4)) for _ in range(3)
-        )
-        # Verifica que no exista en la base de datos
+        codigo = "-".join("".join(random.choices(string.digits, k=4)) for _ in range(3))
         if not CodigoAcceso.query.filter_by(codigo=codigo).first():
             return codigo
 
 @app.route("/retorno")
 def retorno_pago():
-    # Aquí podrías validar que el pago realmente fue exitoso, si Flow lo permite
     nuevo_codigo = generar_codigo_unico()
     nuevo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
     db.session.add(nuevo)
@@ -340,68 +263,41 @@ def post_pago():
     codigo = session.pop("codigo_generado", None)
     return render_template("post_pago.html", codigo=codigo)
 
-
-@app.route('/confirmacion', methods=['POST'])
+@app.route("/confirmacion", methods=["POST"])
 def confirmacion_pago():
     try:
         token = request.form.get("token")
         if not token:
             return "Token no recibido", 400
 
-        # Consulta a Flow para obtener detalles del pago
-        url_estado = "https://www.flow.cl/api/payment/getStatus"
-        api_key = FLOW_API_KEY
+        cadena = f"apiKey={FLOW_API_KEY}&token={token}"
+        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
 
-        # Crear la firma	
-        cadena = f"apiKey={api_key}&token={token}"
-        firma = hmac.new(
-            FLOW_SECRET_KEY.encode("utf-8"),
-            cadena.encode("utf-8"),
-            hashlib.sha256
-        ).hexdigest()
-
-        # Armar el payload
         payload = {
-            "apiKey": api_key,
+            "apiKey": FLOW_API_KEY,
             "token": token,
             "s": firma
         }
 
-        # Hacer la consulta a Flow
-        response = requests.post(url_estado, data=payload)
+        response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
         datos = response.json()
 
-        # Validar si el pago fue exitoso (status = 1)
         if datos.get("status") == 1:
-            print("✅ Pago confirmado por Flow")
-
-            # Generar y guardar nuevo código
             nuevo_codigo = generar_codigo_unico()
             codigo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
             db.session.add(codigo)
             db.session.commit()
-
             session["codigo_generado"] = nuevo_codigo
-
-
-            print("🔐 Código generado:", nuevo_codigo)
-
-
-            return "OK", 200  # Flow espera este texto exacto
+            return "OK", 200
         else:
-            print("⚠️ Pago no confirmado. Estado:", datos.get("status"))
             return "NO_OK", 400
-
     except Exception as e:
-        print("❌ Error en confirmación:", str(e))
         return "ERROR", 500
 
+# === INIT DB ===
+with app.app_context():
+    db.create_all()
 
+# === RUN ===
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-
-
-
-
