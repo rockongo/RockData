@@ -140,7 +140,7 @@ ligas = {
     }
 }
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"]), endpoint="inicio")
 def inicio():
     if "usuario_id" in session:
         usuario = Usuario.query.get(session["usuario_id"])
