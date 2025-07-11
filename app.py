@@ -15,7 +15,9 @@ from rockongo_core import predecir_partido, generar_sugerencias
 app = Flask(__name__)
 app.secret_key = "Racg@1981"
 app.permanent_session_lifetime = timedelta(days=7)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///instance/usuarios.db"
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "usuarios.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
