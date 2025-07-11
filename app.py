@@ -370,6 +370,7 @@ def recuperar_contrasena():
 def nueva_contrasena():
     mensaje = None
 
+    # Si no hay ID en sesión, redirige al login
     if "recuperar_id" not in session:
         return redirect(url_for("login"))
 
@@ -381,10 +382,13 @@ def nueva_contrasena():
             mensaje = "❌ Las contraseñas no coinciden."
         else:
             usuario = Usuario.query.get(session["recuperar_id"])
-            usuario.set_password(nueva)
-            db.session.commit()
-            session.pop("recuperar_id", None)
-            return redirect(url_for("login"))
+            if usuario:
+                usuario.set_password(nueva)
+                db.session.commit()
+                session.pop("recuperar_id", None)
+                return redirect(url_for("login"))
+            else:
+                mensaje = "❌ No se encontró el usuario."
 
     return render_template("nueva_contrasena.html", mensaje=mensaje)
 
