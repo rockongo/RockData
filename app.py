@@ -451,6 +451,16 @@ def ver_usuarios_render():
     tabla += "</table>"
     return tabla
 
+@app.route("/ver_db")
+def ver_db():
+    try:
+        archivo = os.path.abspath("usuarios.db")
+        existe = os.path.exists(archivo)
+        return f"📂 Ruta de DB: {archivo}<br>✅ Existe: {existe}"
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
+
+
 
 
 # === INIT DB ===
