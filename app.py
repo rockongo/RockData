@@ -460,7 +460,7 @@ def ver_db():
     except Exception as e:
         return f"❌ Error: {str(e)}"
 
-# Cambio forzado para redeploy y subir DB correcta
+# Cambio forzado pa redeploy y subir DB correcta
 
 @app.route("/ver_usuarios")
 def ver_usuarios():
