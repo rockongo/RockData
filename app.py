@@ -441,6 +441,17 @@ def admin_crear_codigo():
     </form>
     """
 
+@app.route("/admin/usuarios_render")
+def ver_usuarios_render():
+    usuarios = Usuario.query.all()
+    tabla = "<h3>Usuarios activos en Render</h3><table border=1 cellpadding=5>"
+    tabla += "<tr><th>Email</th><th>Código</th><th>Activada</th></tr>"
+    for u in usuarios:
+        tabla += f"<tr><td>{u.email}</td><td>{u.codigo_unico}</td><td>{u.cuenta_activada}</td></tr>"
+    tabla += "</table>"
+    return tabla
+
+
 
 # === INIT DB ===
 with app.app_context():
