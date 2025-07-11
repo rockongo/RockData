@@ -168,13 +168,14 @@ def inicio():
                         resultado["Rojas"]
                     )
 
-            return render_template("index.html", 
+            return render_template("rockdata_2.html",
                 resultado=resultado,
                 sugerencias=sugerencias,
                 paises=paises,
                 equipo_local=equipo_local,
                 equipo_visita=equipo_visita
             )
+
 
     return redirect(url_for("login"))
 
@@ -341,21 +342,6 @@ def nueva_contrasena():
 
     return render_template("nueva_contrasena.html", mensaje=mensaje)
 
-# === BLOQUE TEMPORAL PARA INSERTAR CÓDIGOS DE PRUEBA ===
-with app.app_context():
-    codigos_prueba = [
-        "1234-5678-9012",
-        "3849-7261-5487",
-        "2098-3401-6732",
-        "5712-9830-4465",
-        "6609-1172-3904"
-    ]
-    for cod in codigos_prueba:
-        if not CodigoAcceso.query.filter_by(codigo=cod).first():
-            nuevo = CodigoAcceso(codigo=cod, usado=False)
-            db.session.add(nuevo)
-    db.session.commit()
-# === FIN BLOQUE TEMPORAL ===
 
 # === INIT DB ===
 with app.app_context():

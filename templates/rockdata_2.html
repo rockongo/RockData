@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>RockData - Predicción</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .titulo-rockdata {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: bold;
+      font-size: 1.4rem;
+      color: #6c757d;
+    }
+    .estadistica {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 10px;
+    }
+    .seccion {
+      margin-bottom: 25px;
+    }
+    .barra-pronostico {
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .sugerencias {
+      background-color: white;
+      border-left: 4px solid #17a2b8;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container mt-4">
+
+  <!-- Logo -->
+  <div class="text-center mb-2">
+    <img src="{{ url_for('static', filename='logo_rockdata.png') }}" width="120" class="mb-1">
+    <p class="titulo-rockdata">No adivinamos. Calculamos.</p>
+  </div>
+
+  <!-- Nombre del partido -->
+  <div class="text-center mb-4">
+    <h4 class="fw-bold text-secondary">{{ equipo_local }} vs {{ equipo_visita }}</h4>
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="row text-center">
+    <!-- Local -->
+    <div class="col-md-4">
+      <div class="seccion">
+        <h5 class="mb-3 text-primary">{{ equipo_local }}</h5>
+        <div class="estadistica">⚽ Goles: {{ resultado['Local']['Goles'] }}</div>
+        <div class="estadistica">🕐 1T: {{ resultado['Local']['Goles 1T'] }}</div>
+        <div class="estadistica">⏱️ 2T: {{ resultado['Local']['Goles 2T'] }}</div>
+        <div class="estadistica">🚩 Córners: {{ resultado['Local']['Córners'] }}</div>
+        <div class="estadistica">🟨 Amarillas: {{ resultado['Local']['Amarillas'] }}</div>
+        <div class="estadistica">🟥 Rojas: {{ resultado['Local']['Rojas'] }}</div>
+      </div>
+    </div>
+
+    <!-- Visita -->
+    <div class="col-md-4">
+      <div class="seccion">
+        <h5 class="mb-3 text-danger">{{ equipo_visita }}</h5>
+        <div class="estadistica">⚽ Goles: {{ resultado['Visita']['Goles'] }}</div>
+        <div class="estadistica">🕐 1T: {{ resultado['Visita']['Goles 1T'] }}</div>
+        <div class="estadistica">⏱️ 2T: {{ resultado['Visita']['Goles 2T'] }}</div>
+        <div class="estadistica">🚩 Córners: {{ resultado['Visita']['Córners'] }}</div>
+        <div class="estadistica">🟨 Amarillas: {{ resultado['Visita']['Amarillas'] }}</div>
+        <div class="estadistica">🟥 Rojas: {{ resultado['Visita']['Rojas'] }}</div>
+      </div>
+    </div>
+
+    <!-- Totales -->
+    <div class="col-md-4">
+      <div class="seccion">
+        <h5 class="mb-3 text-dark">Totales</h5>
+        <div class="estadistica">⚽ Goles Totales: {{ resultado['Goles Totales'] }}</div>
+        <div class="estadistica">🚩 Córners Totales: {{ resultado['Corners'] }}</div>
+        <div class="estadistica">🟨 Amarillas Totales: {{ resultado['Tarjetas Promedio'] }}</div>
+        <div class="estadistica">🟥 Rojas Totales: {{ resultado['Rojas'] }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pronóstico Final -->
+  <div class="barra-pronostico">
+    Pronóstico Final: {{ resultado['Pronóstico Final'] }}
+  </div>
+
+  <!-- Sugerencias -->
+  <div class="sugerencias mt-4">
+    <h6 class="mb-2">💡 Sugerencias de Apuesta:</h6>
+    <ul class="mb-0">
+      {% for sugerencia in sugerencias %}
+        <li>✔️ {{ sugerencia }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>
