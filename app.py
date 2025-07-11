@@ -462,6 +462,11 @@ def ver_db():
 
 # Cambio forzado para redeploy y subir DB correcta
 
+@app.route("/ver_usuarios")
+def ver_usuarios():
+    usuarios = Usuario.query.all()
+    return "<br>".join([f"{u.email} (activado: {u.cuenta_activada})" for u in usuarios])
+
 
 # === INIT DB ===
 with app.app_context():
