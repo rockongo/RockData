@@ -73,7 +73,12 @@
       No adivinamos. Calculamos.
     </p>
   </div>
-            <h4 class="mb-3 text-primary">📊 Resultados de Predicción</h4>
+            <h4 class="mb-3 text-primary d-flex justify-content-between align-items-center">
+    <span>📊 Resultados de Predicción</span>
+    {% if equipo_local and equipo_visita %}
+        <span class="badge bg-secondary">{{ equipo_local }} vs {{ equipo_visita }}</span>
+    {% endif %}
+</h4>
             <ul class="list-group">
                 <li class="list-group-item">⚽ Goles en Primer Tiempo: <strong>{{ resultado['Goles 1T'] }}</strong></li>
                 <li class="list-group-item">⚽ Goles en Segundo Tiempo: <strong>{{ resultado['Goles 2T'] }}</strong></li>

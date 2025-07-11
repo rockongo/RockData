@@ -166,7 +166,13 @@ def inicio():
                         resultado["Rojas"]
                     )
 
-            return render_template("index.html", paises=paises, resultado=resultado, sugerencias=sugerencias)
+            return render_template("index.html", 
+                resultado=resultado,
+                sugerencias=sugerencias,
+                paises=paises,
+                equipo_local=equipo_local,
+                equipo_visita=equipo_visita
+)
 
     return redirect(url_for("login"))
 
