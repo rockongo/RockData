@@ -261,13 +261,13 @@ FLOW_CREATE_URL = "https://www.flow.cl/api/payment/create"
 @app.route("/crear_orden", methods=["POST"])
 def crear_orden():
     try:
-        # Datos base
-        email = "contacto.rockdata@gmail.com"
-        monto = "5000"
-        subject = "RockData"
+        # === DATOS ===
+        email = "contacto.rockdata@gmail.com"  # Debe ser válido
+        monto = "5500"  # Ajuste sugerido
+        subject = "Acceso mensual a RockData (plan estándar)"
         order_id = "ORD" + str(int.from_bytes(os.urandom(4), "big"))
 
-        # Parámetros obligatorios
+        # === PARÁMETROS OBLIGATORIOS ===
         payload = {
             "apiKey": FLOW_API_KEY,
             "commerceOrder": order_id,
@@ -280,19 +280,18 @@ def crear_orden():
             "confirmationMethod": "1"
         }
 
-        # === FIRMA CORRECTA (Flow 2024) ===
-        parametros_ordenados = dict(sorted(payload.items()))  # 1. Ordenar por clave alfabéticamente
-        cadena = "".join(f"{k}{v}" for k, v in parametros_ordenados.items())  # 2. Concatenar sin & ni =
-        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()  # 3. HMAC
-        payload["s"] = firma  # 4. Agregar firma
+        # === FIRMA CORRECTA ===
+        parametros_ordenados = dict(sorted(payload.items()))
+        cadena = "".join(f"{k}{v}" for k, v in parametros_ordenados.items())
+        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
+        payload["s"] = firma
 
-        # Enviar solicitud
+        # === ENVÍO A FLOW ===
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         response = requests.post(FLOW_CREATE_URL, data=payload, headers=headers)
         resultado = response.json()
 
-        # Verificación del resultado
-        print("[FLOW DEBUG]", resultado)
+        print("[FLOW DEBUG]", resultado)  # Mostrar en logs de Render
 
         if "url" in resultado:
             return redirect(resultado["url"])
@@ -301,6 +300,7 @@ def crear_orden():
 
     except Exception as e:
         return f"⚠️ Error inesperado: {str(e)}"
+
 
 
 # === CONFIRMACIÓN DE PAGO FLOW ===
