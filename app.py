@@ -185,17 +185,32 @@ def inicio():
                         "Pronóstico Final": resultado["Pronóstico Final"]
                     }
 
+                    sugerencias = generar_sugerencias(
+                        resultado["Goles Totales"],
+                        resultado["Corners"],
+                        resultado["Tarjetas Promedio"],
+                        resultado["Rojas"]
+                    )
 
-            return render_template("rockdata_2.html",
-                resultado=resultado,
-                sugerencias=sugerencias,
+                    return render_template("rockdata_2.html", 
+                        resultado=resultado,
+                        sugerencias=sugerencias,
+                        paises=paises,
+                        equipo_local=equipo_local,
+                        equipo_visita=equipo_visita
+                    )
+
+            # Si no hay resultado o no se ha hecho POST
+            return render_template("index.html", 
+                resultado=None,
+                sugerencias=[],
                 paises=paises,
-                equipo_local=equipo_local,
-                equipo_visita=equipo_visita
+                equipo_local=None,
+                equipo_visita=None
             )
 
-
     return redirect(url_for("login"))
+
 
 
 # === API ===
