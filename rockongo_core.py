@@ -80,16 +80,32 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         resultado = "Visita"
 
     return {
-        "Goles 1T": round(stats_local["goles_1T"] + stats_visita["goles_1T"], 2),
-        "Goles 2T": round(stats_local["goles_2T"] + stats_visita["goles_2T"], 2),
+        # Local
+        "Goles Local": round(stats_local["goles"], 2),
+        "Goles 1T Local": round(stats_local["goles_1T"], 2),
+        "Goles 2T Local": round(stats_local["goles_2T"], 2),
+        "Córners Local": round(stats_local["corners"], 2),
+        "Amarillas Local": round(stats_local["amarillas"], 2),
+        "Rojas Local": round(stats_local["rojas"], 2),
+
+        # Visita
+        "Goles Visita": round(stats_visita["goles"], 2),
+        "Goles 1T Visita": round(stats_visita["goles_1T"], 2),
+        "Goles 2T Visita": round(stats_visita["goles_2T"], 2),
+        "Córners Visita": round(stats_visita["corners"], 2),
+        "Amarillas Visita": round(stats_visita["amarillas"], 2),
+        "Rojas Visita": round(stats_visita["rojas"], 2),
+
+        # Totales y pronóstico
+        "Goles Totales": round(stats_local["goles"] + stats_visita["goles"], 2),
+        "Corners": round(stats_local["corners"] + stats_visita["corners"], 2),
         "Tarjetas Promedio": round(stats_local["amarillas"] + stats_visita["amarillas"], 2),
         "Rojas": round(stats_local["rojas"] + stats_visita["rojas"], 2),
-        "Corners": round(stats_local["corners"] + stats_visita["corners"], 2),
-        "Goles Totales": round(stats_local["goles"] + stats_visita["goles"], 2),
         "Fortaleza Local": round(fort_local, 2),
         "Fortaleza Visita": round(fort_visita, 2),
         "Pronóstico": resultado
     }
+
 
 def predecir_partido(archivo_excel, equipo_local, equipo_visita):
     df = pd.read_excel(archivo_excel)
