@@ -5,7 +5,9 @@
     <title>Rockongo1 Predictor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+<!-- Fuente más sobria -->
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,400&display=swap" rel="stylesheet">
+
 <style>
 /* Fondo degradado en encabezado */
 .header-rockdata {
@@ -15,48 +17,35 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-/* Animación de subtítulo */
-.subtitulo-animado {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    font-style: italic;
-    font-weight: 500;
-    color: #f0f0f0;
-    height: 30px;
-}
-
-/* Logo con suavidad */
+/* Logo con efecto suave */
 .animated-logo {
     transition: transform 0.3s ease-in-out;
 }
 .animated-logo:hover {
     transform: scale(1.05);
 }
+
+/* Leyenda seria */
+.leyenda-seria {
+    font-family: 'Merriweather', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #e8e8e8;
+}
 </style>
 
-<!-- Librería Typed.js para efecto de texto -->
-<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    new Typed("#typed-text", {
-        strings: ["No adivinamos. Calculamos.", "Predicciones reales basadas en datos."],
-        typeSpeed: 45,
-        backSpeed: 25,
-        loop: true
-    });
-});
-</script>
 
 </head>
 <body class="bg-light">
 
 <div class="container mt-5">
-    <!-- Encabezado ROCKDATA -->
-<!-- ENCABEZADO MODERNO -->
+    
+<!-- ENCABEZADO SOLO CON LOGO Y LEYENDA -->
 <div class="text-center mb-4 py-5 header-rockdata">
-    <img src="{{ url_for('static', filename='logo_rockdata.png') }}" alt="RockData Logo" width="220" class="mb-3 animated-logo">
-    <h5 class="subtitulo-animado mt-3"><span id="typed-text"></span></h5>
+    <img src="{{ url_for('static', filename='logo_rockdata.png') }}" alt="RockData Logo" width="260" class="mb-3 animated-logo">
+    <h5 class="leyenda-seria mt-2">No adivinamos. Calculamos.</h5>
 </div>
+
 
 <div class="d-flex justify-content-end mb-3">
     <a href="{{ url_for('logout') }}" class="btn btn-outline-secondary btn-sm">Cerrar sesión</a>
