@@ -46,9 +46,9 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-
+        print(f"[LOGIN] Intentando ingreso con email: {email}")
         usuario = Usuario.query.filter_by(email=email).first()
-
+        print(f"[LOGIN] Usuario encontrado: {usuario is not None}")
         if usuario and usuario.check_password(password):
             if usuario.cuenta_activada:
                 session['usuario_id'] = usuario.id
