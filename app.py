@@ -162,7 +162,7 @@ def inicio():
 
                 print("DEBUG RESULTADO ===>", resultado)
 
-                if resultado and "Goles Local" in resultado:
+                if resultado:
                     resultado = {
                         "Local": {
                             "Goles": resultado.get("Goles Local", 0),
