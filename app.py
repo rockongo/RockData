@@ -71,7 +71,7 @@ def registro():
         if Usuario.query.filter_by(email=email).first():
             return render_template("registro.html", error="El correo ya está registrado.")
 
-        codigo = CodigoAcceso.query.filter_by(codigo=codigo_ingresado, usado=False).first()
+        codigo = CodigoAcceso.query.filter_by(codigo=codigo_ingresado, usado=0).first()
         if not codigo:
             return render_template("registro.html", error="Código de acceso inválido o ya utilizado.")
 
@@ -96,7 +96,7 @@ def activar():
 
     if request.method == "POST":
         codigo_ingresado = request.form["codigo"].strip()
-        codigo = CodigoAcceso.query.filter_by(codigo=codigo_ingresado, usado=False).first()
+        ccodigo = CodigoAcceso.query.filter_by(codigo=codigo_ingresado, usado=0).first()
         usuario = Usuario.query.get(session["usuario_id"])
 
         if codigo and usuario:
