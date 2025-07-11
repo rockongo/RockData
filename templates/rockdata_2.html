@@ -115,8 +115,16 @@
       <div class="seccion">
         <h5 class="mb-3 text-dark">Totales</h5>
         <div class="estadistica">⚽ Goles Totales: {{ resultado['Goles Totales'] }}</div>
-        <div class="stat">% ⚽ Goles 1T Totales: {{ resultado["Goles 1T Local"] + resultado["Goles 1T Visita"] }}</div>
-        <div class="stat">% ⚽ Goles 2T Totales: {{ resultado["Goles 2T Local"] + resultado["Goles 2T Visita"] }}</div>
+        <div class="estadistica">
+          🌍 Goles 1T Totales: {{
+        (resultado.get("Goles 1T Local", 0) or 0) + (resultado.get("Goles 1T Visita", 0) or 0)
+          }}
+        </div>
+        <div class="estadistica">
+          🌍 Goles 2T Totales: {{
+            (resultado.get("Goles 2T Local", 0) or 0) + (resultado.get("Goles 2T Visita", 0) or 0)
+          }}
+        </div>
         <div class="estadistica">🚩 Córners Totales: {{ resultado['Corners'] }}</div>
         <div class="estadistica">🟨 Amarillas Totales: {{ resultado['Tarjetas Promedio'] }}</div>
         <div class="estadistica">🟥 Rojas Totales: {{ resultado['Rojas'] }}</div>
