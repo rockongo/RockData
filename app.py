@@ -361,6 +361,54 @@ def confirmacion_pago():
     except Exception as e:
         return "ERROR", 500
 
+@app.route('/pago_directo')
+def pago_directo():
+    return render_template('pago_directo.html')
+
+@app.route('/crear_orden_directa', methods=['POST'])
+def crear_orden_directa():
+    import requests
+    email = request.form.get('email')
+    
+    if not email:
+        return "❌ Email requerido", 400
+
+    # Guardamos el email por si lo necesitamos luego (por sesión)
+    session['pago_directo_email'] = email
+
+    # Generar ID único interno para la orden
+    order_id = 'ORD' + str(int.from_bytes(os.urandom(4), 'big'))
+    monto = "5000"
+
+    payload = {
+        "apiKey": FLOW_API_KEY,
+        "commerceOrder": order_id,
+        "subject": "Acceso a RockData",
+        "amount": monto,
+        "currency": "CLP",
+        "email": email,
+        "urlConfirmation": "https://rockdata.onrender.com/confirmacion_directa",
+        "urlReturn": "https://rockdata.onrender.com/codigo_entregado"
+
+    }
+
+    # Generar firma HMAC SHA256
+    sorted_items = sorted(payload.items())
+    concatenated = "&".join(f"{k}={v}" for k, v in sorted_items)
+    signature = hmac.new(FLOW_SECRET_KEY.encode(), concatenated.encode(), hashlib.sha256).hexdigest()
+    payload["s"] = signature
+
+    # Enviar orden a Flow
+    response = requests.post(FLOW_CREATE_URL, data=payload)
+    data = response.json()
+
+    if "url" in data:
+        return redirect(data["url"])
+    else:
+        return f"❌ Error al crear orden: {data}", 500
+
+
+
 @app.route("/recuperar_contrasena", methods=["GET", "POST"])
 def recuperar_contrasena():
     mensaje = None
