@@ -402,10 +402,13 @@ def crear_orden_directa():
     response = requests.post(FLOW_CREATE_URL, data=payload)
     data = response.json()
 
+    print("Respuesta completa de Flow:", data)
+
     if "url" in data:
         return redirect(data["url"])
     else:
-        return f"❌ Error al crear orden: {data}", 500
+        return jsonify(data), 500
+
 
 
 
