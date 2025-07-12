@@ -510,11 +510,13 @@ def nueva_contrasena():
 
 @app.route("/debug_codigos")
 def debug_codigos():
-    codigo = CodigoAcceso.query.filter_by(codigo="1069-4074-7553").first()
-    if codigo:
-        return f"Código encontrado. Usado = {codigo.usado}"
-    else:
-        return "❌ Código no encontrado en la base activa"
+    codigos = CodigoAcceso.query.order_by(CodigoAcceso.id.desc()).limit(5).all()
+    salida = "<h3>Últimos códigos generados</h3><ul>"
+    for c in codigos:
+        salida += f"<li>{c.codigo} - Usado: {c.usado}</li>"
+    salida += "</ul>"
+    return salida
+
 
 # === ADMIN: Generar código manual protegido ===
 @app.route("/admin/crear_codigo", methods=["GET", "POST"])
