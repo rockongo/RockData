@@ -410,6 +410,53 @@ def crear_orden_directa():
     else:
         return jsonify(data), 500
 
+@app.route('/confirmacion_directa', methods=['POST'])
+def confirmacion_directa():
+    try:
+        token = request.form.get("token")
+        if not token:
+            return "Token no recibido", 400
+
+        cadena = f"apiKey={FLOW_API_KEY}&token={token}"
+        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
+
+        payload = {
+            "apiKey": FLOW_API_KEY,
+            "token": token,
+            "s": firma
+        }
+
+        import requests
+        response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
+        datos = response.json()
+
+        if datos.get("status") == 1:
+            # Pago exitoso, generamos código
+            nuevo_codigo = generar_codigo_unico()
+            nuevo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
+            db.session.add(nuevo)
+            db.session.commit()
+            session["codigo_generado"] = nuevo_codigo
+            return "OK", 200
+        else:
+            return "Pago NO confirmado", 400
+    except Exception as e:
+        return f"Error interno: {str(e)}", 500
+
+# Función auxiliar para generar código único
+def generar_codigo_unico():
+    while True:
+        codigo = "-".join("".join(random.choices(string.digits, k=4)) for _ in range(3))
+        if not CodigoAcceso.query.filter_by(codigo=codigo).first():
+            return codigo
+
+@app.route('/codigo_entregado')
+def codigo_entregado():
+    codigo = session.get("codigo_generado")
+    if not codigo:
+        return "No se ha generado ningún código aún."
+    return render_template("codigo_entregado.html", codigo=codigo)
+
 
 
 
