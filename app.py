@@ -575,6 +575,16 @@ def ver_usuarios():
     usuarios = Usuario.query.all()
     return "<br>".join([f"{u.email} (activado: {u.cuenta_activada})" for u in usuarios])
 
+@app.route("/admin/ver_codigos_disponibles")
+def admin_ver_codigos_disponibles():
+    codigos = CodigoAcceso.query.filter_by(usado=False).order_by(CodigoAcceso.id.desc()).all()
+    salida = "<h3>Códigos disponibles (no usados):</h3><ul>"
+    for c in codigos:
+        salida += f"<li>{c.codigo}</li>"
+    salida += "</ul>"
+    return salida
+
+
 
 # === INIT DB ===
 with app.app_context():
