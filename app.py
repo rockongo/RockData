@@ -17,7 +17,7 @@ app.secret_key = "Racg@1981"
 app.permanent_session_lifetime = timedelta(days=7)
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "usuarios.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:VayKZKFUjLHWSXKBbpFhXgCcBvTDJAYe@yamabiko.proxy.rlwy.net:46036/railway"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
