@@ -450,14 +450,19 @@ def generar_codigo_unico():
         if not CodigoAcceso.query.filter_by(codigo=codigo).first():
             return codigo
 
-@app.route('/codigo_entregado')
+@app.route('/codigo_entregado', methods=["GET", "POST"])
 def codigo_entregado():
     codigo = session.get("codigo_generado")
+
+    # Alternativa si el código no está en sesión pero existe uno reciente
     if not codigo:
-        return "No se ha generado ningún código aún."
+        ultimo = CodigoAcceso.query.order_by(CodigoAcceso.id.desc()).first()
+        if ultimo:
+            codigo = ultimo.codigo
+        else:
+            return "No se ha generado ningún código aún."
+
     return render_template("codigo_entregado.html", codigo=codigo)
-
-
 
 
 @app.route("/recuperar_contrasena", methods=["GET", "POST"])
