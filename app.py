@@ -413,7 +413,9 @@ def crear_orden_directa():
 @app.route('/confirmacion_directa', methods=['POST'])
 def confirmacion_directa():
     try:
-        token = request.form.get("token")
+        print("CONFIRMACION FLOW:", request.data)
+        
+        token = request.form.get("token") or request.json.get("token") if request.is_json else None
         if not token:
             return "Token no recibido", 400
 
