@@ -404,8 +404,9 @@ def crear_orden_directa():
 
     print("Respuesta completa de Flow:", data)
 
-    if "url" in data:
-        return redirect(data["url"])
+    if "url" in data and "token" in data:
+        return redirect(f"{data['url']}?token={data['token']}")
+
     else:
         return jsonify(data), 500
 
