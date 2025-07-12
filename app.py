@@ -75,7 +75,13 @@ def registro():
             print(f"[REGISTRO] Correo ya registrado: {email}")
             return render_template("registro.html", error="El correo ya está registrado.")
 
-        codigo = CodigoAcceso.query.filter_by(codigo=codigo_ingresado, usado=0).first()
+        from sqlalchemy import and_
+
+        codigo = CodigoAcceso.query.filter(and_(
+            CodigoAcceso.codigo == codigo_ingresado,
+            CodigoAcceso.usado == False
+        )).first()
+
         if not codigo:
             print(f"[REGISTRO] Código inválido o ya usado: {codigo_ingresado}")
             return render_template("registro.html", error="Código de acceso inválido o ya utilizado.")
@@ -105,7 +111,10 @@ def activar():
 
     if request.method == "POST":
         codigo_ingresado = request.form["codigo"].strip()
-        ccodigo = CodigoAcceso.query.filter_by(codigo=codigo_ingresado, usado=0).first()
+        ccodigo = CodigoAcceso.query.filter(and_(
+            CodigoAcceso.codigo == codigo_ingresado,
+            CodigoAcceso.usado == False
+        )).first()
         usuario = Usuario.query.get(session["usuario_id"])
 
         if codigo and usuario:
