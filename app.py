@@ -166,8 +166,7 @@ ligas = {
 @app.route("/", methods=["GET", "POST"], endpoint="inicio")
 def inicio():
     if "usuario_id" in session:
-        usuario = Usuario.que
-ry.get(session["usuario_id"])
+        usuario = Usuario.query.get(session["usuario_id"])
         if usuario and usuario.cuenta_activada:
             resultado = None
             sugerencias = []
