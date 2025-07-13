@@ -137,14 +137,20 @@
     Pronóstico Final: {{ resultado['Pronóstico Final'] }}
   </div>
 
-  <!-- Sugerencias -->
-  <div class="sugerencias mt-4">
-    <h6 class="mb-2">💡 Sugerencias de Apuesta:</h6>
-    <ul class="mb-0">
-      {% for sugerencia in sugerencias %}
-        <li>✔️ {{ sugerencia }}</li>
-      {% endfor %}
-    </ul>
+
+<!-- Sugerencias -->
+<div class="sugerencias mt-4">
+  <h6 class="mb-2">💡 Sugerencias de Apuesta:</h6>
+  <ul class="mb-0">
+    {% for sugerencia in sugerencias %}
+      <li>✔️ {{ sugerencia }}</li>
+    {% endfor %}
+  </ul>
+  <p class="text-muted mt-2" style="font-size: 0.9rem;">
+    🧠 Estas sugerencias se basan en estadísticas reales. Usa los datos para tomar tus propias decisiones.
+  </p>
+</div>
+
   </div>
 
 <div class="text-center mt-4">
