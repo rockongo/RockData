@@ -344,10 +344,13 @@ def retorno_pago():
     db.session.commit()
     return render_template("codigo_entregado.html", codigo=nuevo_codigo)
 
-@app.route("/post_pago")
+@app.route("/post_pago", methods=["GET"])
 def post_pago():
-    codigo = session.pop("codigo_generado", None)
-    return render_template("post_pago.html", codigo=codigo)
+    codigo = session.get("codigo_generado")
+    if codigo:
+        return render_template("codigo_entregado.html", codigo=codigo)
+    else:
+        return "⚠️ No se generó ningún código. Intenta contactar con soporte."
 
 @app.route("/confirmacion", methods=["POST"])
 def confirmacion_pago():
