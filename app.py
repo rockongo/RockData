@@ -65,6 +65,7 @@ def login():
 def registro():
     if request.method == "POST":
         email = request.form.get("email")
+        session["nuevo_usuario_email"] = email
         password = request.form.get("password")
         nombre = request.form.get("nombre")  # aunque no lo uses, evita que cause errores
         codigo_ingresado = request.form.get("codigo_acceso", "").strip()
@@ -279,7 +280,10 @@ from urllib.parse import urlencode
 @app.route("/crear_orden", methods=["POST"])
 def crear_orden():
     try:
-        email = "contacto.rockdata@gmail.com"
+        if not session.get("nuevo_usuario_email"):
+            return "⚠️ No hay email de usuario en sesión. Por favor regístrate primero."
+
+        email = session.get("nuevo_usuario_email")
         monto = "5500"
         subject = "Acceso mensual a RockData (plan estándar)"
         order_id = "ORD" + str(int.from_bytes(os.urandom(4), "big"))
