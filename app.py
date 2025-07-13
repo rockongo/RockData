@@ -344,7 +344,7 @@ def retorno_pago():
     db.session.commit()
     return render_template("codigo_entregado.html", codigo=nuevo_codigo)
 
-@app.route("/post_pago", methods=["GET"])
+@app.route("/post_pago", methods=["GET", "POST"])
 def post_pago():
     codigo = session.get("codigo_generado")
     if codigo:
