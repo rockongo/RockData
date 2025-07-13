@@ -617,6 +617,39 @@ def admin_ver_codigos_disponibles():
     salida += "</ul>"
     return salida
 
+@app.route('/test_getstatus')
+def test_getstatus():
+    order_id = request.args.get('order_id')
+    if not order_id:
+        return "Falta order_id", 400
+
+    cadena = f"apiKey={FLOW_API_KEY}&commerceOrder={order_id}"
+    firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
+
+    payload = {
+        "apiKey": FLOW_API_KEY,
+        "commerceOrder": order_id,
+        "s": firma
+    }
+
+    try:
+        response = requests.post("https://www.flow.cl/api/payment/getStatusByOrder", data=payload)
+        datos = response.json()
+        print("[TEST GETSTATUS] 🔍 Datos recibidos:", datos)
+
+        if datos.get("status") == 1:
+            nuevo_codigo = generar_codigo_unico()
+            nuevo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
+            db.session.add(nuevo)
+            db.session.commit()
+            return f"Código generado: {nuevo_codigo}", 200
+        else:
+            return f"❌ Pago NO confirmado. Estado: {datos}", 400
+
+    except Exception as e:
+        return f"Error: {str(e)}", 500
+
+
 
 
 # === INIT DB ===
