@@ -184,17 +184,20 @@ def generar_sugerencias(goles, corners, amarillas, rojas, corners_local=None, co
     else:
         sugerencias.append("Menos de 1.5 goles")
 
-    ## ESCALA DE CÓRNERS
-    if corners >= 10.5:
-        sugerencias.append("Más de 9.5 córners")
-    elif 9.0 <= corners < 10.5:
-        sugerencias.append("Más de 8.5 córners")
-    elif 7.5 <= corners < 9.0:
-        sugerencias.append("Más de 7.5 córners")
-    elif 6.0 <= corners < 7.5:
-        sugerencias.append("Menos de 8.5 córners")
-    else:
-        sugerencias.append("Menos de 7.5 córners")
+    ## NUEVA ESCALA DE CÓRNERS (RockData 2.0)
+    if corners < 8.5:
+        sugerencias.append("Menos de 8 córners")
+    elif 8.5 <= corners < 9.8:
+        sugerencias.append("Menos de 9 córners")
+    elif 9.8 <= corners < 10.6:
+        pass  # No sugerir nada
+    elif 10.6 <= corners < 11.3:
+        sugerencias.append("Más de 9 córners")
+    elif 11.3 <= corners < 12.3:
+        sugerencias.append("Más de 10 córners")
+    else:  # corners >= 12.3
+        sugerencias.append("Más de 11 córners")
+
 
     ## ESCALA DE TARJETAS (Amarillas + Rojas)
     total_tarjetas = amarillas + rojas
