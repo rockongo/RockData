@@ -157,13 +157,17 @@ ligas = {
     },
     "Colombia": {
         "Primera A": "Liga_colombia_2025.xlsx"
+    },
+    "Suecia": {
+        "Allsvenskan": "Liga_Suecia_2025.xlsx"
     }
 }
 
 @app.route("/", methods=["GET", "POST"], endpoint="inicio")
 def inicio():
     if "usuario_id" in session:
-        usuario = Usuario.query.get(session["usuario_id"])
+        usuario = Usuario.que
+ry.get(session["usuario_id"])
         if usuario and usuario.cuenta_activada:
             resultado = None
             sugerencias = []
