@@ -346,11 +346,13 @@ def retorno_pago():
 
 @app.route("/post_pago", methods=["GET", "POST"])
 def post_pago():
-    codigo = session.get("codigo_generado")
-    if codigo:
-        return render_template("codigo_entregado.html", codigo=codigo)
+    # Intentamos mostrar el último código generado (último en DB)
+    ultimo = CodigoAcceso.query.order_by(CodigoAcceso.id.desc()).first()
+    if ultimo:
+        return render_template("codigo_entregado.html", codigo=ultimo.codigo)
     else:
-        return "⚠️ No se generó ningún código. Intenta contactar con soporte."
+        return "⚠️ No se ha generado ningún código aún. Intenta contactar con soporte."
+
 
 @app.route("/confirmacion", methods=["POST"])
 def confirmacion_pago():
@@ -392,8 +394,10 @@ def confirmacion_pago():
             print(f"[CONFIRMACION] ✅ Código generado: {nuevo_codigo}")
             return "OK", 200
         else:
-            print(f"[CONFIRMACION] ❌ Pago no confirmado. Datos: {datos}")
-            return "NO_OK", 400
+            print(f"[CONFIRMACION] ⚠️ Pago no confirmado. Pero respondemos 200 para evitar error en Flow.")
+            return "OK", 200
+
+
 
     except Exception as e:
         print(f"[CONFIRMACION] ❌ Error inesperado: {str(e)}")
@@ -484,8 +488,9 @@ def confirmacion_directa():
             print(f"[CONFIRMACION] ✅ Código generado: {nuevo_codigo}")
             return "OK", 200
         else:
-            print(f"[CONFIRMACION] ❌ Pago no confirmado. Datos: {datos}")
-            return "NO_OK", 400
+            print(f"[CONFIRMACION] ⚠️ Pago no confirmado. Pero respondemos 200 para evitar error en Flow.")
+            return "OK", 200
+
 
     except Exception as e:
         print(f"[CONFIRMACION] ❌ Error: {str(e)}")
