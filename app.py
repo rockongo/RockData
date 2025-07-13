@@ -449,22 +449,23 @@ def confirmacion_directa():
     try:
         print("CONFIRMACION FLOW:", request.data)
 
-        order_id = request.form.get("commerceOrder")
-        if not order_id:
-            return "Order ID no recibido", 400
+        token = request.form.get("token")
+        if not token and request.is_json:
+            token = request.json.get("token")
 
-        print(f"[CONFIRMACION] ✅ Order recibido: {order_id}")
+        if not token:
+            return "Token no recibido", 400
 
-        cadena = f"apiKey={FLOW_API_KEY}&commerceOrder={order_id}"
+        cadena = f"apiKey={FLOW_API_KEY}&token={token}"
         firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
 
         payload = {
             "apiKey": FLOW_API_KEY,
-            "commerceOrder": order_id,
+            "token": token,
             "s": firma
         }
 
-        response = requests.post("https://www.flow.cl/api/payment/getStatusByOrder", data=payload)
+        response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
         datos = response.json()
 
         print(f"[CONFIRMACION] Estado de pago: {datos}")
