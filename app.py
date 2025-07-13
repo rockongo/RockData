@@ -215,9 +215,12 @@ def inicio():
                         resultado["Goles Totales"],
                         resultado["Corners"],
                         resultado["Tarjetas Promedio"],
-                        resultado["Rojas"]
+                        resultado["Rojas"],
+                        resultado.get("Lista Corners Local"),
+                        resultado.get("Lista Corners Visita")
                     )
 
+                   
                     return render_template("rockdata_2.html", 
                         resultado=resultado_dict,
                         sugerencias=sugerencias,

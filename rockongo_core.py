@@ -81,6 +81,11 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
     return {
         # Local
+    corners_local_lista = local_partidos["Corners Local"].dropna().tolist()
+    corners_visita_lista = visita_partidos["Corners Visita"].dropna().tolist()
+
+    return {
+        # Local
         "Goles Local": round(stats_local["goles"], 2),
         "Goles 1T Local": round(stats_local["goles_1T"], 2),
         "Goles 2T Local": round(stats_local["goles_2T"], 2),
@@ -103,7 +108,11 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         "Rojas": round(stats_local["rojas"] + stats_visita["rojas"], 2),
         "Fortaleza Local": round(fort_local, 2),
         "Fortaleza Visita": round(fort_visita, 2),
-        "Pronóstico": resultado
+        "Pronóstico": resultado,
+
+        # Nuevas listas crudas para análisis
+        "Lista Corners Local": corners_local_lista,
+        "Lista Corners Visita": corners_visita_lista
     }
 
 
