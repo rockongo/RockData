@@ -168,7 +168,8 @@ def simulacion_forma_reciente(df, equipo_local, equipo_visita):
         "Visita (últimos 5)": stats_visita
     }
 
-def generar_sugerencias(goles, corners, amarillas, rojas):
+def generar_sugerencias(goles, corners, amarillas, rojas, corners_local=None, corners_visita=None):
+
     sugerencias = []
 
     ## ESCALA DE GOLES
