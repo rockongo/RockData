@@ -355,9 +355,16 @@ def post_pago():
 @app.route("/confirmacion", methods=["POST"])
 def confirmacion_pago():
     try:
+        # Soporta tanto POST form como JSON
         token = request.form.get("token")
+        if not token and request.is_json:
+            token = request.json.get("token")
+
         if not token:
+            print("[CONFIRMACION] ❌ Token no recibido")
             return "Token no recibido", 400
+
+        print("[CONFIRMACION] ✅ Token recibido:", token)
 
         cadena = f"apiKey={FLOW_API_KEY}&token={token}"
         firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
@@ -370,6 +377,7 @@ def confirmacion_pago():
 
         response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
         datos = response.json()
+        print("[CONFIRMACION] Estado de pago:", datos)
 
         if datos.get("status") == 1:
             nuevo_codigo = generar_codigo_unico()
@@ -377,11 +385,15 @@ def confirmacion_pago():
             db.session.add(codigo)
             db.session.commit()
             session["codigo_generado"] = nuevo_codigo
+            print("[CONFIRMACION] ✅ Código generado:", nuevo_codigo)
             return "OK", 200
         else:
+            print("[CONFIRMACION] ❌ Pago no confirmado. Datos:", datos)
             return "NO_OK", 400
     except Exception as e:
+        print("[CONFIRMACION] ❌ Error inesperado:", str(e))
         return "ERROR", 500
+
 
 @app.route('/pago_directo')
 def pago_directo():
