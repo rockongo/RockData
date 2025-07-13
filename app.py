@@ -317,7 +317,7 @@ def crear_orden():
         print("[FLOW DEBUG RESPONSE]", resultado)
 
         if "url" in resultado:
-            return redirect(resultado["url"])
+            return redirect(f'{resultado["url"]}?token={resultado["token"]}')
         else:
             return f"❌ Error al crear orden: {resultado}"
 
