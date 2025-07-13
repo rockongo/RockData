@@ -79,7 +79,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     else:
         resultado = "Visita"
 
-    return {
+    
         # Local
     corners_local_lista = local_partidos["Corners Local"].dropna().tolist()
     corners_visita_lista = visita_partidos["Corners Visita"].dropna().tolist()
