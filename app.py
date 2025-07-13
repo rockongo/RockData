@@ -448,43 +448,42 @@ def crear_orden_directa():
 def confirmacion_directa():
     try:
         print("CONFIRMACION FLOW:", request.data)
-        
-        token = request.form.get("token") or request.json.get("token") if request.is_json else None
-        if not token:
-            return "Token no recibido", 400
 
-        cadena = f"apiKey={FLOW_API_KEY}&token={token}"
+        order_id = request.form.get("commerceOrder")
+        if not order_id:
+            return "Order ID no recibido", 400
+
+        print(f"[CONFIRMACION] ✅ Order recibido: {order_id}")
+
+        cadena = f"apiKey={FLOW_API_KEY}&commerceOrder={order_id}"
         firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
 
         payload = {
             "apiKey": FLOW_API_KEY,
-            "token": token,
+            "commerceOrder": order_id,
             "s": firma
         }
 
-        import requests
-        response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
+        response = requests.post("https://www.flow.cl/api/payment/getStatusByOrder", data=payload)
         datos = response.json()
 
+        print(f"[CONFIRMACION] Estado de pago: {datos}")
+
         if datos.get("status") == 1:
-            # Pago exitoso, generamos código
             nuevo_codigo = generar_codigo_unico()
             nuevo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
             db.session.add(nuevo)
             db.session.commit()
             session["codigo_generado"] = nuevo_codigo
+            print(f"[CONFIRMACION] ✅ Código generado: {nuevo_codigo}")
             return "OK", 200
         else:
-            return "Pago NO confirmado", 400
-    except Exception as e:
-        return f"Error interno: {str(e)}", 500
+            print(f"[CONFIRMACION] ❌ Pago no confirmado. Datos: {datos}")
+            return "NO_OK", 400
 
-# Función auxiliar para generar código único
-def generar_codigo_unico():
-    while True:
-        codigo = "-".join("".join(random.choices(string.digits, k=4)) for _ in range(3))
-        if not CodigoAcceso.query.filter_by(codigo=codigo).first():
-            return codigo
+    except Exception as e:
+        print(f"[CONFIRMACION] ❌ Error: {str(e)}")
+        return f"Error interno: {str(e)}", 500
 
 @app.route('/codigo_entregado', methods=["GET", "POST"])
 def codigo_entregado():
