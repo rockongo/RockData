@@ -117,12 +117,12 @@
         <div class="estadistica">⚽ Goles Totales: {{ resultado['Goles Totales'] }}</div>
         <div class="estadistica">
           🌍 Goles 1T Totales: {{
-        (resultado['Local'].get("Goles 1T", 0) or 0) + (resultado['Visita'].get("Goles 1T", 0) or 0)
+            ((resultado['Local'].get("Goles 1T", 0) or 0) + (resultado['Visita'].get("Goles 1T", 0) or 0)) | round(2)
           }}
         </div>
         <div class="estadistica">
           🌍 Goles 2T Totales: {{
-            (resultado['Local'].get("Goles 2T", 0) or 0) + (resultado['Visita'].get("Goles 2T", 0) or 0)
+            ((resultado['Local'].get("Goles 2T", 0) or 0) + (resultado['Visita'].get("Goles 2T", 0) or 0)) | round(2)
           }}
         </div>
         <div class="estadistica">🚩 Córners Totales: {{ resultado['Corners'] }}</div>
