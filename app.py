@@ -137,30 +137,33 @@ def logout():
 # === LÓGICA PRINCIPAL ===
 RUTA_LIGAS = os.path.join(os.path.dirname(__file__), "Ligas")
 ligas = {
-    "Chile": {
-        "Primera A": "Primera_A_2025.xlsx",
-        "Primera B": "Primera_B_2025.xlsx"
-    },	
     "Bolivia": {
-        "Primera A": "Liga_bolivia_2025.xlsx"
+        "División Profesional": "Liga_bolivia_2025.xlsx"
     },
-    "Perú": {
-        "Primera A": "Liga_peruana_2025.xlsx"
+    "Brasil": {
+        "Serie A Betano": "Liga_brasil_2025.xlsx"
     },
-    "USA": {
-        "MLS": "Liga_MLS_2025.xlsx"
-    },
-    "Noruega": {
-        "Eliteserien": "Liga_noruega_2025.xlsx"
-    },
-    "Ecuador": {
-        "Liga Pro": "Liga_ecuador_2025.xlsx"
+    "Chile": {
+        "Liga de Primera": "Primera_A_2025.xlsx",
+        "Liga de Ascenso": "Primera_B_2025.xlsx"
     },
     "Colombia": {
         "Primera A": "Liga_colombia_2025.xlsx"
     },
+    "Ecuador": {
+        "Liga Pro": "Liga_ecuador_2025.xlsx"
+    },
+    "Noruega": {
+        "Eliteserien": "Liga_noruega_2025.xlsx"
+    },
+    "Perú": {
+        "Liga 1": "Liga_peruana_2025.xlsx"
+    },
     "Suecia": {
         "Allsvenskan": "Liga_Suecia_2025.xlsx"
+    },
+    "USA": {
+        "MLS": "Liga_MLS_2025.xlsx"
     }
 }
 
