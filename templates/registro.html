@@ -10,15 +10,17 @@
     <div class="card p-4 shadow">
         <h2 class="mb-4 text-center">Crea tu cuenta en RockData</h2>
 
-        <!-- Botón de pago separado -->
+        <!-- Botón de pago con campo de correo -->
         <div class="mb-4 text-center">
             <form action="/crear_orden" method="POST">
+                <input type="email" name="email_pago" class="form-control mb-2" placeholder="Ingresa tu correo para pagar" required>
                 <button type="submit" class="btn btn-success btn-lg">
                     💳 Pagar ahora para obtener tu código de acceso
                 </button>
             </form>
             <p class="mt-2 text-muted">Después de pagar, recibirás un código único que te permitirá completar el registro.</p>
         </div>
+
 
         <!-- Formulario de registro -->
         <form method="POST">
