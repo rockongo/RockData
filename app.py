@@ -141,7 +141,7 @@ ligas = {
         "División Profesional": "Liga_bolivia_2025.xlsx"
     },
     "Brasil": {
-        "Serie A Betano": "Liga_brasil_2025.xlsx"
+        "Serie A Betano": "Liga_brasil_2025.xlsx",
         "Brasileirao Serie B": "Liga_brasil_B_2025.xlsx"
     },
     "Chile": {
