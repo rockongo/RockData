@@ -142,8 +142,6 @@ ligas = {
     },
     "Brasil": {
         "Serie A Betano": "Liga_brasil_2025.xlsx"
-    },
-    "Brasil": {
         "Brasileirao Serie B": "Liga_brasil_B_2025.xlsx"
     },
     "Chile": {
