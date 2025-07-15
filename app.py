@@ -157,6 +157,9 @@ ligas = {
     "Finlandia": {
         "Veikkausliiga": "Liga_finlandia_2025.xlsx"
     },
+    "Mexico": {
+        "Liga MX-Apertura": "Liga_mexico_2025.xlsx"
+    },
     "Noruega": {
         "Eliteserien": "Liga_noruega_2025.xlsx"
     },
