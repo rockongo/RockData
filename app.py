@@ -148,6 +148,9 @@ ligas = {
         "Liga de Primera": "Primera_A_2025.xlsx",
         "Liga de Ascenso": "Primera_B_2025.xlsx"
     },
+    "China": {
+        "SuperLiga": "Liga_china_2025.xlsx"
+    },
     "Colombia": {
         "Primera A": "Liga_colombia_2025.xlsx"
     },
