@@ -20,7 +20,13 @@ ligas_config = {
     "Liga_ecuador_2025.xlsx": {"id": 242, "desde": "2025-07-05"},
     "Liga_MLS_2025.xlsx": {"id": 253, "desde": "2025-07-03"},
     "Liga_noruega_2025.xlsx": {"id": 103, "desde": "2025-06-30"},
-    "Liga_peruana_2025.xlsx": {"id": 281, "desde": "2025-07-02"}
+    "Liga_peruana_2025.xlsx": {"id": 281, "desde": "2025-07-02"},
+    "Liga_brasil_2025.xlsx": {"id": 71, "desde": "2025-07-13"},
+    "Liga_brasil_B_2025.xlsx": {"id": 72, "desde": "2025-07-13"},
+    "Liga_china_2025.xlsx": {"id": 169, "desde": "2025-06-30"},
+    "Liga_finlandia_2025.xlsx": {"id": 244, "desde": "2025-07-13"},
+    "Liga_mexico_2025.xlsx": {"id": 262, "desde": "2025-07-14"},
+    "Liga_Suecia_2025.xlsx": {"id": 113, "desde": "2025-07-12"}
 }
 
 # Ruta de los archivos Excel
