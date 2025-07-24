@@ -137,6 +137,9 @@ def logout():
 # === LÓGICA PRINCIPAL ===
 RUTA_LIGAS = os.path.join(os.path.dirname(__file__), "Ligas")
 ligas = {
+    "Argentina": {
+        "Primera División de Argentina": "Liga_argentina_2025.xlsx"
+    },
     "Bolivia": {
         "División Profesional": "Liga_bolivia_2025.xlsx"
     },
