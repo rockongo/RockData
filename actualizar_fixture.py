@@ -13,20 +13,21 @@ headers = {
 
 # IDs y fechas límite por archivo
 ligas_config = {
-    "Liga_colombia_2025.xlsx": {"id": 239, "desde": "2025-06-29"},
-    "Primera_A_2025.xlsx": {"id": 265, "desde": "2025-06-23"},
-    "Primera_B_2025.xlsx": {"id": 266, "desde": "2025-06-22"},
-    "Liga_bolivia_2025.xlsx": {"id": 344, "desde": "2025-07-01"},
-    "Liga_ecuador_2025.xlsx": {"id": 242, "desde": "2025-07-05"},
-    "Liga_MLS_2025.xlsx": {"id": 253, "desde": "2025-07-03"},
-    "Liga_noruega_2025.xlsx": {"id": 103, "desde": "2025-06-30"},
-    "Liga_peruana_2025.xlsx": {"id": 281, "desde": "2025-07-02"},
-    "Liga_brasil_2025.xlsx": {"id": 71, "desde": "2025-07-13"},
-    "Liga_brasil_B_2025.xlsx": {"id": 72, "desde": "2025-07-13"},
-    "Liga_china_2025.xlsx": {"id": 169, "desde": "2025-06-30"},
-    "Liga_finlandia_2025.xlsx": {"id": 244, "desde": "2025-07-13"},
-    "Liga_mexico_2025.xlsx": {"id": 262, "desde": "2025-07-14"},
-    "Liga_Suecia_2025.xlsx": {"id": 113, "desde": "2025-07-12"}
+    "Liga_colombia_2025.xlsx": {"id": 239, "desde": "2025-07-24"},
+    "Primera_A_2025.xlsx": {"id": 265, "desde": "2025-07-24"},
+    "Primera_B_2025.xlsx": {"id": 266, "desde": "2025-07-24"},
+    "Liga_bolivia_2025.xlsx": {"id": 344, "desde": "2025-07-24"},
+    "Liga_ecuador_2025.xlsx": {"id": 242, "desde": "2025-07-24"},
+    "Liga_MLS_2025.xlsx": {"id": 253, "desde": "2025-07-24"},
+    "Liga_noruega_2025.xlsx": {"id": 103, "desde": "2025-07-24"},
+    "Liga_peruana_2025.xlsx": {"id": 281, "desde": "2025-07-24"},
+    "Liga_brasil_2025.xlsx": {"id": 71, "desde": "2025-07-24"},
+    "Liga_brasil_B_2025.xlsx": {"id": 72, "desde": "2025-07-24"},
+    "Liga_china_2025.xlsx": {"id": 169, "desde": "2025-07-24"},
+    "Liga_finlandia_2025.xlsx": {"id": 244, "desde": "2025-07-24"},
+    "Liga_mexico_2025.xlsx": {"id": 262, "desde": "2025-07-24"},
+    "Liga_Suecia_2025.xlsx": {"id": 113, "desde": "2025-07-24"},
+    "Liga_argentina_2025.xlsx": {"id": 128, "desde": "2025-07-22}",
 }
 
 # Ruta de los archivos Excel
