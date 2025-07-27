@@ -1,6 +1,13 @@
 import pandas as pd
 import os
 
+from probabilidades import (
+    calcular_probabilidad_goles,
+    calcular_probabilidad_corners,
+    calcular_probabilidad_tarjetas
+)
+
+
 # Ruta donde están guardados todos los Excel de ligas
 RUTA_LIGAS = r"C:\Users\raque\desktop\ligas_datas\Ligas"
 
@@ -84,6 +91,18 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     corners_local_lista = local_partidos["Corners Local"].dropna().tolist()
     corners_visita_lista = visita_partidos["Corners Visita"].dropna().tolist()
 
+    # ------------------------
+    # NUEVO CÁLCULO DE PROBABILIDADES REALES
+    # ------------------------
+    try:
+        prob_goles_menos_25 = calcular_probabilidad_goles(df, tipo="menos", umbral=2.5)
+        prob_corners_mas_9_5 = calcular_probabilidad_corners(df, tipo="mas", umbral=9.5)
+        prob_tarjetas_mas_4_5 = calcular_probabilidad_tarjetas(df, tipo="mas", umbral=4.5)
+    except Exception as e:
+        prob_goles_menos_25 = prob_corners_mas_9_5 = prob_tarjetas_mas_4_5 = None
+        print("Error al calcular probabilidades:", e)
+
+
     return {
         # Local
         "Goles Local": round(stats_local["goles"], 2),
@@ -112,7 +131,12 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
         # Nuevas listas crudas para análisis
         "Lista Corners Local": corners_local_lista,
-        "Lista Corners Visita": corners_visita_lista
+        "Lista Corners Visita": corners_visita_lista,
+
+        "Probabilidad -2.5 Goles": prob_goles_menos_25,
+        "Probabilidad +9.5 Córners": prob_corners_mas_9_5,
+        "Probabilidad +4.5 Tarjetas": prob_tarjetas_mas_4_5,
+
     }
 
 

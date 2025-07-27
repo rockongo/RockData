@@ -136,6 +136,16 @@
   <div class="barra-pronostico">
     Pronóstico Final: {{ resultado['Pronóstico Final'] }}
   </div>
+<!-- Probabilidades -->
+<div class="bg-white rounded-xl shadow p-4 mt-4">
+  <h5 class="text-lg fw-bold text-secondary mb-2">📊 Probabilidades estadísticas:</h5>
+  <ul class="mb-0">
+    <li>🔹 Menos de 2.5 goles: <strong>{{ resultado['Probabilidad -2.5 Goles'] }}%</strong></li>
+    <li>🔹 Más de 9.5 córners: <strong>{{ resultado['Probabilidad +9.5 Córners'] }}%</strong></li>
+    <li>🔹 Más de 4.5 tarjetas: <strong>{{ resultado['Probabilidad +4.5 Tarjetas'] }}%</strong></li>
+  </ul>
+</div>
+
 
 
 <!-- Sugerencias -->

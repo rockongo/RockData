@@ -89,17 +89,22 @@ def registro():
         else:
             print(f"[REGISTRO] Código válido: {codigo_ingresado}")
 
-        nuevo_usuario = Usuario(email=email, cuenta_activada=True, codigo_unico=codigo_ingresado)
+        temporal = (codigo_ingresado == 'PRUEBA2025')
+
+        nuevo_usuario = Usuario(
+            email=email,
+            cuenta_activada=True,
+            codigo_unico=codigo_ingresado,
+            temporal=temporal
+        )
         nuevo_usuario.set_password(password)
         db.session.add(nuevo_usuario)
 
-        print(f"[REGISTRO] Registrando usuario {email} con código {codigo_ingresado}")
+        print(f"[REGISTRO] Registrando usuario {email} con código {codigo_ingresado} - temporal={temporal}")
         codigo.usado = True
         db.session.commit()
 
         return redirect(url_for("login"))
-
-    return render_template("registro.html")
 
 
 # === RUTA: ACTIVAR ===
