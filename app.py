@@ -230,7 +230,7 @@ def inicio():
                         "Corners": resultado["Corners"],
                         "Tarjetas Promedio": resultado["Tarjetas Promedio"],
                         "Rojas": resultado["Rojas"],
-                        "Pronóstico Final": resultado["Pronóstico"]
+                        "Pronóstico Final": resultado["Pronóstico"],
                         "Probabilidad -2.5 Goles": resultado["Probabilidad -2.5 Goles"],
                         "Probabilidad +9.5 Córners": resultado["Probabilidad +9.5 Córners"],
                         "Probabilidad +4.5 Tarjetas": resultado["Probabilidad +4.5 Tarjetas"]
