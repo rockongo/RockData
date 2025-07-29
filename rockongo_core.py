@@ -130,6 +130,16 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
     resultado_probabilistico = predecir_partido(stats_local_data, stats_visita_data)
 
+    gol_1t_prob = resultado_probabilistico["Gol 1er Tiempo"]["1 gol"]
+
+    if gol_1t_prob >= 60:
+        gol_1t_texto = "Alta probabilidad de que se abra el marcador antes del descanso."
+    elif 45 <= gol_1t_prob < 60:
+        gol_1t_texto = "Hay chances razonables de gol antes del descanso, aunque no está garantizado."
+    else:
+        gol_1t_texto = "No se anticipa un primer tiempo muy activo."
+
+
     return {
         "Equipo Local": equipo_local,
         "Equipo Visita": equipo_visita,
@@ -153,7 +163,12 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
                 stats_visita["amarillas"] + stats_visita["rojas"], 2
             )
         },
-        "Probabilidades": resultado_probabilistico
+        "Probabilidades": resultado_probabilistico,
+        "Gol 1T": {
+            "Probabilidad": gol_1t_prob,
+            "Texto": gol_1t_texto
+        }
+
     }
 
 
