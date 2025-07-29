@@ -203,7 +203,7 @@ def inicio():
                 equipo_visita = request.form["equipo_visita"]
 
                 archivo_excel = os.path.join(RUTA_LIGAS, ligas[pais][liga])
-                resultado = predecir_partido(archivo_excel, equipo_local, equipo_visita)
+                resultado = predecir_partido_desde_excel(archivo_excel, equipo_local, equipo_visita)
 
                 print("DEBUG RESULTADO ===>", resultado)
 
