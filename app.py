@@ -210,40 +210,32 @@ def inicio():
                 if resultado:
                     resultado_dict = {
                         "Local": {
-                            "Goles": resultado["Goles Local"],
-                            "Goles 1T": resultado["Goles 1T Local"],
-                            "Goles 2T": resultado["Goles 2T Local"],
-                            "Córners": resultado["Córners Local"],
-                            "Amarillas": resultado["Amarillas Local"],
-                            "Rojas": resultado["Rojas Local"],
+                            "Goles": resultado["Promedios Local"]["Goles"],
+                            "Goles 1T": resultado["Promedios Local"]["Goles 1T"],
+                            "Goles 2T": None,
+                            "Córners": resultado["Promedios Local"]["Corners"],
+                            "Amarillas": resultado["Promedios Local"]["Tarjetas"],
+                            "Rojas": None,
                         },
                         "Visita": {
-                            "Goles": resultado["Goles Visita"],
-                            "Goles 1T": resultado["Goles 1T Visita"],
-                            "Goles 2T": resultado["Goles 2T Visita"],
-                            "Córners": resultado["Córners Visita"],
-                            "Amarillas": resultado["Amarillas Visita"],
-                            "Rojas": resultado["Rojas Visita"],
+                            "Goles": resultado["Promedios Visita"]["Goles"],
+                            "Goles 1T": resultado["Promedios Visita"]["Goles 1T"],
+                            "Goles 2T": None,
+                            "Córners": resultado["Promedios Visita"]["Corners"],
+                            "Amarillas": resultado["Promedios Visita"]["Tarjetas"],
+                            "Rojas": None,
                         },
 
-                        "Goles Totales": resultado["Goles Totales"],
-                        "Corners": resultado["Corners"],
-                        "Tarjetas Promedio": resultado["Tarjetas Promedio"],
-                        "Rojas": resultado["Rojas"],
-                        "Pronóstico Final": resultado["Pronóstico"],
-                        "Probabilidad -2.5 Goles": resultado["Probabilidad -2.5 Goles"],
-                        "Probabilidad +9.5 Córners": resultado["Probabilidad +9.5 Córners"],
-                        "Probabilidad +4.5 Tarjetas": resultado["Probabilidad +4.5 Tarjetas"]
+                        "Goles Totales": resultado["Estadísticas Totales"]["Goles Totales"],
+                        "Corners": resultado["Estadísticas Totales"]["Corners Totales"],
+                        "Tarjetas Promedio": resultado["Estadísticas Totales"]["Tarjetas Totales"],
+                        "Rojas": None,
+                        "Pronóstico Final": resultado["Probabilidades"]["Sugerencia Resultado"],
+                        "Probabilidad -2.5 Goles": resultado["Probabilidades"]["Escenarios Goles"]["-2.5 goles"],
+                        "Probabilidad +9.5 Córners": resultado["Probabilidades"]["Probabilidad Córners"]["+9.5"],
+                        "Probabilidad +4.5 Tarjetas": resultado["Probabilidades"]["Probabilidad Tarjetas"]["+4.5"]
                     }
 
-                    sugerencias = generar_sugerencias(
-                        resultado['Goles Totales'],
-                        resultado['Corners'],
-                        resultado['Tarjetas Promedio'],
-                        prob_goles=resultado.get("Probabilidad -2.5 Goles"),
-                        prob_corners=resultado.get("Probabilidad +9.5 Córners"),
-                        prob_tarjetas=resultado.get("Probabilidad +4.5 Tarjetas")
-                    )
                    
                     return render_template("rockdata_2.html", 
                         resultado=resultado_dict,
