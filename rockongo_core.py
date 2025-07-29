@@ -468,3 +468,6 @@ def formato_rockdata_41(datos):
     print(f"  Visita: {datos['resultado']['visita']}%")
     print(f"\nPronóstico final: {datos['pronostico_final']}")
     print(f"📊 {datos['resultado_justificacion']}")
+
+
+# Actualización lógica Gol 1T - Confirmado 29 julio
