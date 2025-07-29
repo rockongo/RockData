@@ -209,41 +209,40 @@ def inicio():
 
                 if resultado:
                     resultado_dict = {
-                        "Local": {
-                            "Goles": resultado["Promedios Local"]["Goles"],
-                            "Goles 1T": resultado["Promedios Local"]["Goles 1T"],
-                            "Goles 2T": None,
-                            "Córners": resultado["Promedios Local"]["Corners"],
-                            "Amarillas": resultado["Promedios Local"]["Tarjetas"],
-                            "Rojas": None,
-                        },
-                        "Visita": {
-                            "Goles": resultado["Promedios Visita"]["Goles"],
-                            "Goles 1T": resultado["Promedios Visita"]["Goles 1T"],
-                            "Goles 2T": None,
-                            "Córners": resultado["Promedios Visita"]["Corners"],
-                            "Amarillas": resultado["Promedios Visita"]["Tarjetas"],
-                            "Rojas": None,
-                        },
-
-                        "Goles Totales": resultado["Estadísticas Totales"]["Goles Totales"],
-                        "Corners": resultado["Estadísticas Totales"]["Corners Totales"],
-                        "Tarjetas Promedio": resultado["Estadísticas Totales"]["Tarjetas Totales"],
-                        "Rojas": None,
-                        "Pronóstico Final": resultado["Probabilidades"]["Sugerencia Resultado"],
-                        "Probabilidad -2.5 Goles": resultado["Probabilidades"]["Escenarios Goles"]["-2.5 goles"],
-                        "Probabilidad +9.5 Córners": resultado["Probabilidades"]["Probabilidad Córners"]["+9.5"],
-                        "Probabilidad +4.5 Tarjetas": resultado["Probabilidades"]["Probabilidad Tarjetas"]["+4.5"]
-                    }
-
+                        datos = {
+                            'gol_1t_prob': resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"],
+                            'gol_1t_texto': "Probabilidad alta de que se abra el marcador antes del descanso." if resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"] >= 35 else "No se anticipa un primer tiempo muy activo.",
+    
+                            'ambos_marcan_prob': resultado["Probabilidades"]["Ambos Marcan"]["Probabilidad"],
+                            'ambos_marcan_texto': "Ambos equipos tienen probabilidad media/alta de anotar.",
+                            'ambos_marcan_justificacion': f'{resultado["Equipo Local"]} promedia {resultado["Promedios Local"]["Goles"]:.2f} goles y {resultado["Equipo Visita"]} recibe {resultado["Promedios Visita"]["Goles"]:.2f}.',
+    
+                            'goles_prob_15': resultado["Probabilidades"]["Escenarios Goles"]["+1.5 goles"],
+                            'goles_prob_25': resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"],
+                            'goles_recomendacion': resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"] >= 50 and "+2.5 goles" or "+1.5 goles",
+                            'goles_texto': "El escenario de +2.5 goles tiene probabilidad moderada." if resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"] >= 50 else "La probabilidad se ajusta más a un partido con pocos goles.",
+    
+                            'corners': resultado["Probabilidades"]["Probabilidad Córners"],
+                            'corners_sugerencia': "+8.5" if resultado["Probabilidades"]["Probabilidad Córners"]["+8.5"] >= 85 else (
+                                "+7.5" if resultado["Probabilidades"]["Probabilidad Córners"]["+7.5"] >= 80 else "Evitar apuestas por córners altos."
+                            ),
+                            'corners_justificacion': f"Total estimado: {resultado['Estadísticas Totales']['Corners Totales']:.2f}",
+    
+                            'tarjetas': resultado["Probabilidades"]["Probabilidad Tarjetas"],
+                            'tarjetas_sugerencia': "+4.5" if resultado["Probabilidades"]["Probabilidad Tarjetas"]["+4.5"] >= 70 else "+3.5",
+                            'tarjetas_justificacion': f"Total estimado: {resultado['Estadísticas Totales']['Tarjetas Totales']:.2f}",
+    
+                            'pronostico_final': resultado["Probabilidades"]["Sugerencia Resultado"]
+                       }
                    
                     return render_template("rockdata_2.html",
-                        datos=resultado_dict, 
-                        resultado=resultado_dict,
+                        datos=datos, 
                         sugerencias=sugerencias,
                         paises=paises,
                         equipo_local=equipo_local,
-                        equipo_visita=equipo_visita
+                        equipo_visita=equipo_visita,
+                        liga=liga,
+                        fecha_partido="Próximo partido"
                     )
 
             return render_template("index.html", 
