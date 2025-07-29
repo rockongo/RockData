@@ -237,14 +237,13 @@ def inicio():
                     }
 
                     sugerencias = generar_sugerencias(
-                        resultado["Goles Totales"],
-                        resultado["Corners"],
-                        resultado["Tarjetas Promedio"],
-                        resultado["Rojas"],
-                        resultado.get("Lista Corners Local"),
-                        resultado.get("Lista Corners Visita")
+                        resultado['Goles Totales'],
+                        resultado['Corners'],
+                        resultado['Tarjetas Promedio'],
+                        prob_goles=resultado.get("Probabilidad -2.5 Goles"),
+                        prob_corners=resultado.get("Probabilidad +9.5 Córners"),
+                        prob_tarjetas=resultado.get("Probabilidad +4.5 Tarjetas")
                     )
-
                    
                     return render_template("rockdata_2.html", 
                         resultado=resultado_dict,
