@@ -10,7 +10,7 @@ import string
 import requests
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from rockongo_core import predecir_partido, generar_sugerencias
+from rockongo_core import predecir_partido
 
 app = Flask(__name__)
 app.secret_key = "Racg@1981"
