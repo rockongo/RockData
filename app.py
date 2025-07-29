@@ -237,7 +237,8 @@ def inicio():
                     }
 
                    
-                    return render_template("rockdata_2.html", 
+                    return render_template("rockdata_2.html",
+                        datos=resultado_dict, 
                         resultado=resultado_dict,
                         sugerencias=sugerencias,
                         paises=paises,
