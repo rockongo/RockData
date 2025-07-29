@@ -257,6 +257,18 @@ def calcular_probabilidades_escenarios(distribucion):
 def calcular_poisson_equipo(media):
     return [((math.exp(-media) * media**k) / math.factorial(k)) for k in range(20)]
 
+def calcular_probabilidad_btts_poisson(media_local, media_visita, max_goles=10):
+    poisson_local = calcular_poisson_equipo(media_local)
+    poisson_visita = calcular_poisson_equipo(media_visita)
+    
+    p_btts = 0
+    for i in range(1, max_goles + 1):
+        for j in range(1, max_goles + 1):
+            p_btts += poisson_local[i] * poisson_visita[j]
+    
+    return round(p_btts * 100, 2)
+
+
 def calcular_resultado_probable(goles_local, goles_visita):
     poisson_local = calcular_poisson_equipo(goles_local)
     poisson_visita = calcular_poisson_equipo(goles_visita)
@@ -288,9 +300,7 @@ def predecir_partido(stats_local, stats_visita):
     distribucion_goles_1t = calcular_distribucion_poisson(media_goles_1t)
     p_1g_1t = distribucion_goles_1t.get("1 goles", 0.0)
 
-    p_local_anota = 1 - math.exp(-stats_local["goles"])
-    p_visita_anota = 1 - math.exp(-stats_visita["goles"])
-    p_btts = round(p_local_anota * p_visita_anota * 100, 2)
+    p_btts = calcular_probabilidad_btts_poisson(stats_local["goles"], stats_visita["goles"])
 
     media_corners = stats_local["corners"] + stats_visita["corners"]
     corners_poisson = calcular_poisson_equipo(media_corners)
