@@ -207,8 +207,9 @@ def inicio():
 
                 print("DEBUG RESULTADO ===>", resultado)
 
+                
                 if resultado:
-                    # ---- Variables externas al diccionario ----
+                    # Variables externas
                     probabilidad_ambos = resultado["Probabilidades"]["Ambos Marcan"]["Probabilidad"]
 
                     if probabilidad_ambos >= 60:
@@ -218,7 +219,7 @@ def inicio():
                     else:
                         texto_ambos = "Probabilidad baja de que ambos equipos marquen."
 
-                    # === BLOQUE PARA GENERAR SUGERENCIA DE GOLES (+1.5 o +2.5) ===
+                    # Escenarios de goles
                     escenarios = resultado["Probabilidades"]["Escenarios Goles"]
                     prob_15 = escenarios["+1.5 goles"]
                     prob_25 = escenarios["+2.5 goles"]
@@ -233,14 +234,24 @@ def inicio():
                         goles_recomendacion = "Menos de 2.5 goles"
                         goles_texto = "No se anticipa un partido con muchos goles."
 
+                    # Sugerencia de córners
+                    corners = resultado["Probabilidades"]["Probabilidad Córners"]
+                    if corners["+8.5"] >= 85:
+                        corners_sugerencia = "Más de 8.5 córners"
+                        corners_justificacion = "Alta probabilidad de al menos 9 córners en total."
+                    elif corners["+7.5"] >= 80:
+                        corners_sugerencia = "Más de 7.5 córners"
+                        corners_justificacion = "Probable que el partido supere los 7 córners."
+                    else:
+                        corners_sugerencia = "Evitar apuestas por córners altos."
+                        corners_justificacion = "Ningún escenario tiene probabilidad suficiente."
 
-    # ---- Diccionario completo ----
                     datos = {
                         'gol_1t_prob': resultado["Gol 1T"]["Probabilidad"],
                         'gol_1t_texto': resultado["Gol 1T"]["Texto"],
 
                         'ambos_marcan_prob': resultado["Probabilidades"]["Ambos Marcan"]["Probabilidad"],
-                        'ambos_marcan_texto': "Ambos equipos tienen probabilidad media/alta de anotar.",
+                        'ambos_marcan_texto': texto_ambos,
                         'ambos_marcan_justificacion': f'{resultado["Equipo Local"]} promedia {resultado["Promedios Local"]["Goles"]:.2f} goles y {resultado["Equipo Visita"]} recibe {resultado["Promedios Visita"]["Goles"]:.2f}.',
 
                         'goles_prob_15': prob_15,
@@ -248,9 +259,9 @@ def inicio():
                         'goles_recomendacion': goles_recomendacion,
                         'goles_texto': goles_texto,
 
-                        'corners': resultado["Probabilidades"]["Probabilidad Córners"],
-                        'corners_sugerencia': resultado["Probabilidades"]["Sugerencia Córners"],
-                        'corners_justificacion': resultado["Probabilidades"]["Justificacion Córners"],
+                        'corners': corners,
+                        'corners_sugerencia': corners_sugerencia,
+                        'corners_justificacion': corners_justificacion,
 
                         'tarjetas': resultado["Probabilidades"]["Tarjetas"],
                         'tarjetas_sugerencia': resultado["Probabilidades"]["Sugerencia Tarjetas"],
@@ -258,9 +269,6 @@ def inicio():
 
                         'pronostico_final': resultado["Probabilidades"]["Sugerencia Resultado"]
                     }
-
-     
-                                           
 
                     return render_template("rockdata_2.html",
                         datos=datos,
