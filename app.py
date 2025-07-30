@@ -236,7 +236,7 @@ def inicio():
                                        if resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"] >= 50
                                        else "La probabilidad se ajusta más a un partido con pocos goles.",
 
-                        'corners': resultado["Probabilidades"]["Córners"],
+                        'corners': resultado["Probabilidades"]["Probabilidad Córners"],
                         'corners_sugerencia': resultado["Sugerencias"]["Córners"]["Sugerencia"],
                         'corners_justificacion': resultado["Sugerencias"]["Córners"]["Justificación"],
 
