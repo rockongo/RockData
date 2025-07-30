@@ -348,7 +348,7 @@ def predecir_partido(stats_local, stats_visita):
         "Sugerencia Tarjetas": datos["tarjetas_sugerencia"],
         "Justificacion Tarjetas": datos["tarjetas_justificacion"]
         }
-    }
+    
     datos["Probabilidades"] = resultados
 
 def generar_resumen_formateado(probabilidades: dict) -> dict:
