@@ -130,6 +130,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
     resultado_probabilistico = predecir_partido(stats_local_data, stats_visita_data)
 
+# === Análisis textual de Gol en Primer Tiempo ===
     gol_1t_prob = resultado_probabilistico["Gol 1er Tiempo"]["1 gol"]
 
     if gol_1t_prob >= 60:
@@ -138,7 +139,6 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         gol_1t_texto = "Hay chances razonables de gol antes del descanso, aunque no está garantizado."
     else:
         gol_1t_texto = "No se anticipa un primer tiempo muy activo."
-
 
     return {
         "Equipo Local": equipo_local,
