@@ -237,6 +237,7 @@ def inicio():
                                        else "La probabilidad se ajusta más a un partido con pocos goles.",
 
                         'corners': resultado["Probabilidades"]["Probabilidad Córners"]
+                        'tarjetas': resultado["Probabilidades"]["Probabilidad Tarjetas"]
                     }     
                     if "Sugerencias" in resultado:
                         sugerencias_data = resultado["Sugerencias"]
@@ -256,7 +257,8 @@ def inicio():
                             'pronostico_final': "No disponible",
                         })
 
-                   
+                    datos = resultado                   
+
                     return render_template("rockdata_2.html",
                         datos=datos,
                         sugerencias=sugerencias,
