@@ -221,43 +221,29 @@ def inicio():
     # ---- Diccionario completo ----
                     datos = {
                         'gol_1t_prob': resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"],
-                        'gol_1t_texto': "Probabilidad alta de que se abra el marcador antes del descanso."
-                                        if resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"] >= 60
-                                        else "No se anticipa un primer tiempo muy activo.",
+                        'gol_1t_texto': "Probabilidad alta de que se abra el marcador antes del descanso." if resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"] >= 35 else "No se anticipa un primer tiempo muy activo.",
 
-                        'ambos_marcan_prob': probabilidad_ambos,
-                        'ambos_marcan_texto': texto_ambos,
+                        'ambos_marcan_prob': resultado["Probabilidades"]["Ambos Marcan"]["Probabilidad"],
+                        'ambos_marcan_texto': "Ambos equipos tienen probabilidad media/alta de anotar.",
                         'ambos_marcan_justificacion': f'{resultado["Equipo Local"]} promedia {resultado["Promedios Local"]["Goles"]:.2f} goles y {resultado["Equipo Visita"]} recibe {resultado["Promedios Visita"]["Goles"]:.2f}.',
 
                         'goles_prob_15': resultado["Probabilidades"]["Escenarios Goles"]["+1.5 goles"],
                         'goles_prob_25': resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"],
-                        'goles_recomendacion': "+2.5 goles" if resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"] >= 50 else "+1.5 goles",
-                        'goles_texto': "El escenario de +2.5 goles tiene probabilidad moderada."
-                                       if resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"] >= 50
-                                       else "La probabilidad se ajusta más a un partido con pocos goles.",
+                        'goles_recomendacion': resultado["Probabilidades"]["Sugerencia Goles"],
+                        'goles_texto': resultado["Probabilidades"]["Justificacion Goles"],
 
                         'corners': resultado["Probabilidades"]["Probabilidad Córners"],
-                        'tarjetas': resultado["Probabilidades"]
-                    }     
-                    if "Sugerencias" in resultado:
-                        sugerencias_data = resultado["Sugerencias"]
-                        datos.update({
-                            'corners_sugerencia': sugerencias_data.get("Córners", {}).get("Sugerencia", "No disponible"),
-                            'corners_justificacion': sugerencias_data.get("Córners", {}).get("Justificación", "No disponible"),
-                            'tarjetas_sugerencia': sugerencias_data.get("Tarjetas", {}).get("Sugerencia", "No disponible"),
-                            'tarjetas_justificacion': sugerencias_data.get("Tarjetas", {}).get("Justificación", "No disponible"),
-                            'pronostico_final': sugerencias_data.get("Resultado", {}).get("Sugerencia", "No disponible"),
-                        })
-                    else:
-                        datos.update({
-                            'corners_sugerencia': "No disponible",
-                            'corners_justificacion': "No disponible",
-                            'tarjetas_sugerencia': "No disponible",
-                            'tarjetas_justificacion': "No disponible",
-                            'pronostico_final': "No disponible",
-                        })
+                        'corners_sugerencia': resultado["Probabilidades"]["Sugerencia Córners"],
+                        'corners_justificacion': resultado["Probabilidades"]["Justificacion Córners"],
 
-                        
+                        'tarjetas': resultado["Probabilidades"]["Probabilidades"]["Tarjetas"],
+                        'tarjetas_sugerencia': resultado["Probabilidades"]["Probabilidades"]["Sugerencia Tarjetas"],
+                        'tarjetas_justificacion': resultado["Probabilidades"]["Probabilidades"]["Justificacion Tarjetas"],
+
+                        'pronostico_final': resultado["Probabilidades"]["Sugerencia Resultado"]
+                    }
+     
+                                           
 
                     return render_template("rockdata_2.html",
                         datos=datos,

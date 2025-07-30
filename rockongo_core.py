@@ -344,13 +344,12 @@ def predecir_partido(stats_local, stats_visita):
         },
         "Resultado": resultado,
         "Sugerencia Resultado": ganador,
-        "Probabilidades": {
-            "Tarjetas": prob_tarjetas,
-            "Sugerencia Tarjetas": datos["tarjetas_sugerencia"],
-            "Justificacion Tarjetas": datos["tarjetas_justificacion"]
+        "Tarjetas": prob_tarjetas,
+        "Sugerencia Tarjetas": datos["tarjetas_sugerencia"],
+        "Justificacion Tarjetas": datos["tarjetas_justificacion"]
         }
     }
-    return resultados
+    datos["Probabilidades"] = resultados
 
 def generar_resumen_formateado(probabilidades: dict) -> dict:
     resumen = {}
