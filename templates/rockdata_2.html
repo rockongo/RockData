@@ -108,14 +108,17 @@
     <p class="text-muted">{{ datos['corners_justificacion'] }}</p>
   </div>
 
-  <div class="bloque">
-    <h5>🟨 Tarjetas</h5>
-    <p>+3.5: {{ datos['tarjetas']['+3.5'] }}%<br>
-       +4.5: {{ datos['tarjetas']['+4.5'] }}%<br>
-       -4.5: {{ datos['tarjetas']['-4.5'] }}%</p>
-    <p><strong>Sugerencia:</strong> {{ datos['tarjetas_sugerencia'] }}</p>
-    <p class="text-muted">{{ datos['tarjetas_justificacion'] }}</p>
-  </div>
+<div class="bloque">
+  <h5>🟨 Tarjetas</h5>
+  <p>
+    +3.5: {{ datos['Probabilidades']['Probabilidad Tarjetas']['+3.5'] }}%<br>
+    +4.5: {{ datos['Probabilidades']['Probabilidad Tarjetas']['+4.5'] }}%<br>
+    -4.5: {{ datos['Probabilidades']['Probabilidad Tarjetas']['-4.5'] }}%
+  </p>
+  <p><strong>Sugerencia:</strong> {{ datos['tarjetas_sugerencia'] }}</p>
+  <p class="text-muted">{{ datos['tarjetas_justificacion'] }}</p>
+</div>
+
 
   <div class="bloque pronostico-final">
     Pronóstico Final: {{ datos['pronostico_final'] }}
