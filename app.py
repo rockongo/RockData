@@ -209,12 +209,21 @@ def inicio():
 
                 if resultado:
                     datos = {
-                        'gol_1t_prob': resultado["Gol 1T"]["Probabilidad"],
-                        'gol_1t_texto': resultado["Gol 1T"]["Texto"],
-    
+                        'gol_1t_prob': resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"],
+                        'gol_1t_texto': "Probabilidad alta de que se abra el marcador antes del descanso." if resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"] >= 60 else "No se anticipa un primer tiempo muy activo.",
+
                         'ambos_marcan_prob': resultado["Probabilidades"]["Ambos Marcan"]["Probabilidad"],
-                        'ambos_marcan_texto': "Ambos equipos tienen probabilidad media/alta de anotar.",
-                        'ambos_marcan_justificacion': f'{resultado["Equipo Local"]} promedia {resultado["Promedios Local"]["Goles"]:.2f} goles y {resultado["Equipo Visita"]} recibe {resultado["Promedios Visita"]["Goles"]:.2f}.',
+                        # Definir primero fuera del diccionario
+                        probabilidad_ambos = resultado["Probabilidades"]["Ambos Marcan"]["Probabilidad"]
+                        if probabilidad_ambos >= 60:
+                            texto_ambos = "Alta probabilidad de que ambos equipos anoten."
+                        elif probabilidad_ambos >= 45:
+                            texto_ambos = "Probabilidad media de que ambos equipos anoten."
+                       else:
+                            texto_ambos = "Probabilidad baja de que ambos equipos marquen."
+
+'ambos_marcan_justificacion': f'{resultado["Equipo Local"]} promedia {resultado["Promedios Local"]["Goles"]:.2f} goles y {resultado["Equipo Visita"]} recibe {resultado["Promedios Visita"]["Goles"]:.2f}.',
+
     
                         'goles_prob_15': resultado["Probabilidades"]["Escenarios Goles"]["+1.5 goles"],
                         'goles_prob_25': resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"],
@@ -235,7 +244,8 @@ def inicio():
                     }
                    
                     return render_template("rockdata_2.html",
-                        datos=datos, 
+                        datos=datos,
+                        'ambos_marcan_texto': texto_ambos,
                         sugerencias=sugerencias,
                         paises=paises,
                         equipo_local=equipo_local,
