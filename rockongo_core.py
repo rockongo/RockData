@@ -345,7 +345,7 @@ def predecir_partido(stats_local, stats_visita):
         "Resultado": resultado,
         "Sugerencia Resultado": ganador,
         "Probabilidades": {
-            "Probabilidad Tarjetas": prob_tarjetas,
+            "Tarjetas": prob_tarjetas,
             "Sugerencia Tarjetas": datos["tarjetas_sugerencia"],
             "Justificacion Tarjetas": datos["tarjetas_justificacion"]
         }
