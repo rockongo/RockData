@@ -469,9 +469,23 @@ def formato_rockdata_41(datos):
     print("Tarjetas:")
     for k, v in datos['tarjetas'].items():
         print(f"  {k}: {v}%")
+
+    # === Sugerencia de tarjetas con recomendación clara ===
+    tarjetas = datos['tarjetas']
+    t_35 = tarjetas.get("+3.5", 0)
+    t_45 = tarjetas.get("+4.5", 0)
+
+    if t_35 >= 65:
+        datos['tarjetas_sugerencia'] = f"Se recomienda con alta seguridad apostar a +3.5 tarjetas"
+    elif t_45 >= 60:
+        datos['tarjetas_sugerencia'] = f"Se puede considerar +4.5 tarjetas si se busca algo más arriesgado"
+    else:
+        datos['tarjetas_sugerencia'] = f"No se recomienda apostar a tarjetas altas en este partido"
+
+    datos['tarjetas_justificacion'] = f"Distribución: +3.5 = {t_35}%, +4.5 = {t_45}%"
+
     print(f"\nSugerencia: {datos['tarjetas_sugerencia']}")
     print(f"🟡 {datos['tarjetas_justificacion']}\n")
-
     print("Resultado del Partido:")
     print(f"  Local: {datos['resultado']['local']}%")
     print(f"  Empate: {datos['resultado']['empate']}%")
