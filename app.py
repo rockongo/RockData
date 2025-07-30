@@ -257,7 +257,7 @@ def inicio():
                             'pronostico_final': "No disponible",
                         })
 
-                    datos = resultado                   
+                        
 
                     return render_template("rockdata_2.html",
                         datos=datos,
