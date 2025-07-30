@@ -223,25 +223,26 @@ def inicio():
                         'gol_1t_prob': resultado["Gol 1T"]["Probabilidad"],
                         'gol_1t_texto': resultado["Gol 1T"]["Texto"],
 
-                        'ambos_marcan_prob': resultado["Ambos Marcan"]["Probabilidad"],
+                        'ambos_marcan_prob': resultado["Probabilidades"]["Ambos Marcan"]["Probabilidad"],
                         'ambos_marcan_texto': "Ambos equipos tienen probabilidad media/alta de anotar.",
                         'ambos_marcan_justificacion': f'{resultado["Equipo Local"]} promedia {resultado["Promedios Local"]["Goles"]:.2f} goles y {resultado["Equipo Visita"]} recibe {resultado["Promedios Visita"]["Goles"]:.2f}.',
 
-                        'goles_prob_15': resultado["Escenarios Goles"]["+1.5 goles"],
-                        'goles_prob_25': resultado["Escenarios Goles"]["+2.5 goles"],
-                        'goles_recomendacion': resultado["Sugerencia Goles"],
-                        'goles_texto': resultado["Justificacion Goles"],
+                        'goles_prob_15': resultado["Probabilidades"]["Escenarios Goles"]["+1.5 goles"],
+                        'goles_prob_25': resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"],
+                        'goles_recomendacion': resultado["Probabilidades"]["Sugerencia Goles"],
+                        'goles_texto': resultado["Probabilidades"]["Justificacion Goles"],
 
-                        'corners': resultado["Probabilidad Córners"],
-                        'corners_sugerencia': resultado["Sugerencia Córners"],
-                        'corners_justificacion': resultado["Justificacion Córners"],
+                        'corners': resultado["Probabilidades"]["Probabilidad Córners"],
+                        'corners_sugerencia': resultado["Probabilidades"]["Sugerencia Córners"],
+                        'corners_justificacion': resultado["Probabilidades"]["Justificacion Córners"],
 
-                        'tarjetas': resultado["Tarjetas"],
-                        'tarjetas_sugerencia': resultado["Sugerencia Tarjetas"],
-                        'tarjetas_justificacion': resultado["Justificacion Tarjetas"],
+                        'tarjetas': resultado["Probabilidades"]["Tarjetas"],
+                        'tarjetas_sugerencia': resultado["Probabilidades"]["Sugerencia Tarjetas"],
+                        'tarjetas_justificacion': resultado["Probabilidades"]["Justificacion Tarjetas"],
 
-                        'pronostico_final': resultado["Sugerencia Resultado"]
+                        'pronostico_final': resultado["Probabilidades"]["Sugerencia Resultado"]
                     }
+
      
                                            
 
