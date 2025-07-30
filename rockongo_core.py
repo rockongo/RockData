@@ -316,13 +316,12 @@ def predecir_partido(stats_local, stats_visita):
     tarjetas_poisson = calcular_poisson_equipo(media_tarjetas)
 
     prob_tarjetas = {
-    datos['tarjetas'] = prob_tarjetas
-
         "+3.5": round(sum(tarjetas_poisson[4:]) * 100, 2),
         "+4.5": round(sum(tarjetas_poisson[5:]) * 100, 2),
         "-4.5": round(sum(tarjetas_poisson[:5]) * 100, 2),
     }
 
+    datos['tarjetas'] = prob_tarjetas
     
     resultados = {
         "Distribución Goles Totales": distribucion_goles,
@@ -336,9 +335,12 @@ def predecir_partido(stats_local, stats_visita):
         },
         "Resultado": resultado,
         "Sugerencia Resultado": ganador,
-        "Probabilidad Tarjetas": prob_tarjetas
+        "Probabilidades": {
+            "Probabilidad Tarjetas": prob_tarjetas,
+            "tarjetas_sugerencia": datos["tarjetas_sugerencia"],
+            "tarjetas_justificacion": datos["tarjetas_justificacion"]
+        }
     }
-
     return resultados
 
 def generar_resumen_formateado(probabilidades: dict) -> dict:
