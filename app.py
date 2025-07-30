@@ -236,24 +236,25 @@ def inicio():
                                        if resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"] >= 50
                                        else "La probabilidad se ajusta más a un partido con pocos goles.",
 
-                        'corners': resultado["Probabilidades"]["Probabilidad Córners"],
-                                if "Sugerencias" in resultado:
-                                    sugerencias_data = resultado["Sugerencias"]
-                                    datos.update({
-                                        'corners_sugerencia': sugerencias_data.get("Córners", {}).get("Sugerencia", "No disponible"),
-                                        'corners_justificacion': sugerencias_data.get("Córners", {}).get("Justificación", "No disponible"),
-                                        'tarjetas_sugerencia': sugerencias_data.get("Tarjetas", {}).get("Sugerencia", "No disponible"),
-                                        'tarjetas_justificacion': sugerencias_data.get("Tarjetas", {}).get("Justificación", "No disponible"),
-                                        'pronostico_final': sugerencias_data.get("Resultado", {}).get("Sugerencia", "No disponible"),
-                                    })
-                                else:
-                                    datos.update({
-                                        'corners_sugerencia': "No disponible",
-                                        'corners_justificacion': "No disponible",
-                                        'tarjetas_sugerencia': "No disponible",
-                                        'tarjetas_justificacion': "No disponible",
-                                        'pronostico_final': "No disponible",
-                                    })
+                        'corners': resultado["Probabilidades"]["Probabilidad Córners"]
+                        }     
+                        if "Sugerencias" in resultado:
+                            sugerencias_data = resultado["Sugerencias"]
+                            datos.update({
+                                'corners_sugerencia': sugerencias_data.get("Córners", {}).get("Sugerencia", "No disponible"),
+                                'corners_justificacion': sugerencias_data.get("Córners", {}).get("Justificación", "No disponible"),
+                                'tarjetas_sugerencia': sugerencias_data.get("Tarjetas", {}).get("Sugerencia", "No disponible"),
+                                'tarjetas_justificacion': sugerencias_data.get("Tarjetas", {}).get("Justificación", "No disponible"),
+                                'pronostico_final': sugerencias_data.get("Resultado", {}).get("Sugerencia", "No disponible"),
+                            })
+                        else:
+                            datos.update({
+                                'corners_sugerencia': "No disponible",
+                                'corners_justificacion': "No disponible",
+                                'tarjetas_sugerencia': "No disponible",
+                                'tarjetas_justificacion': "No disponible",
+                                'pronostico_final': "No disponible",
+                            })
 
                    
                     return render_template("rockdata_2.html",
