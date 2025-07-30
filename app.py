@@ -218,6 +218,22 @@ def inicio():
                     else:
                         texto_ambos = "Probabilidad baja de que ambos equipos marquen."
 
+                    # === BLOQUE PARA GENERAR SUGERENCIA DE GOLES (+1.5 o +2.5) ===
+                    escenarios = resultado["Probabilidades"]["Escenarios Goles"]
+                    prob_15 = escenarios["+1.5 goles"]
+                    prob_25 = escenarios["+2.5 goles"]
+
+                    if prob_15 >= 75:
+                        goles_recomendacion = "Más de 1.5 goles"
+                        goles_texto = "Alta probabilidad de que el partido supere los 1.5 goles."
+                    elif prob_25 >= 65:
+                        goles_recomendacion = "Más de 2.5 goles"
+                        goles_texto = "Hay buenas chances de ver al menos 3 goles en el partido."
+                    else:
+                        goles_recomendacion = "Menos de 2.5 goles"
+                        goles_texto = "No se anticipa un partido con muchos goles."
+
+
     # ---- Diccionario completo ----
                     datos = {
                         'gol_1t_prob': resultado["Gol 1T"]["Probabilidad"],
@@ -227,10 +243,10 @@ def inicio():
                         'ambos_marcan_texto': "Ambos equipos tienen probabilidad media/alta de anotar.",
                         'ambos_marcan_justificacion': f'{resultado["Equipo Local"]} promedia {resultado["Promedios Local"]["Goles"]:.2f} goles y {resultado["Equipo Visita"]} recibe {resultado["Promedios Visita"]["Goles"]:.2f}.',
 
-                        'goles_prob_15': resultado["Probabilidades"]["Escenarios Goles"]["+1.5 goles"],
-                        'goles_prob_25': resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"],
-                        'goles_recomendacion': resultado["Probabilidades"]["Sugerencia Goles"],
-                        'goles_texto': resultado["Probabilidades"]["Justificacion Goles"],
+                        'goles_prob_15': prob_15,
+                        'goles_prob_25': prob_25,
+                        'goles_recomendacion': goles_recomendacion,
+                        'goles_texto': goles_texto,
 
                         'corners': resultado["Probabilidades"]["Probabilidad Córners"],
                         'corners_sugerencia': resultado["Probabilidades"]["Sugerencia Córners"],
