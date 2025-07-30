@@ -209,8 +209,8 @@ def inicio():
 
                 if resultado:
                     datos = {
-                        'gol_1t_prob': resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"],
-                        'gol_1t_texto': "Probabilidad alta de que se abra el marcador antes del descanso." if resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"] >= 35 else "No se anticipa un primer tiempo muy activo.",
+                        'gol_1t_prob': resultado["Gol 1T"]["Probabilidad"],
+                        'gol_1t_texto': resultado["Gol 1T"]["Texto"],
     
                         'ambos_marcan_prob': resultado["Probabilidades"]["Ambos Marcan"]["Probabilidad"],
                         'ambos_marcan_texto': "Ambos equipos tienen probabilidad media/alta de anotar.",
