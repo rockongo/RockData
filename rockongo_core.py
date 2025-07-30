@@ -322,7 +322,15 @@ def predecir_partido(stats_local, stats_visita):
     }
     datos = {}
 
-    datos['tarjetas'] = prob_tarjetas
+    mayor_prob = max(prob_tarjetas, key=prob_tarjetas.get)
+    datos["tarjetas_sugerencia"] = f"Más de {mayor_prob}" if "+" in mayor_prob else "Menos de 4.5 tarjetas"
+
+    if prob_tarjetas[mayor_prob] >= 70:
+        datos["tarjetas_justificacion"] = f"Alta probabilidad de que se superen las {mayor_prob} tarjetas."
+    elif prob_tarjetas[mayor_prob] >= 50:
+        datos["tarjetas_justificacion"] = f"Escenario probable para {mayor_prob} tarjetas."
+    else:
+        datos["tarjetas_justificacion"] = f"Partido parejo en tarjetas, cuidado con {mayor_prob}."
     
     resultados = {
         "Distribución Goles Totales": distribucion_goles,
@@ -338,8 +346,8 @@ def predecir_partido(stats_local, stats_visita):
         "Sugerencia Resultado": ganador,
         "Probabilidades": {
             "Probabilidad Tarjetas": prob_tarjetas,
-            "tarjetas_sugerencia": datos["tarjetas_sugerencia"],
-            "tarjetas_justificacion": datos["tarjetas_justificacion"]
+            "Sugerencia Tarjetas": datos["tarjetas_sugerencia"],
+            "Justificacion Tarjetas": datos["tarjetas_justificacion"]
         }
     }
     return resultados
