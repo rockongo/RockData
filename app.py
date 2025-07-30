@@ -237,7 +237,7 @@ def inicio():
                                        else "La probabilidad se ajusta más a un partido con pocos goles.",
 
                         'corners': resultado["Probabilidades"]["Probabilidad Córners"],
-                        'tarjetas': resultado["Probabilidades"]["Probabilidad Tarjetas"]
+                        'tarjetas': resultado["Probabilidades"]["Probabilidad Tarjetas"],
                     }     
                     if "Sugerencias" in resultado:
                         sugerencias_data = resultado["Sugerencias"]
