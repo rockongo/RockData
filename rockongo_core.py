@@ -316,6 +316,8 @@ def predecir_partido(stats_local, stats_visita):
     tarjetas_poisson = calcular_poisson_equipo(media_tarjetas)
 
     prob_tarjetas = {
+    datos['tarjetas'] = prob_tarjetas
+
         "+3.5": round(sum(tarjetas_poisson[4:]) * 100, 2),
         "+4.5": round(sum(tarjetas_poisson[5:]) * 100, 2),
         "-4.5": round(sum(tarjetas_poisson[:5]) * 100, 2),
@@ -471,6 +473,16 @@ def formato_rockdata_41(datos):
         print(f"  {k}: {v}%")
 
     # === Sugerencia de tarjetas con recomendación clara ===
+    # Probabilidades de tarjetas (distribución basada en Poisson)
+    prob_35 = round(prob_tarjetas(3.5), 2)
+    prob_45 = round(prob_tarjetas(4.5), 2)
+
+    datos['tarjetas'] = {
+        "+3.5": prob_35,
+        "+4.5": prob_45,
+        "-4.5": round(100 - prob_45, 2)
+    }
+
     tarjetas = datos['tarjetas']
     t_35 = tarjetas.get("+3.5", 0)
     t_45 = tarjetas.get("+4.5", 0)
