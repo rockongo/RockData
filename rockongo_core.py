@@ -320,6 +320,7 @@ def predecir_partido(stats_local, stats_visita):
         "+4.5": round(sum(tarjetas_poisson[5:]) * 100, 2),
         "-4.5": round(sum(tarjetas_poisson[:5]) * 100, 2),
     }
+    datos = {}
 
     datos['tarjetas'] = prob_tarjetas
     
