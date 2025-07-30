@@ -208,44 +208,44 @@ def inicio():
                 print("DEBUG RESULTADO ===>", resultado)
 
                 if resultado:
-    # ---- Variables externas al diccionario ----
-    probabilidad_ambos = resultado["Probabilidades"]["Ambos Marcan"]["Probabilidad"]
+                    # ---- Variables externas al diccionario ----
+                    probabilidad_ambos = resultado["Probabilidades"]["Ambos Marcan"]["Probabilidad"]
 
-    if probabilidad_ambos >= 60:
-        texto_ambos = "Alta probabilidad de que ambos equipos anoten."
-    elif probabilidad_ambos >= 45:
-        texto_ambos = "Probabilidad media de que ambos equipos anoten."
-    else:
-        texto_ambos = "Probabilidad baja de que ambos equipos marquen."
+                    if probabilidad_ambos >= 60:
+                        texto_ambos = "Alta probabilidad de que ambos equipos anoten."
+                    elif probabilidad_ambos >= 45:
+                        texto_ambos = "Probabilidad media de que ambos equipos anoten."
+                    else:
+                        texto_ambos = "Probabilidad baja de que ambos equipos marquen."
 
     # ---- Diccionario completo ----
-    datos = {
-        'gol_1t_prob': resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"],
-        'gol_1t_texto': "Probabilidad alta de que se abra el marcador antes del descanso."
-                        if resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"] >= 60
-                        else "No se anticipa un primer tiempo muy activo.",
+                    datos = {
+                        'gol_1t_prob': resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"],
+                        'gol_1t_texto': "Probabilidad alta de que se abra el marcador antes del descanso."
+                                        if resultado["Probabilidades"]["Gol 1er Tiempo"]["1 gol"] >= 60
+                                        else "No se anticipa un primer tiempo muy activo.",
 
-        'ambos_marcan_prob': probabilidad_ambos,
-        'ambos_marcan_texto': texto_ambos,
-        'ambos_marcan_justificacion': f'{resultado["Equipo Local"]} promedia {resultado["Promedios Local"]["Goles"]:.2f} goles y {resultado["Equipo Visita"]} recibe {resultado["Promedios Visita"]["Goles"]:.2f}.',
+                        'ambos_marcan_prob': probabilidad_ambos,
+                        'ambos_marcan_texto': texto_ambos,
+                        'ambos_marcan_justificacion': f'{resultado["Equipo Local"]} promedia {resultado["Promedios Local"]["Goles"]:.2f} goles y {resultado["Equipo Visita"]} recibe {resultado["Promedios Visita"]["Goles"]:.2f}.',
 
-        'goles_prob_15': resultado["Probabilidades"]["Escenarios Goles"]["+1.5 goles"],
-        'goles_prob_25': resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"],
-        'goles_recomendacion': "+2.5 goles" if resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"] >= 50 else "+1.5 goles",
-        'goles_texto': "El escenario de +2.5 goles tiene probabilidad moderada."
-                       if resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"] >= 50
-                       else "La probabilidad se ajusta más a un partido con pocos goles.",
+                        'goles_prob_15': resultado["Probabilidades"]["Escenarios Goles"]["+1.5 goles"],
+                        'goles_prob_25': resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"],
+                        'goles_recomendacion': "+2.5 goles" if resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"] >= 50 else "+1.5 goles",
+                        'goles_texto': "El escenario de +2.5 goles tiene probabilidad moderada."
+                                       if resultado["Probabilidades"]["Escenarios Goles"]["+2.5 goles"] >= 50
+                                       else "La probabilidad se ajusta más a un partido con pocos goles.",
 
-        'corners': resultado["Probabilidades"]["Córners"],
-        'corners_sugerencia': resultado["Sugerencias"]["Córners"]["Sugerencia"],
-        'corners_justificacion': resultado["Sugerencias"]["Córners"]["Justificación"],
+                        'corners': resultado["Probabilidades"]["Córners"],
+                        'corners_sugerencia': resultado["Sugerencias"]["Córners"]["Sugerencia"],
+                        'corners_justificacion': resultado["Sugerencias"]["Córners"]["Justificación"],
 
-        'tarjetas': resultado["Probabilidades"]["Tarjetas"],
-        'tarjetas_sugerencia': resultado["Sugerencias"]["Tarjetas"]["Sugerencia"],
-        'tarjetas_justificacion': resultado["Sugerencias"]["Tarjetas"]["Justificación"],
+                        'tarjetas': resultado["Probabilidades"]["Tarjetas"],
+                        'tarjetas_sugerencia': resultado["Sugerencias"]["Tarjetas"]["Sugerencia"],
+                        'tarjetas_justificacion': resultado["Sugerencias"]["Tarjetas"]["Justificación"],
 
-        'pronostico_final': resultado["Sugerencias"]["Resultado"]["Sugerencia"]
-    }
+                        'pronostico_final': resultado["Sugerencias"]["Resultado"]["Sugerencia"]
+                    }
 
                    
                     return render_template("rockdata_2.html",
