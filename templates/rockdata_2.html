@@ -97,7 +97,6 @@
   <div class="bloque">
     <div class="fila">⚽ +1.5 goles <span>{{ datos['goles_prob_15'] }}%</span></div>
     <div class="fila">⚽ +2.5 goles <span>{{ datos['goles_prob_25'] }}%</span></div>
-    <div class="descripcion">Recomendación: {{ datos['goles_recomendacion'] }}</div>
     <div class="extra">{{ datos['goles_texto'] }}</div>
   </div>
 
@@ -111,8 +110,7 @@
 
   <div class="bloque">
     <div class="fila">🟨 +3.5 tarjetas <span>{{ datos['tarjetas']['+3.5'] }}%</span></div>
-    <div class="fila">🟥 +4.5 tarjetas <span>{{ datos['tarjetas']['+4.5'] }}%</span></div>
-    <div class="fila">🟩 -4.5 tarjetas <span>{{ datos['tarjetas']['-4.5'] }}%</span></div>
+    <div class="fila">🟨 +4.5 tarjetas <span>{{ datos['tarjetas']['+4.5'] }}%</span></div>
     <div class="descripcion">Sugerencia: {{ datos['tarjetas_sugerencia'] }}</div>
     <div class="extra">{{ datos['tarjetas_justificacion'] }}</div>
   </div>
