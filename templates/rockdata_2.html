@@ -38,13 +38,6 @@
       text-align: center;
       font-size: 1.2rem;
     }
-    .sugerencias {
-      background-color: #ffffff;
-      border-left: 4px solid #17a2b8;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-    }
     .btn-volver {
       background-color: #1e1e2f;
       color: #fff;
@@ -108,31 +101,19 @@
     <p class="text-muted">{{ datos['corners_justificacion'] }}</p>
   </div>
 
-<div class="bloque">
-  <h5>🟨 Tarjetas</h5>
-  <p>
-    +3.5: {{ datos['tarjetas']['+3.5'] }}%<br>
-    +4.5: {{ datos['tarjetas']['+4.5'] }}%<br>
-    -4.5: {{ datos['tarjetas']['-4.5'] }}%
-  </p>
-
-  <p><strong>Sugerencia:</strong> {{ datos['tarjetas_sugerencia'] }}</p>
-  <p class="text-muted">{{ datos['tarjetas_justificacion'] }}</p>
-</div>
+  <div class="bloque">
+    <h5>🟨 Tarjetas</h5>
+    <p>
+      +3.5: {{ datos['tarjetas']['+3.5'] }}%<br>
+      +4.5: {{ datos['tarjetas']['+4.5'] }}%<br>
+      -4.5: {{ datos['tarjetas']['-4.5'] }}%
+    </p>
+    <p><strong>Sugerencia:</strong> {{ datos['tarjetas_sugerencia'] }}</p>
+    <p class="text-muted">{{ datos['tarjetas_justificacion'] }}</p>
+  </div>
 
   <div class="bloque pronostico-final">
     Pronóstico Final: {{ datos['pronostico_final'] }}
-  </div>
-
-  <!-- Sugerencias -->
-  <div class="sugerencias mt-3">
-    <h6 class="fw-bold">💡 Sugerencias de Apuesta:</h6>
-    <ul>
-      {% for sugerencia in sugerencias %}
-        <li>✔️ {{ sugerencia }}</li>
-      {% endfor %}
-    </ul>
-    <p class="text-muted small mt-2">🧠 Basado en estadísticas específicas del partido. No es una apuesta fija.</p>
   </div>
 
   <!-- Botón volver -->
@@ -144,4 +125,3 @@
 
 </body>
 </html>
-
