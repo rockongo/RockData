@@ -267,8 +267,8 @@ def inicio():
                         'tarjetas_sugerencia': resultado["Probabilidades"]["Sugerencia Tarjetas"],
                         'tarjetas_justificacion': resultado["Probabilidades"]["Justificacion Tarjetas"],
 
-                        'pronostico_final': resultado["Probabilidades"]["Sugerencia Resultado"]
-                        'resultado_justificacion': resultado["Justificacion Resultado"],
+                        'pronostico_final': resultado["Probabilidades"]["Sugerencia Resultado"],
+                        'resultado_justificacion': resultado["Justificacion Resultado"]
 
                     }
 
