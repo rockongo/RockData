@@ -40,7 +40,7 @@ ligas_config = {
     "Liga_finlandia_2025.xlsx": {"id": 244, "desde": "2025-07-24"},
     "Liga_mexico_2025.xlsx": {"id": 262, "desde": "2025-07-24"},
     "Liga_Suecia_2025.xlsx": {"id": 113, "desde": "2025-07-24"},
-    "Liga_argentina_2025.xlsx": {"id": 128, "desde": "2025-07-22}",
+    "Liga_argentina_2025.xlsx": {"id": 128, "desde": "2025-07-22"},
 }
 
 # Ruta de los archivos Excel
