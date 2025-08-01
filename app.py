@@ -270,6 +270,8 @@ def inicio():
                         'pronostico_final': resultado["Probabilidades"]["Sugerencia Resultado"]
                     }
 
+                    print("🧾 Reseña del pronóstico:", datos.get('Justificacion Resultado'))
+                
                     return render_template("rockdata_2.html",
                         datos=datos,
                         sugerencias=sugerencias,
@@ -278,8 +280,9 @@ def inicio():
                         equipo_visita=equipo_visita,
                         liga=liga,
                         fecha_partido="Próximo partido"
+                        
                     )
-
+            
             return render_template("index.html", 
                 resultado=None,
                 sugerencias=[],
