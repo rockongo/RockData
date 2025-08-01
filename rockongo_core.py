@@ -314,6 +314,20 @@ def predecir_partido(stats_local, stats_visita):
 
     resultado = calcular_resultado_probable(stats_local["goles"], stats_visita["goles"])
     ganador = max(resultado, key=resultado.get)
+    max_prob = resultado[ganador]
+
+    if max_prob >= 55:
+        sugerencia_resultado = ganador
+    elif 45 <= max_prob < 55:
+        if ganador == "Local":
+            sugerencia_resultado = "1X"
+        elif ganador == "Visita":
+            sugerencia_resultado = "2X"
+        else:
+            sugerencia_resultado = "Empate"
+    else:
+        sugerencia_resultado = "Empate"
+
     
     # === PROBABILIDADES DE TARJETAS (usando Poisson) ===
     media_tarjetas = stats_local["amarillas"] + stats_local["rojas"] + stats_visita["amarillas"] + stats_visita["rojas"]
@@ -347,7 +361,7 @@ def predecir_partido(stats_local, stats_visita):
             "+9.5": p_9_5
         },
         "Resultado": resultado,
-        "Sugerencia Resultado": ganador,
+        "Sugerencia Resultado": sugerencia_resultado,
         "Tarjetas": prob_tarjetas,
         "Sugerencia Tarjetas": datos["tarjetas_sugerencia"],
         "Justificacion Tarjetas": datos["tarjetas_justificacion"]
