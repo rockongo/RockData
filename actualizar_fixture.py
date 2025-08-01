@@ -11,6 +11,19 @@ headers = {
     "X-RapidAPI-Host": API_HOST
 }
 
+# === CONTADOR DE LLAMADAS SEGURAS ===
+MAX_LLAMADAS_DIARIAS = 7000
+contador_llamadas = 0
+
+def llamada_api_segura(url, headers=None, params=None):
+    global contador_llamadas
+    if contador_llamadas >= MAX_LLAMADAS_DIARIAS:
+        print("🚨 Límite diario de llamadas alcanzado. Deteniendo ejecución.")
+        exit()
+    response = requests.get(url, headers=headers, params=params)
+    contador_llamadas += 1
+    return response
+
 # IDs y fechas límite por archivo
 ligas_config = {
     "Liga_colombia_2025.xlsx": {"id": 239, "desde": "2025-07-24"},
@@ -37,7 +50,7 @@ RUTA_LIGAS = os.path.join(os.path.dirname(__file__), "Ligas")
 def obtener_partidos(league_id):
     url = "https://api-football-v1.p.rapidapi.com/v3/fixtures"
     params = {"league": league_id, "season": 2025}
-    res = requests.get(url, headers=headers, params=params)
+    res = llamada_api_segura(url, headers=headers, params=params)
     return res.json().get("response", [])
 
 # Obtener estadísticas del partido
@@ -92,7 +105,7 @@ for archivo, config in ligas_config.items():
         # Obtener estadísticas
         stats_url = "https://api-football-v1.p.rapidapi.com/v3/fixtures/statistics"
         stats_params = {"fixture": fixture_id}
-        r_stats = requests.get(stats_url, headers=headers, params=stats_params)
+        r_stats = llamada_api_segura(stats_url, headers=headers, params=stats_params)
         stats_data = r_stats.json().get("response", [])
 
         corners_local = get_stat(stats_data, local, "Corner Kicks") or 0
