@@ -328,6 +328,19 @@ def predecir_partido(stats_local, stats_visita):
     else:
         sugerencia_resultado = "Empate"
 
+    # === Justificación textual según sugerencia
+    if sugerencia_resultado == "Local":
+        texto_justificacion = "El equipo local muestra mejor promedio ofensivo y defensivo. Además, su probabilidad de victoria supera el 55%, justificando la apuesta directa por su triunfo."
+    elif sugerencia_resultado == "Visita":
+        texto_justificacion = "El equipo visitante destaca sobre el local tanto en goles anotados como en solidez defensiva. La probabilidad supera el 55%, lo que respalda su victoria."
+    elif sugerencia_resultado == "1X":
+        texto_justificacion = "El equipo local tiene ventaja ligera, pero sin una dominancia clara. La doble oportunidad a su favor ofrece mayor seguridad."
+    elif sugerencia_resultado == "2X":
+        texto_justificacion = "El equipo visitante lidera levemente en promedios, aunque sin gran diferencia. Por eso se sugiere asegurar con doble oportunidad a su favor."
+    else:  # Empate
+        texto_justificacion = "Ambos equipos están muy parejos en estadísticas. Ninguno supera el 45% de probabilidad, lo que sugiere un escenario de empate."
+
+
     
     # === PROBABILIDADES DE TARJETAS (usando Poisson) ===
     media_tarjetas = stats_local["amarillas"] + stats_local["rojas"] + stats_visita["amarillas"] + stats_visita["rojas"]
@@ -362,10 +375,12 @@ def predecir_partido(stats_local, stats_visita):
         },
         "Resultado": resultado,
         "Sugerencia Resultado": sugerencia_resultado,
+        "Justificacion Resultado": texto_justificacion,
         "Tarjetas": prob_tarjetas,
         "Sugerencia Tarjetas": datos["tarjetas_sugerencia"],
         "Justificacion Tarjetas": datos["tarjetas_justificacion"]
-        }
+        
+    }
     
     return resultados
 
