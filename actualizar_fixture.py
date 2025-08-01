@@ -187,4 +187,5 @@ def agregar_resultado_a_filas_nuevas():
 
 # Ejecutar al final del proceso
 agregar_resultado_a_filas_nuevas()
+print(f"✅ Total de llamadas realizadas a la API: {contador_llamadas}")
 
