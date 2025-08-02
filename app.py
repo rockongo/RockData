@@ -227,8 +227,8 @@ def inicio():
 
                     # Escenarios de goles
                     escenarios = resultado["Probabilidades"]["Escenarios Goles"]
-                    prob_15 = escenarios["+1.5 goles"]
-                    prob_25 = escenarios["+2.5 goles"]
+                    prob_15 = escenarios["+1.5"]
+                    prob_25 = escenarios["+2.5"]
 
                     if prob_15 >= 75:
                         goles_recomendacion = "Más de 1.5 goles"
