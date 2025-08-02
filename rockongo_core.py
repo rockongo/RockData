@@ -179,7 +179,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
     print("🔍 prob_tarjetas:", prob_tarjetas, type(prob_tarjetas))
     print("✅ Justificación generada:", ambos_justificacion)
-
+    sugerencia_corners = generar_sugerencia_corners(prob_corners)
+    
     resultado_probabilistico = {
         "Gol 1er Tiempo": {
             "1 gol": prob_1t.get("1", 0),
@@ -199,7 +200,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "+8.5": prob_corners.get("+8.5", 0),
             "+9.5": prob_corners.get("+9.5", 0),
             "Sugerencia": sugerencia_corners,
-            "Justificacion": corners_justificacion
+            "Justificacion": corners_justificacion,
+            
         },
         "Tarjetas": {
             "+3.5": prob_tarjetas.get("+3.5", 0),
@@ -241,7 +243,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
         if not df_filtrado.empty:
             ultima_fecha = df_filtrado.iloc[-1]
-            fecha_valida = pd.to_datetime(ultima_fila["Fecha"], errors='coerce')
+            fecha_valida = pd.to_datetime(ultima_fecha["Fecha"], errors='coerce')
             fecha_str = fecha_valida.strftime('%d-%m-%Y') if not pd.isnull(fecha_valida) else "Fecha desconocida"
             nombre_partido = f"{fecha_str} | {equipo_local} vs {equipo_visita}"
         else:
