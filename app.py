@@ -252,7 +252,7 @@ def inicio():
                         goles_texto = "No se anticipa un partido con muchos goles."
 
                     # Sugerencia de córners
-                    corners = resultado["Probabilidades"]["Probabilidad Córners"]
+                    corners = resultado["Probabilidades"]["Córners"]
                     if corners["+8.5"] >= 85:
                         corners_sugerencia = "Más de 8.5 córners"
                         corners_justificacion = "Alta probabilidad de al menos 9 córners en total."
