@@ -2,6 +2,8 @@ import scipy.stats
 import pandas as pd
 import os
 
+#probabilidades
+
 from probabilidades import (
     calcular_probabilidad_goles,
     calcular_probabilidad_corners,
