@@ -2,21 +2,24 @@
 import numpy as np
 from scipy.stats import poisson
 
-def calcular_probabilidad_goles(prom_local, prom_visita):
-    media_total = prom_local + prom_visita
-    distribucion = {f"{i} goles": round(poisson.pmf(i, media_total) * 100, 2) for i in range(5)}
-    distribucion["5+ goles"] = round(100 - sum(distribucion.values()), 2)
+def calcular_probabilidad_goles(prom_local, prom_visita, total_goles=None):
+    from scipy.stats import poisson
+
+    promedio_goles_esperado = prom_local + prom_visita
+
+    distribucion = {
+        f"{goles} goles": round(poisson.pmf(goles, promedio_goles_esperado) * 100, 1)
+        for goles in range(5)
+    }
+    distribucion["5+ goles"] = round(100 - sum(distribucion.values()), 1)
 
     escenarios = {
-        "+1.5": round(100 - poisson.cdf(1, media_total) * 100, 2),
-        "+2.5": round(100 - poisson.cdf(2, media_total) * 100, 2),
-        "-1.5": round(poisson.cdf(1, media_total) * 100, 2)
+        "+1.5": round(100 - poisson.cdf(1, promedio_goles_esperado) * 100, 1),
+        "+2.5": round(100 - poisson.cdf(2, promedio_goles_esperado) * 100, 1),
+        "-1.5": round(poisson.cdf(1, promedio_goles_esperado) * 100, 1),
     }
 
-    return {
-        "Distribución Goles Totales": distribucion,
-        "Escenarios Goles": escenarios
-    }
+    return distribucion, escenarios
 
 def calcular_probabilidad_gol_1t(prom_1t_local, prom_1t_visita):
     media_1t = prom_1t_local + prom_1t_visita

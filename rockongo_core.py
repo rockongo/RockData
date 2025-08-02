@@ -142,7 +142,31 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     stats_visita_data["forma_victorias"] = forma_visita
 
     forma_reciente = simulacion_forma_reciente(df, equipo_local, equipo_visita)
-    resultado_probabilistico = predecir_partido(stats_local_data, stats_visita_data, forma_reciente)
+    distribucion_goles, escenarios_goles = calcular_probabilidad_goles(
+        stats_local_data["Goles"], stats_visita_data["Goles"]
+    )
+    prob_1t = calcular_probabilidad_gol_1t(
+        stats_local_data["Goles 1T"], stats_visita_data["Goles 1T"]
+    )
+    ambos_marcan = calcular_probabilidad_ambos_marcan(
+        stats_local_data["Goles"], stats_visita_data["Goles"]
+    )
+    prob_corners = calcular_probabilidad_corners(
+        stats_local_data["Corners"], stats_visita_data["Corners"]
+    )
+    prob_tarjetas = calcular_probabilidad_tarjetas(
+        stats_local_data["Amarillas"] + stats_local_data["Rojas"],
+        stats_visita_data["Amarillas"] + stats_visita_data["Rojas"]
+    )
+
+    resultado_probabilistico = {
+        "Gol 1er Tiempo": {"1 gol": prob_1t},
+        "Ambos Marcan": ambos_marcan,
+        "Goles Totales": escenarios_goles,
+        "Córners": prob_corners,
+        "Tarjetas": prob_tarjetas
+    }
+
     if not resultado_probabilistico or "Gol 1er Tiempo" not in resultado_probabilistico:
         print("⚠️ Error: resultado_probabilistico es None o no contiene 'Gol 1er Tiempo'")
         return None
