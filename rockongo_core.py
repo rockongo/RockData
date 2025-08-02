@@ -632,3 +632,49 @@ def generar_apuesta_segura(prob_local, prob_empate, prob_visita,
         "Probabilidad conjunta": round(prob_final * 100, 2),
         "Cuota justa estimada": cuota_justa
     }
+
+def calcular_probabilidad_resultado_partido(stats_local, stats_visita):
+    """Calcula la probabilidad de 1, X, 2 según la media de goles esperados por equipo"""
+    from scipy.stats import poisson
+
+    media_local = stats_local['Goles']
+    media_visita = stats_visita['Goles']
+
+    max_goles = 6
+    prob_local, prob_empate, prob_visita = 0, 0, 0
+
+    for gl in range(0, max_goles + 1):
+        for gv in range(0, max_goles + 1):
+            p = poisson.pmf(gl, media_local) * poisson.pmf(gv, media_visita)
+            if gl > gv:
+                prob_local += p
+            elif gl == gv:
+                prob_empate += p
+            else:
+                prob_visita += p
+
+    total = prob_local + prob_empate + prob_visita
+    prob_local = round(prob_local / total * 100, 1)
+    prob_empate = round(prob_empate / total * 100, 1)
+    prob_visita = round(prob_visita / total * 100, 1)
+
+    if max(prob_local, prob_empate, prob_visita) > 50:
+        if prob_local > prob_empate and prob_local > prob_visita:
+            sugerencia = '1'
+        elif prob_visita > prob_local and prob_visita > prob_empate:
+            sugerencia = '2'
+        else:
+            sugerencia = 'X'
+    else:
+        if prob_local > prob_visita:
+            sugerencia = '1X'
+        else:
+            sugerencia = '2X'
+
+    return {
+        "Local": prob_local,
+        "Empate": prob_empate,
+        "Visita": prob_visita,
+        "Sugerencia": sugerencia
+    }
+
