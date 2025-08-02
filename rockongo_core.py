@@ -309,165 +309,44 @@ def calcular_resultado_probable(goles_local, goles_visita):
     }
 
 def predecir_partido(stats_local, stats_visita, forma_reciente):
-    # Validar que las claves necesarias estén presentes
-    for clave in ["Goles", "Goles 1T", "Corners", "Amarillas", "Rojas"]:
+    # === Validación de claves ===
+    claves_necesarias = ["Goles", "Goles 1T", "Corners", "Amarillas", "Rojas"]
+    for clave in claves_necesarias:
         if clave not in stats_local or clave not in stats_visita:
             raise ValueError(f"Falta la clave '{clave}' en stats_local o stats_visita.")
 
-    # Cálculo de probabilidades
-    prob_goles = calcular_probabilidad_goles(stats_local["Goles"], stats_visita["Goles"])
-    prob_gol_1t = calcular_probabilidad_goles(stats_local["Goles 1T"], stats_visita["Goles 1T"])
-    prob_corners = calcular_probabilidad_corners(stats_local["Corners"], stats_visita["Corners"])
-    prob_tarjetas = calcular_probabilidad_tarjetas(stats_local["Amarillas"], stats_visita["Amarillas"],
-                                                    stats_local["Rojas"], stats_visita["Rojas"])
-    
-    # Gol 1T
-    prob_gol_1t_texto = "Probabilidad alta de que se abra el marcador antes del descanso." if prob_gol_1t["1 gol"] >= 35 else "No se anticipa un primer tiempo muy activo."
-    
-    # Ambos marcan
-    ambos_marcan = stats_local["Goles"] >= 1 and stats_visita["Goles"] >= 1
-    prob_ambos_marcan = round((stats_local["Goles"] + stats_visita["Goles"]) / 2 * 50)  # estimado simple
-    texto_ambos_marcan = "Ambos equipos tienen probabilidad media/alta de anotar." if prob_ambos_marcan >= 45 else "Probabilidad baja de que ambos equipos marquen."
-    
-    # Escenario de goles totales
-    prob_15 = prob_goles.get("+1.5", 0)
-    prob_25 = prob_goles.get("+2.5", 0)
-
-    if prob_15 >= 70:
-        texto_goles = f"Recomendación: Más de 1.5 goles ({prob_15:.1f}%)"
-    elif prob_25 >= 65:
-        texto_goles = f"Recomendación: Más de 2.5 goles ({prob_25:.1f}%)"
-    else:
-        texto_goles = "Evitar apuestas de goles altas."
-
-    # Córners
-    if prob_corners.get("+8.5", 0) >= 85:
-        texto_corners = "Recomendación: Más de 8.5 córners"
-    elif prob_corners.get("+7.5", 0) >= 80:
-        texto_corners = "Recomendación: Más de 7.5 córners"
-    else:
-        texto_corners = "Evitar apuestas por córners altos."
-
-    # Resultado final probabilístico
-    resultado_final = {
-        "Local": round(prob_goles.get("Local", 0), 1),
-        "Empate": round(prob_goles.get("Empate", 0), 1),
-        "Visita": round(prob_goles.get("Visita", 0), 1)
-    }
-
-    max_resultado = max(resultado_final, key=resultado_final.get)
-    porcentaje_max = resultado_final[max_resultado]
-
-    if porcentaje_max > 50:
-        sugerencia_resultado = f"{max_resultado} gana ({porcentaje_max:.1f}%)"
-    else:
-        if max_resultado == "Local":
-            sugerencia_resultado = f"1X (Local o Empate) ({porcentaje_max:.1f}%)"
-        elif max_resultado == "Visita":
-            sugerencia_resultado = f"2X (Visita o Empate) ({porcentaje_max:.1f}%)"
-        else:
-            sugerencia_resultado = f"Empate ({porcentaje_max:.1f}%)"
-
-    # Apuesta segura combinada (BetBuilder)
-    prob_menos_35 = prob_goles.get("+3.5", 0) < 30
-    promedio_goles_total = (stats_local["Goles"] + stats_visita["Goles"]) / 2
-    forma_local_victorias = forma_reciente["Local (últimos 5)"].get("Victorias", 0)
-    forma_visita_victorias = forma_reciente["Visita (últimos 5)"].get("Victorias", 0)
-
-    apuesta_segura = generar_apuesta_segura(
-        resultado_final["Local"],
-        resultado_final["Empate"],
-        resultado_final["Visita"],
-        prob_menos_35,
-        promedio_goles_total,
-        forma_local_victorias,
-        forma_visita_victorias
-    )
-
-    return {
-        "Gol 1er Tiempo": {
-            "1 gol": prob_gol_1t["1 gol"],
-            "Descripción": prob_gol_1t_texto
-        },
-        "Ambos Marcan": {
-            "Probabilidad": prob_ambos_marcan,
-            "Descripción": texto_ambos_marcan
-        },
-        "Goles Totales": {
-            "+1.5": prob_15,
-            "+2.5": prob_25,
-            "Descripción": texto_goles
-        },
-        "Córners": {
-            "+7.5": prob_corners.get("+7.5", 0),
-            "+8.5": prob_corners.get("+8.5", 0),
-            "+9.5": prob_corners.get("+9.5", 0),
-            "Descripción": texto_corners
-        },
-        "Resultado Final": {
-            "Probabilidades": resultado_final,
-            "Sugerencia": sugerencia_resultado
-        },
-        "Apuesta Segura Recomendada": apuesta_segura
-    }
-
-
-
-    return {
-        "Gol 1er Tiempo": {
-            "1 gol": round(prob_gol_1t, 2),
-            "Texto": "Probabilidad alta de que se abra el marcador antes del descanso." if prob_gol_1t >= 35 else "No se anticipa un primer tiempo muy activo."
-        },
-        "Ambos Marcan": {
-            "Probabilidad": round(ambos_marcan, 2),
-            "Texto": "Ambos equipos tienen probabilidad media/alta de anotar." if ambos_marcan >= 45 else "Probabilidad baja de que ambos equipos marquen."
-        },
-        "Goles Totales": resultado_final["Goles Totales"],
-        "Corners": resultado_corners,
-        "Tarjetas": resultado_tarjetas,
-        "Resultado Final": {
-            "Local": resultado_final["Local"],
-            "Empate": resultado_final["Empate"],
-            "Visita": resultado_final["Visita"],
-        },
-        "Apuesta Segura": apuesta_segura
-    }
-
-
-
-
-    resultado["Apuesta Segura Recomendada"] = apuesta_segura
-
-
-    media_goles_1t = stats_local["goles_1T"] + stats_visita["goles_1T"]
+    # === GOL 1ER TIEMPO ===
+    media_goles_1t = stats_local["Goles 1T"] + stats_visita["Goles 1T"]
     distribucion_goles_1t = calcular_distribucion_poisson(media_goles_1t)
     p_1g_1t = distribucion_goles_1t.get("1 goles", 0.0)
 
-    p_btts = calcular_probabilidad_btts_poisson(stats_local["goles"], stats_visita["goles"])
+    # === AMBOS MARCAN ===
+    p_btts = calcular_probabilidad_btts_poisson(stats_local["Goles"], stats_visita["Goles"])
 
-    media_corners = stats_local["corners"] + stats_visita["corners"]
+    # === CÓRNERS ===
+    media_corners = stats_local["Corners"] + stats_visita["Corners"]
     corners_poisson = calcular_poisson_equipo(media_corners)
     p_7_5 = round(sum(corners_poisson[8:]) * 100, 2)
     p_8_5 = round(sum(corners_poisson[9:]) * 100, 2)
     p_9_5 = round(sum(corners_poisson[10:]) * 100, 2)
 
-    resultado = calcular_resultado_probable(stats_local["goles"], stats_visita["goles"])
+    # === GOLES TOTALES ===
+    distribucion_goles = calcular_distribucion_poisson(stats_local["Goles"] + stats_visita["Goles"])
+    escenarios = calcular_escenarios_goles(distribucion_goles)
+
+    # === RESULTADO FINAL ===
+    resultado = calcular_resultado_probable(stats_local["Goles"], stats_visita["Goles"])
     ganador = max(resultado, key=resultado.get)
     max_prob = resultado[ganador]
 
     if max_prob >= 55:
         sugerencia_resultado = ganador
     elif 45 <= max_prob < 55:
-        if ganador == "Local":
-            sugerencia_resultado = "1X"
-        elif ganador == "Visita":
-            sugerencia_resultado = "2X"
-        else:
-            sugerencia_resultado = "Empate"
+        sugerencia_resultado = "1X" if ganador == "Local" else "2X" if ganador == "Visita" else "Empate"
     else:
         sugerencia_resultado = "Empate"
 
-    # === Justificación textual según sugerencia
+    # === JUSTIFICACIÓN DEL RESULTADO ===
     if sugerencia_resultado == "Local":
         texto_justificacion = "El equipo local muestra mejor promedio ofensivo y defensivo. Además, su probabilidad de victoria supera el 55%, justificando la apuesta directa por su triunfo."
     elif sugerencia_resultado == "Visita":
@@ -476,32 +355,42 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
         texto_justificacion = "El equipo local tiene ventaja ligera, pero sin una dominancia clara. La doble oportunidad a su favor ofrece mayor seguridad."
     elif sugerencia_resultado == "2X":
         texto_justificacion = "El equipo visitante lidera levemente en promedios, aunque sin gran diferencia. Por eso se sugiere asegurar con doble oportunidad a su favor."
-    else:  # Empate
+    else:
         texto_justificacion = "Ambos equipos están muy parejos en estadísticas. Ninguno supera el 45% de probabilidad, lo que sugiere un escenario de empate."
 
-
-    
-    # === PROBABILIDADES DE TARJETAS (usando Poisson) ===
-    media_tarjetas = stats_local["amarillas"] + stats_local["rojas"] + stats_visita["amarillas"] + stats_visita["rojas"]
+    # === TARJETAS (usando Poisson) ===
+    media_tarjetas = stats_local["Amarillas"] + stats_local["Rojas"] + stats_visita["Amarillas"] + stats_visita["Rojas"]
     tarjetas_poisson = calcular_poisson_equipo(media_tarjetas)
-
     prob_tarjetas = {
         "+3.5": round(sum(tarjetas_poisson[4:]) * 100, 2),
         "+4.5": round(sum(tarjetas_poisson[5:]) * 100, 2),
         "-4.5": round(sum(tarjetas_poisson[:5]) * 100, 2),
     }
-    datos = {}
-
     mayor_prob = max(prob_tarjetas, key=prob_tarjetas.get)
-    datos["tarjetas_sugerencia"] = f"Más de {mayor_prob}" if "+" in mayor_prob else "Menos de 4.5 tarjetas"
-
+    sugerencia_tarjetas = f"Más de {mayor_prob}" if "+" in mayor_prob else "Menos de 4.5 tarjetas"
     if prob_tarjetas[mayor_prob] >= 70:
-        datos["tarjetas_justificacion"] = f"Alta probabilidad de que se superen las {mayor_prob} tarjetas."
+        justificacion_tarjetas = f"Alta probabilidad de que se superen las {mayor_prob} tarjetas."
     elif prob_tarjetas[mayor_prob] >= 50:
-        datos["tarjetas_justificacion"] = f"Escenario probable para {mayor_prob} tarjetas."
+        justificacion_tarjetas = f"Escenario probable para {mayor_prob} tarjetas."
     else:
-        datos["tarjetas_justificacion"] = f"Partido parejo en tarjetas, cuidado con {mayor_prob}."
-    
+        justificacion_tarjetas = f"Partido parejo en tarjetas, cuidado con {mayor_prob}."
+
+    # === APUESTA SEGURA COMBINADA ===
+    prob_menos_35 = escenarios.get("+3.5", 0) < 30
+    promedio_goles_total = (stats_local["Goles"] + stats_visita["Goles"]) / 2
+    forma_local_victorias = forma_reciente["Local (últimos 5)"]["Goles"]
+    forma_visita_victorias = forma_reciente["Visita (últimos 5)"]["Goles"]
+    apuesta_segura = generar_apuesta_segura(
+        resultado["Local"],
+        resultado["Empate"],
+        resultado["Visita"],
+        prob_menos_35,
+        promedio_goles_total,
+        forma_local_victorias,
+        forma_visita_victorias
+    )
+
+    # === RETORNO FINAL ===
     resultados = {
         "Distribución Goles Totales": distribucion_goles,
         "Escenarios Goles": escenarios,
@@ -516,11 +405,11 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
         "Sugerencia Resultado": sugerencia_resultado,
         "Justificacion Resultado": texto_justificacion,
         "Tarjetas": prob_tarjetas,
-        "Sugerencia Tarjetas": datos["tarjetas_sugerencia"],
-        "Justificacion Tarjetas": datos["tarjetas_justificacion"]
-        
+        "Sugerencia Tarjetas": sugerencia_tarjetas,
+        "Justificacion Tarjetas": justificacion_tarjetas,
+        "Apuesta Segura Recomendada": apuesta_segura
     }
-    
+
     return resultados
 
 def generar_resumen_formateado(probabilidades: dict) -> dict:
