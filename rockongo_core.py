@@ -312,13 +312,28 @@ def calcular_escenarios_goles(distribucion_goles):
     escenarios = {}
 
     if distribucion_goles:
-        p_menos_15 = round(sum(v for k, v in distribucion_goles.items() if int(k[0]) + int(k[-1]) < 2) * 100, 2)
-        p_mas_15 = round(sum(v for k, v in distribucion_goles.items() if int(k[0]) + int(k[-1]) >= 2) * 100, 2)
-        p_mas_25 = round(sum(v for k, v in distribucion_goles.items() if int(k[0]) + int(k[-1]) >= 3) * 100, 2)
+        p_menos_15 = 0
+        p_mas_15 = 0
+        p_mas_25 = 0
 
-        escenarios["+1.5"] = p_mas_15
-        escenarios["+2.5"] = p_mas_25
-        escenarios["-1.5"] = p_menos_15
+        for marcador, probabilidad in distribucion_goles.items():
+            if "-" in marcador:
+                try:
+                    goles_local, goles_visita = map(int, marcador.split("-"))
+                    total_goles = goles_local + goles_visita
+
+                    if total_goles < 2:
+                        p_menos_15 += probabilidad
+                    if total_goles >= 2:
+                        p_mas_15 += probabilidad
+                    if total_goles >= 3:
+                        p_mas_25 += probabilidad
+                except ValueError:
+                    continue  # ignora claves mal formateadas
+
+        escenarios["+1.5"] = round(p_mas_15 * 100, 2)
+        escenarios["+2.5"] = round(p_mas_25 * 100, 2)
+        escenarios["-1.5"] = round(p_menos_15 * 100, 2)
 
     return escenarios
 
