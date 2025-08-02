@@ -304,20 +304,70 @@ def calcular_resultado_probable(goles_local, goles_visita):
     }
 
 def predecir_partido(stats_local, stats_visita, forma_reciente):
+    # Validar que las claves necesarias estén presentes
+    for clave in ["Goles", "Goles 1T", "Corners", "Amarillas", "Rojas"]:
+        if clave not in stats_local or clave not in stats_visita:
+            raise ValueError(f"Falta la clave '{clave}' en stats_local o stats_visita.")
+
+    # Cálculo de probabilidades
     prob_goles = calcular_probabilidad_goles(stats_local["Goles"], stats_visita["Goles"])
+    prob_gol_1t = calcular_probabilidad_goles(stats_local["Goles 1T"], stats_visita["Goles 1T"])
     prob_corners = calcular_probabilidad_corners(stats_local["Corners"], stats_visita["Corners"])
     prob_tarjetas = calcular_probabilidad_tarjetas(stats_local["Amarillas"], stats_visita["Amarillas"],
                                                     stats_local["Rojas"], stats_visita["Rojas"])
+    
+    # Gol 1T
+    prob_gol_1t_texto = "Probabilidad alta de que se abra el marcador antes del descanso." if prob_gol_1t["1 gol"] >= 35 else "No se anticipa un primer tiempo muy activo."
+    
+    # Ambos marcan
+    ambos_marcan = stats_local["Goles"] >= 1 and stats_visita["Goles"] >= 1
+    prob_ambos_marcan = round((stats_local["Goles"] + stats_visita["Goles"]) / 2 * 50)  # estimado simple
+    texto_ambos_marcan = "Ambos equipos tienen probabilidad media/alta de anotar." if prob_ambos_marcan >= 45 else "Probabilidad baja de que ambos equipos marquen."
+    
+    # Escenario de goles totales
+    prob_15 = prob_goles.get("+1.5", 0)
+    prob_25 = prob_goles.get("+2.5", 0)
 
-    # Nuevo cálculo
+    if prob_15 >= 70:
+        texto_goles = f"Recomendación: Más de 1.5 goles ({prob_15:.1f}%)"
+    elif prob_25 >= 65:
+        texto_goles = f"Recomendación: Más de 2.5 goles ({prob_25:.1f}%)"
+    else:
+        texto_goles = "Evitar apuestas de goles altas."
+
+    # Córners
+    if prob_corners.get("+8.5", 0) >= 85:
+        texto_corners = "Recomendación: Más de 8.5 córners"
+    elif prob_corners.get("+7.5", 0) >= 80:
+        texto_corners = "Recomendación: Más de 7.5 córners"
+    else:
+        texto_corners = "Evitar apuestas por córners altos."
+
+    # Resultado final probabilístico
+    resultado_final = {
+        "Local": round(prob_goles.get("Local", 0), 1),
+        "Empate": round(prob_goles.get("Empate", 0), 1),
+        "Visita": round(prob_goles.get("Visita", 0), 1)
+    }
+
+    max_resultado = max(resultado_final, key=resultado_final.get)
+    porcentaje_max = resultado_final[max_resultado]
+
+    if porcentaje_max > 50:
+        sugerencia_resultado = f"{max_resultado} gana ({porcentaje_max:.1f}%)"
+    else:
+        if max_resultado == "Local":
+            sugerencia_resultado = f"1X (Local o Empate) ({porcentaje_max:.1f}%)"
+        elif max_resultado == "Visita":
+            sugerencia_resultado = f"2X (Visita o Empate) ({porcentaje_max:.1f}%)"
+        else:
+            sugerencia_resultado = f"Empate ({porcentaje_max:.1f}%)"
+
+    # Apuesta segura combinada (BetBuilder)
     prob_menos_35 = prob_goles.get("+3.5", 0) < 30
     promedio_goles_total = (stats_local["Goles"] + stats_visita["Goles"]) / 2
-
-    # Extraer forma reciente
     forma_local_victorias = forma_reciente["Local (últimos 5)"].get("Victorias", 0)
     forma_visita_victorias = forma_reciente["Visita (últimos 5)"].get("Victorias", 0)
-
-    resultado_final = calcular_resultado_final(stats_local["Goles"], stats_visita["Goles"])
 
     apuesta_segura = generar_apuesta_segura(
         resultado_final["Local"],
@@ -330,24 +380,32 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
     )
 
     return {
-        "Gol 1er Tiempo": prob_goles["Gol 1T"],
-        "Ambos Marcan": prob_goles["Ambos Marcan"],
+        "Gol 1er Tiempo": {
+            "1 gol": prob_gol_1t["1 gol"],
+            "Descripción": prob_gol_1t_texto
+        },
+        "Ambos Marcan": {
+            "Probabilidad": prob_ambos_marcan,
+            "Descripción": texto_ambos_marcan
+        },
         "Goles Totales": {
-            "+1.5": prob_goles["+1.5"],
-            "+2.5": prob_goles["+2.5"]
+            "+1.5": prob_15,
+            "+2.5": prob_25,
+            "Descripción": texto_goles
         },
         "Córners": {
-            "+7.5": prob_corners["+7.5"],
-            "+8.5": prob_corners["+8.5"],
-            "+9.5": prob_corners["+9.5"]
+            "+7.5": prob_corners.get("+7.5", 0),
+            "+8.5": prob_corners.get("+8.5", 0),
+            "+9.5": prob_corners.get("+9.5", 0),
+            "Descripción": texto_corners
         },
-        "Tarjetas": {
-            "+4.5": prob_tarjetas["+4.5"],
-            "Total Esperado": prob_tarjetas["Promedio Total"]
+        "Resultado Final": {
+            "Probabilidades": resultado_final,
+            "Sugerencia": sugerencia_resultado
         },
-        "Resultado Final": resultado_final,
         "Apuesta Segura Recomendada": apuesta_segura
     }
+
 
 
     return {
