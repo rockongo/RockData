@@ -106,7 +106,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         df_visita = df[df['Visita'] == equipo_visita].tail(10)
         df_partido = pd.concat([df_local, df_visita])
 
-        prob_goles_menos_25 = calcular_probabilidad_goles(df_partido, "menos", 2.5)
+        prob_goles_menos_25 = calcular_probabilidad_goles_rango(df_partido, "menos", 2.5)
         prob_corners_mas_9_5 = calcular_probabilidad_corners(df_partido, "mas", 9.5)
         prob_tarjetas_mas_4_5 = calcular_probabilidad_tarjetas(df_partido, "mas", 4.5)
 
@@ -150,7 +150,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     distribucion_goles, escenarios_goles = calcular_probabilidad_goles(
         stats_local_data["Goles"], stats_visita_data["Goles"]
     )
-    prob_goles = escenarios_goles
+    prob_goles = dict(escenarios_goles)
     prob_1t = calcular_probabilidad_gol_1t(
         stats_local_data["Goles 1T"], stats_visita_data["Goles 1T"]
     )
