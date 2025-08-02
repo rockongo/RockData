@@ -282,7 +282,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "Corners Totales": float(stats_local["corners"] + stats_visita["corners"]),
             "Tarjetas Totales": float(
                 stats_local["amarillas"] + stats_local["rojas"] +
-                stats_visita["amarillas"] + stats_visita["rojas"])
+                stats_visita["amarillas"] + stats_visita["rojas"]
             )
         },
         "Probabilidades": resultado_probabilistico,
