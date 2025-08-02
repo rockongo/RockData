@@ -194,6 +194,9 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     else:
         gol_1t_texto = "No se anticipa un primer tiempo muy activo."
 
+    sugerencia_tarjetas = "Evitar apuestas por tarjetas altas." if prob_tarjetas.get("+4.5", 0) < 70 else "Más de 4.5 tarjetas recomendadas."
+    resultado_probabilistico["Sugerencia Tarjetas"] = sugerencia_tarjetas
+
     return {
         "Equipo Local": equipo_local,
         "Equipo Visita": equipo_visita,
