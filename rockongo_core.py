@@ -254,9 +254,9 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         else:
             nombre_partido = f"{equipo_local} vs {equipo_visita}"
 
-        except Exception as e:
-            print(f"⚠️ Error al determinar fecha del partido: {e}")
-            nombre_partido = f"{equipo_local} vs {equipo_visita}"
+    except Exception as e:
+        print(f"⚠️ Error al determinar fecha del partido: {e}")
+        nombre_partido = f"{equipo_local} vs {equipo_visita}"
 
 
     return {
