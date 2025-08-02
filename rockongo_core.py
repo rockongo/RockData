@@ -308,6 +308,20 @@ def calcular_resultado_probable(goles_local, goles_visita):
         "Visita": round(p_visita / total * 100, 2),
     }
 
+def calcular_escenarios_goles(distribucion_goles):
+    escenarios = {}
+
+    if distribucion_goles:
+        p_menos_15 = round(sum(v for k, v in distribucion_goles.items() if int(k[0]) + int(k[-1]) < 2) * 100, 2)
+        p_mas_15 = round(sum(v for k, v in distribucion_goles.items() if int(k[0]) + int(k[-1]) >= 2) * 100, 2)
+        p_mas_25 = round(sum(v for k, v in distribucion_goles.items() if int(k[0]) + int(k[-1]) >= 3) * 100, 2)
+
+        escenarios["+1.5"] = p_mas_15
+        escenarios["+2.5"] = p_mas_25
+        escenarios["-1.5"] = p_menos_15
+
+    return escenarios
+
 def predecir_partido(stats_local, stats_visita, forma_reciente):
     # === Validación de claves ===
     claves_necesarias = ["Goles", "Goles 1T", "Corners", "Amarillas", "Rojas"]
