@@ -5,7 +5,9 @@ import os
 from probabilidades import (
     calcular_probabilidad_goles,
     calcular_probabilidad_corners,
-    calcular_probabilidad_tarjetas
+    calcular_probabilidad_tarjetas,
+    calcular_probabilidad_gol_1t,
+    calcular_probabilidad_ambos_marcan
 )
 
 
