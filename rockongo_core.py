@@ -147,6 +147,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     distribucion_goles, escenarios_goles = calcular_probabilidad_goles(
         stats_local_data["Goles"], stats_visita_data["Goles"]
     )
+    prob_goles = escenarios_goles
     prob_1t = calcular_probabilidad_gol_1t(
         stats_local_data["Goles 1T"], stats_visita_data["Goles 1T"]
     )
@@ -239,8 +240,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         ].dropna(subset=["Fecha"]).sort_values("Fecha")
 
         if not df_filtrado.empty:
-            ultima_fecha = df_filtrado["Fecha"].iloc[-1]
-            fecha_str = ultima_fecha.strftime('%d-%m-%Y')
+            ultima_fecha = df_filtrado.iloc[-1]
+            fecha_str = ultima_fecha["Fecha"].strftime('%d-%m-%Y')
             nombre_partido = f"{fecha_str} | {equipo_local} vs {equipo_visita}"
         else:
             nombre_partido = f"{equipo_local} vs {equipo_visita}"
