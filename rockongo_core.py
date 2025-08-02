@@ -10,6 +10,7 @@ from probabilidades import (
     calcular_probabilidad_tarjetas,
     calcular_probabilidad_gol_1t,
     calcular_probabilidad_ambos_marcan,
+    calcular_probabilidad_goles_rango,
     generar_sugerencia_corners
 )
 
@@ -150,7 +151,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     distribucion_goles, escenarios_goles = calcular_probabilidad_goles(
         stats_local_data["Goles"], stats_visita_data["Goles"]
     )
-    prob_goles = dict(escenarios_goles)
+    prob_goles = escenarios_goles
     prob_1t = calcular_probabilidad_gol_1t(
         stats_local_data["Goles 1T"], stats_visita_data["Goles 1T"]
     )
