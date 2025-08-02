@@ -150,6 +150,13 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     prob_1t = calcular_probabilidad_gol_1t(
         stats_local_data["Goles 1T"], stats_visita_data["Goles 1T"]
     )
+    valor_prob_1t = prob_1t.get("1 gol", 0)
+    
+    if valor_prob_1t >= 35:
+        gol_1t_texto = "Probabilidad alta de que se abra el marcador antes del descanso."
+    else:
+        gol_1t_texto = "No se anticipa un primer tiempo muy activo."
+
     print("🔍 prob_1t:", prob_1t, type(prob_1t))
     ambos_marcan = calcular_probabilidad_ambos_marcan(
         stats_local_data["Goles"], stats_visita_data["Goles"]
@@ -218,8 +225,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
     try:
         df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
-        ultima_fecha = df[df['Fixture ID'] == fixture_id]['Fecha'].dt.strftime('%d-%m-%Y').values[0]
-        ultima_fecha = str(ultima_fecha)
+        ultima_fecha = df.loc[df['Fixture ID'] == fixture_id, 'Fecha'].iloc[0]
+        fecha_str = pd.to_datetime(ultima_fecha).strftime('%d-%m-%Y')
         nombre_partido = f"{ultima_fecha} | {equipo_local} vs {equipo_visita}"
     except Exception:
         nombre_partido = f"{equipo_local} vs {equipo_visita}"
