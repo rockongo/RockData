@@ -2,42 +2,45 @@
 import numpy as np
 from scipy.stats import poisson
 
-def calcular_probabilidad_goles(prom_local, prom_visita, total_goles=None):
-    from scipy.stats import poisson
-
-    promedio_goles_esperado = prom_local + prom_visita
-
-    distribucion = {
-        f"{goles} goles": round(poisson.pmf(goles, promedio_goles_esperado) * 100, 1)
-        for goles in range(5)
+def calcular_probabilidad_goles(prom_local, prom_visita):
+    prom_local = max(prom_local, 0.01)
+    prom_visita = max(prom_visita, 0.01)
+    media_total = prom_local + prom_visita
+    prob_1_5 = round(1 - poisson.cdf(1, media_total), 2) * 100
+    prob_2_5 = round(1 - poisson.cdf(2, media_total), 2) * 100
+    return {
+        "+1.5": prob_1_5,
+        "+2.5": prob_2_5
     }
-    distribucion["5+ goles"] = round(100 - sum(distribucion.values()), 1)
-
-    escenarios = {
-        "+1.5": round(100 - poisson.cdf(1, promedio_goles_esperado) * 100, 1),
-        "+2.5": round(100 - poisson.cdf(2, promedio_goles_esperado) * 100, 1),
-        "-1.5": round(poisson.cdf(1, promedio_goles_esperado) * 100, 1),
-    }
-
-    return distribucion, escenarios
-
-def calcular_probabilidad_gol_1t(prom_1t_local, prom_1t_visita):
-    media_1t = prom_1t_local + prom_1t_visita
-    prob_1_gol = round(100 - poisson.pmf(0, media_1t) * 100, 2)
-    return {"1 gol": prob_1_gol}
 
 def calcular_probabilidad_ambos_marcan(prom_local, prom_visita):
-    prob_local = 1 - poisson.pmf(0, prom_local)
-    prob_visita = 1 - poisson.pmf(0, prom_visita)
-    prob_ambos = round(prob_local * prob_visita * 100, 2)
-    return {"Probabilidad": prob_ambos}
-
-def calcular_probabilidad_corners(corners_local, corners_visita):
-    media_corners = corners_local + corners_visita
+    prom_local = max(prom_local, 0.01)
+    prom_visita = max(prom_visita, 0.01)
+    p_local_anota = 1 - poisson.pmf(0, prom_local)
+    p_visita_anota = 1 - poisson.pmf(0, prom_visita)
+    prob_ambos = round(p_local_anota * p_visita_anota, 2) * 100
     return {
-        "+7.5": round(100 - poisson.cdf(7, media_corners) * 100, 2),
-        "+8.5": round(100 - poisson.cdf(8, media_corners) * 100, 2),
-        "+9.5": round(100 - poisson.cdf(9, media_corners) * 100, 2),
+        "Probabilidad": prob_ambos
+    }
+
+def calcular_probabilidad_gol_1t(prom_local_1t, prom_visita_1t):
+    prom_local_1t = max(prom_local_1t, 0.01)
+    prom_visita_1t = max(prom_visita_1t, 0.01)
+    media_1t = prom_local_1t + prom_visita_1t
+    prob_1_gol = round(1 - poisson.pmf(0, media_1t), 2) * 100
+    return {"1 gol": prob_1_gol}
+
+def calcular_probabilidad_corners(prom_local, prom_visita):
+    prom_local = max(prom_local, 0.01)
+    prom_visita = max(prom_visita, 0.01)
+    media_corners = prom_local + prom_visita
+    prob_7_5 = round(1 - poisson.cdf(7, media_corners), 2) * 100
+    prob_8_5 = round(1 - poisson.cdf(8, media_corners), 2) * 100
+    prob_9_5 = round(1 - poisson.cdf(9, media_corners), 2) * 100
+    return {
+        "+7.5": prob_7_5,
+        "+8.5": prob_8_5,
+        "+9.5": prob_9_5
     }
 
 def calcular_probabilidad_tarjetas(tarj_local, tarj_visita):
