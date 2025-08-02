@@ -176,7 +176,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "Texto": gol_1t_texto
         },
         "Ambos Marcan": {
-            "Probabilidad": prob_ambos.get("Sí", 0),
+            "Probabilidad": ambos_marcan.get("Probabilidad", 0),
             "Justificacion": ambos_justificacion
         },
         "Goles": {
@@ -225,12 +225,16 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
     try:
         df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
-        ultima_fecha = df.loc[df['Fixture ID'] == fixture_id, 'Fecha'].iloc[0]
-        fecha_str = pd.to_datetime(ultima_fecha).strftime('%d-%m-%Y')
-        nombre_partido = f"{ultima_fecha} | {equipo_local} vs {equipo_visita}"
-    except Exception:
-        nombre_partido = f"{equipo_local} vs {equipo_visita}"
+        ultima_fila = df[
+            ((df['Local'] == equipo_local) & (df['Visita'] == equipo_visita)) |
+            ((df['Local'] == equipo_visita) & (df['Visita'] == equipo_local))
+        ].sort_values("Fecha").iloc[-1]
 
+        fecha_str = ultima_fila["Fecha"].strftime('%d-%m-%Y')
+        nombre_partido = f"{fecha_str} | {equipo_local} vs {equipo_visita}"
+    except Exception as e:
+        print(f"⚠️ Error al determinar fecha del partido: {e}")
+        nombre_partido = f"{equipo_local} vs {equipo_visita}"
 
     return {
         "Equipo Local": equipo_local,
