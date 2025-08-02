@@ -314,8 +314,8 @@ def predecir_partido(stats_local, stats_visita):
     forma_visita_victorias = stats_visita["forma_victorias"]
 
     # Llamada a la función de apuesta segura recomendada
-    forma_local_victorias = forma_local["Local (últimos 5)"]["Goles"]
-    forma_visita_victorias = forma_visita["Visita (últimos 5)"]["Goles"]
+    forma_local_victorias = forma_reciente["Local (últimos 5)"]["Goles"]
+    forma_visita_victorias = forma_reciente["Visita (últimos 5)"]["Goles"]
 
     apuesta_segura = generar_apuesta_segura(
         resultado_final["Local"],
