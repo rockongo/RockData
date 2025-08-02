@@ -161,6 +161,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         stats_local_data["Amarillas"] + stats_local_data["Rojas"],
         stats_visita_data["Amarillas"] + stats_visita_data["Rojas"]
     )
+    print("🔍 prob_tarjetas:", prob_tarjetas, type(prob_tarjetas))
 
     resultado_probabilistico = {
         "Gol 1er Tiempo": {"1 gol": prob_1t},
