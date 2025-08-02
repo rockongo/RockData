@@ -237,7 +237,7 @@ def inicio():
                         texto_ambos = "Probabilidad baja de que ambos equipos marquen."
 
                     # Escenarios de goles
-                    escenarios = resultado["Probabilidades"]["Goles Totales"]
+                    escenarios = resultado["Probabilidades"]["Goles"]
                     prob_15 = escenarios["+1.5"]
                     prob_25 = escenarios["+2.5"]
 

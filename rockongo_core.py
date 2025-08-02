@@ -190,7 +190,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     
     resultado_probabilistico = {
         "Gol 1er Tiempo": {
-            "1 gol": prob_1t.get("1 gol", 0),
+            "1 gol": float(prob_1t.get("1 gol", 0)),
             "Texto": gol_1t_texto
         },
         "Ambos Marcan": {
@@ -198,21 +198,21 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "Justificacion": ambos_justificacion
         },
         "Goles": {
-            "+1.5": prob_goles.get("+1.5", 0),
-            "+2.5": prob_goles.get("+2.5", 0),
+            "+1.5": float(prob_goles.get("+1.5", 0)),
+            "+2.5": float(prob_goles.get("+2.5", 0)),
             "Justificacion": ambos_justificacion
         },
         "Córners": {
-            "+7.5": prob_corners.get("+7.5", 0),
-            "+8.5": prob_corners.get("+8.5", 0),
-            "+9.5": prob_corners.get("+9.5", 0),
+            "+7.5": float(prob_corners.get("+7.5", 0)),
+            "+8.5": float(prob_corners.get("+8.5", 0)),
+            "+9.5": float(prob_corners.get("+9.5", 0)),
             "Sugerencia": sugerencia_corners,
             "Justificacion": corners_justificacion,
             
         },
         "Tarjetas": {
-            "+3.5": prob_tarjetas.get("+3.5", 0),
-            "+4.5": prob_tarjetas.get("+4.5", 0),
+            "+3.5": float(prob_tarjetas.get("+3.5", 0)),
+            "+4.5": float(prob_tarjetas.get("+4.5", 0)),
             "Sugerencia": sugerencia_tarjetas
         }
     }
