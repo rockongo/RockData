@@ -158,8 +158,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         stats_local_data["Corners"], stats_visita_data["Corners"]
     )
     prob_tarjetas = calcular_probabilidad_tarjetas(
-        stats_local_data["Amarillas"] + stats_local_data["Rojas"],
-        stats_visita_data["Amarillas"] + stats_visita_data["Rojas"]
+        float(stats_local.get("amarillas", 0)) + float(stats_local.get("rojas", 0)),
+        float(stats_visita.get("amarillas", 0)) + float(stats_visita.get("rojas", 0))
     )
     print("🔍 prob_tarjetas:", prob_tarjetas, type(prob_tarjetas))
 

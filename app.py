@@ -282,7 +282,7 @@ def inicio():
 
                         'tarjetas': resultado["Probabilidades"]["Tarjetas"],
                         'tarjetas_sugerencia': resultado["Probabilidades"]["Sugerencia Tarjetas"],
-                        'tarjetas_justificacion': resultado["Probabilidades"]["Justificacion Tarjetas"],
+                        'tarjetas_justificacion': resultado["Probabilidades"].get("Sugerencia Tarjetas", ""),
 
                         'pronostico_final': resultado["Probabilidades"]["Sugerencia Resultado"],
                         'resultado_justificacion': resultado["Probabilidades"]["Justificacion Resultado"]
