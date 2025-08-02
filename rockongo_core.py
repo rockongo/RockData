@@ -266,28 +266,28 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         "Equipo Visita": equipo_visita,
         "Nombre Partido": nombre_partido,
         "Promedios Local": {
-            "Goles": stats_local["goles"],
-            "Goles 1T": stats_local["goles_1T"],
-            "Corners": stats_local["corners"],
-            "Tarjetas": stats_local["amarillas"] + stats_local["rojas"]
+            "Goles": float(stats_local["goles"]),
+            "Goles 1T": float(stats_local["goles_1T"]),
+            "Corners": float(stats_local["corners"]),
+            "Tarjetas": float(stats_local["amarillas"] + stats_local["rojas"])
         },
         "Promedios Visita": {
-            "Goles": stats_visita["goles"],
-            "Goles 1T": stats_visita["goles_1T"],
-            "Corners": stats_visita["corners"],
-            "Tarjetas": stats_visita["amarillas"] + stats_visita["rojas"]
+            "Goles": float(stats_visita["goles"]),
+            "Goles 1T": float(stats_visita["goles_1T"]),
+            "Corners": float(stats_visita["corners"]),
+            "Tarjetas": float(stats_visita["amarillas"] + stats_visita["rojas"])
         },
         "Estadísticas Totales": {
-            "Goles Totales": round(stats_local["goles"] + stats_visita["goles"], 2),
-            "Corners Totales": round(stats_local["corners"] + stats_visita["corners"], 2),
-            "Tarjetas Totales": round(
+            "Goles Totales": float(stats_local["goles"] + stats_visita["goles"]),
+            "Corners Totales": float(stats_local["corners"] + stats_visita["corners"]),
+            "Tarjetas Totales": float(
                 stats_local["amarillas"] + stats_local["rojas"] +
-                stats_visita["amarillas"] + stats_visita["rojas"], 2
+                stats_visita["amarillas"] + stats_visita["rojas"])
             )
         },
         "Probabilidades": resultado_probabilistico,
         "Gol 1T": {
-            "Probabilidad": gol_1t_prob,
+            "Probabilidad": float(gol_1t_prob),
             "Texto": gol_1t_texto
         }
 
