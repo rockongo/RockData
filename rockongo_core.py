@@ -197,9 +197,18 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     sugerencia_tarjetas = "Evitar apuestas por tarjetas altas." if prob_tarjetas.get("+4.5", 0) < 70 else "Más de 4.5 tarjetas recomendadas."
     resultado_probabilistico["Sugerencia Tarjetas"] = sugerencia_tarjetas
 
+    try:
+        df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
+        ultima_fecha = df[df['Fixture ID'] == df['Fixture ID'].max()]['Fecha'].dt.strftime('%d-%m-%Y').values[0]
+        nombre_partido = f"{ultima_fecha} | {equipo_local} vs {equipo_visita}"
+    except Exception:
+        nombre_partido = f"{equipo_local} vs {equipo_visita}"
+
+
     return {
         "Equipo Local": equipo_local,
         "Equipo Visita": equipo_visita,
+        "Nombre Partido": nombre_partido,
         "Promedios Local": {
             "Goles": stats_local["goles"],
             "Goles 1T": stats_local["goles_1T"],
