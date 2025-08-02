@@ -126,6 +126,13 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         "amarillas": stats_visita["amarillas"],
         "rojas": stats_visita["rojas"]
     }
+    # ✅ Calcula forma reciente antes de predecir
+    forma_local = simulacion_forma_reciente(df, equipo_local)
+    forma_visita = simulacion_forma_reciente(df, equipo_visita)
+
+    # ✅ Agrega al diccionario antes de pasar a predecir
+    stats_local_data["forma_victorias"] = forma_local
+    stats_visita_data["forma_victorias"] = forma_visita
 
 
     resultado_probabilistico = predecir_partido(stats_local_data, stats_visita_data)
