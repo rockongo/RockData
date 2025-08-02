@@ -251,7 +251,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         if not df_filtrado.empty:
             ultima_fila = df_filtrado.iloc[-1]
             fecha_valida = pd.to_datetime(ultima_fila["Fecha"], errors='coerce')
-            fecha_str = fecha_valida.strftime('%d-%m-%Y') if not pd.isnull(fecha_valida) else "Fecha desconocida"
+            fecha_str = str(fecha_valida.date()) if not pd.isnull(fecha_valida) else "Fecha desconocida"
             nombre_partido = f"{fecha_str} | {equipo_local} vs {equipo_visita}"
         else:
             nombre_partido = f"{equipo_local} vs {equipo_visita}"

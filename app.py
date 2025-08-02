@@ -281,7 +281,7 @@ def inicio():
                         'corners_justificacion': corners_justificacion,
 
                         'tarjetas': resultado["Probabilidades"]["Tarjetas"],
-                        'tarjetas_sugerencia': resultado["Probabilidades"]["Sugerencia Tarjetas"],
+                        'tarjetas_sugerencia': resultado["Probabilidades"]["Tarjetas"].get("Sugerencia", ""),
                         'tarjetas_justificacion': resultado["Probabilidades"].get("Sugerencia Tarjetas", ""),
 
                         'pronostico_final': resultado.get("Probabilidades", {}).get("Sugerencia Resultado", "Sin sugerencia disponible"),
