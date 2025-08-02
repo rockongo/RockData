@@ -164,20 +164,38 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     print("🔍 prob_tarjetas:", prob_tarjetas, type(prob_tarjetas))
 
     resultado_probabilistico = {
-        "Gol 1er Tiempo": prob_1t,
-        "Ambos Marcan": ambos_marcan,
-        "Goles Totales": escenarios_goles,
-        "Córners": prob_corners,
-        "Tarjetas": prob_tarjetas
+        "Gol 1er Tiempo": {
+            "1 gol": prob_1t.get("1", 0),
+            "Texto": gol_1t_texto
+        },
+        "Ambos Marcan": {
+            "Probabilidad": prob_ambos.get("Sí", 0),
+            "Justificacion": ambos_justificacion
+        },
+        "Goles": {
+            "+1.5": prob_goles.get("+1.5", 0),
+            "+2.5": prob_goles.get("+2.5", 0),
+            "Justificacion": goles_justificacion
+        },
+        "Córners": {
+            "+7.5": prob_corners.get("+7.5", 0),
+            "+8.5": prob_corners.get("+8.5", 0),
+            "+9.5": prob_corners.get("+9.5", 0),
+            "Sugerencia": sugerencia_corners,
+            "Justificacion": corners_justificacion
+        },
+        "Tarjetas": {
+            "+3.5": prob_tarjetas.get("+3.5", 0),
+            "+4.5": prob_tarjetas.get("+4.5", 0),
+            "Sugerencia": sugerencia_tarjetas
+        }
     }
-
     
-    print("🎯 resultado_probabilistico:", resultado_probabilistico["Gol 1er Tiempo"]["1 gol"], type(resultado_probabilistico["Gol 1er Tiempo"]["1 gol"]))
-
-    if not resultado_probabilistico or "Gol 1er Tiempo" not in resultado_probabilistico:
-        print("⚠️ Error: resultado_probabilistico es None o no contiene 'Gol 1er Tiempo'")
+    try:
+        print("🎯 resultado_probabilistico:", resultado_probabilistico["Gol 1er Tiempo"].get("1 gol", 0), type(resultado_probabilistico["Gol 1er Tiempo"].get("1 gol", 0)))
+    except Exception as e:
+        print("⚠️ Error al acceder a 'Gol 1er Tiempo':", e)
         return None
-
 
 # === Análisis textual de Gol en Primer Tiempo ===
     gol_1t_data = resultado_probabilistico.get("Gol 1er Tiempo", {})
