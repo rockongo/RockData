@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>RockData Resultado</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9fafb;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      padding: 24px 32px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header img {
+      width: 140px;
+    }
+
+    .tagline {
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #6b7280;
+      margin-top: 5px;
+    }
+
+    .partido {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+
+    .info {
+      text-align: center;
+      font-size: 0.95rem;
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+
+    .bloque {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 10px 0;
+    }
+
+    .bloque:last-child {
+      border-bottom: none;
+    }
+
+    .titulo {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 3px;
+    }
+
+    .texto {
+      font-size: 0.92rem;
+      color: #374151;
+    }
+
+    .porcentaje {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #111827;
+    }
+
+    .final {
+      background-color: #f3f4f6;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 20px;
+    }
+
+    .fila-final {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .sugerencia {
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    small {
+      color: #6b7280;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="/static/logo.png" alt="ROCKDATA">
+      <div class="tagline">No adivinamos. Calculamos.</div>
+    </div>
+
+    <div class="partido">Hangzhou Greentown vs Shandong Luneng</div>
+    <div class="info">🏆 SuperLiga | Próximo partido</div>
+
+    <div class="bloque">
+      <div>
+        <div class="titulo">⏱️ Gol en el Primer Tiempo</div>
+        <div class="texto">No se anticipa un primer tiempo muy activo.</div>
+      </div>
+      <div class="porcentaje">26.88%</div>
+    </div>
+
+    <div class="bloque">
+      <div>
+        <div class="titulo">🤝 Ambos Equipos Marcan</div>
+        <div class="texto">Alta probabilidad de que ambos equipos anoten.<br>
+          <small>HG: 2.38 goles / SL: recibe 1.89</small>
+        </div>
+      </div>
+      <div class="porcentaje">76.98%</div>
+    </div>
+
+    <div class="bloque">
+      <div>
+        <div class="titulo">⚽ Goles Totales</div>
+        <div class="texto">
+          +1.5 goles: <strong>50.34%</strong><br>
+          +2.5 goles: <strong>21.05%</strong><br>
+          <span>No se prevén muchos goles.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="final">
+      <div class="titulo">📊 Resultado Final</div>
+      <div class="fila-final"><span>Local:</span><span>37.57%</span></div>
+      <div class="fila-final"><span>Empate:</span><span>28.42%</span></div>
+      <div class="fila-final"><span>Visita:</span><span>34.01%</span></div>
+      <div class="sugerencia">👉 Sugerencia: Doble oportunidad: 1X</div>
+    </div>
+  </div>
+</body>
+</html>
