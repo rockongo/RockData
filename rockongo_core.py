@@ -177,6 +177,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     ) 
 
     print("🔍 prob_tarjetas:", prob_tarjetas, type(prob_tarjetas))
+    print("✅ Justificación generada:", ambos_justificacion)
 
     resultado_probabilistico = {
         "Gol 1er Tiempo": {
@@ -228,21 +229,25 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         gol_1t_texto = "No se anticipa un primer tiempo muy activo."
 
     sugerencia_tarjetas = "Evitar apuestas por tarjetas altas." if prob_tarjetas.get("+4.5", 0) < 70 else "Más de 4.5 tarjetas recomendadas."
-    resultado_probabilistico["Sugerencia Tarjetas"] = sugerencia_tarjetas
-    
+        
 
     try:
         df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
-        ultima_fila = df[
+        df_filtrado = df[
             ((df['Local'] == equipo_local) & (df['Visita'] == equipo_visita)) |
             ((df['Local'] == equipo_visita) & (df['Visita'] == equipo_local))
-        ].sort_values("Fecha").iloc[-1]
+        ].dropna(subset=["Fecha"]).sort_values("Fecha")
 
-        fecha_str = ultima_fila["Fecha"].strftime('%d-%m-%Y')
-        nombre_partido = f"{fecha_str} | {equipo_local} vs {equipo_visita}"
+        if not df_filtrado.empty:
+            ultima_fecha = df_filtrado["Fecha"].iloc[-1]
+            fecha_str = ultima_fecha.strftime('%d-%m-%Y')
+            nombre_partido = f"{fecha_str} | {equipo_local} vs {equipo_visita}"
+        else:
+            nombre_partido = f"{equipo_local} vs {equipo_visita}"
     except Exception as e:
         print(f"⚠️ Error al determinar fecha del partido: {e}")
         nombre_partido = f"{equipo_local} vs {equipo_visita}"
+
 
     return {
         "Equipo Local": equipo_local,
