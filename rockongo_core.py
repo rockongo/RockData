@@ -128,7 +128,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     }
 
 
-    resultado_probabilistico = predecir_partido(stats_local_data["Promedios"], stats_visita_data)
+    resultado_probabilistico = predecir_partido(stats_local_data, stats_visita_data)
     if not resultado_probabilistico or "Gol 1er Tiempo" not in resultado_probabilistico:
         print("⚠️ Error: resultado_probabilistico es None o no contiene 'Gol 1er Tiempo'")
         return None
