@@ -9,10 +9,10 @@ from probabilidades import (
     calcular_probabilidad_corners,
     calcular_probabilidad_tarjetas,
     calcular_probabilidad_gol_1t,
-    calcular_probabilidad_ambos_marcan
+    calcular_probabilidad_ambos_marcan,
     generar_sugerencia_corners
-
 )
+
 
 # Ruta donde están guardados todos los Excel de ligas
 RUTA_LIGAS = r"C:\Users\raque\desktop\ligas_datas\Ligas"
