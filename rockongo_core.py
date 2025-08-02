@@ -185,10 +185,12 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     print("🔍 prob_tarjetas:", prob_tarjetas, type(prob_tarjetas))
     print("✅ Justificación generada:", ambos_justificacion)
     sugerencia_corners = generar_sugerencia_corners(prob_corners)
+
+    sugerencia_tarjetas = "Evitar apuestas por tarjetas altas." if prob_tarjetas.get("+4.5", 0) < 70 else "Más de 4.5 tarjetas recomendadas."
     
     resultado_probabilistico = {
         "Gol 1er Tiempo": {
-            "1 gol": prob_1t.get("1", 0),
+            "1 gol": prob_1t.get("1 gol", 0),
             "Texto": gol_1t_texto
         },
         "Ambos Marcan": {
