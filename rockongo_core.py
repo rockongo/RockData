@@ -135,7 +135,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     stats_local_data["forma_victorias"] = forma_local
     stats_visita_data["forma_victorias"] = forma_visita
 
-
+    forma_reciente = simulacion_forma_reciente(df, equipo_local, equipo_visita)
     resultado_probabilistico = predecir_partido(stats_local_data, stats_visita_data, forma_reciente)
     if not resultado_probabilistico or "Gol 1er Tiempo" not in resultado_probabilistico:
         print("⚠️ Error: resultado_probabilistico es None o no contiene 'Gol 1er Tiempo'")
