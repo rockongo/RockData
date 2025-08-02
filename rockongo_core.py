@@ -112,20 +112,21 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     # --------------------------
 
     stats_local_data = {
-        "goles": stats_local["goles"],
-        "goles_1T": stats_local["goles_1T"],
-        "corners": stats_local["corners"],
-        "amarillas": stats_local["amarillas"],
-        "rojas": stats_local["rojas"]
+        "Goles": promedios_local.get("Goles", 0),
+        "Goles 1T": promedios_local.get("Goles 1T", 0),
+        "Córners": promedios_local.get("Córners", 0),
+        "Amarillas": promedios_local.get("Amarillas", 0),
+        "Rojas": promedios_local.get("Rojas", 0)
     }
 
     stats_visita_data = {
-        "goles": stats_visita["goles"],
-        "goles_1T": stats_visita["goles_1T"],
-        "corners": stats_visita["corners"],
-        "amarillas": stats_visita["amarillas"],
-        "rojas": stats_visita["rojas"]
+        "Goles": promedios_visita.get("Goles", 0),
+        "Goles 1T": promedios_visita.get("Goles 1T", 0),
+        "Córners": promedios_visita.get("Córners", 0),
+        "Amarillas": promedios_visita.get("Amarillas", 0),
+        "Rojas": promedios_visita.get("Rojas", 0)
     }
+
     # ✅ Calcula forma reciente antes de predecir
     forma_local = simulacion_forma_reciente(df, equipo_local, equipo_local)["Local (últimos 5)"]
     forma_visita = simulacion_forma_reciente(df, equipo_visita, equipo_visita)["Local (últimos 5)"]
