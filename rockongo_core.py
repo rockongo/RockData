@@ -300,7 +300,7 @@ def predecir_partido(stats_local, stats_visita):
     distribucion_goles = calcular_distribucion_poisson(media_total_goles)
     escenarios = calcular_probabilidades_escenarios(distribucion_goles)
    
-    resultado_final = calcular_probabilidad_resultado_final(stats_local, stats_visita)
+    resultado_final = calcular_probabilidad_resultado_partido(stats_local, stats_visita)
     promedio_goles_total = (stats_local["goles"] + stats_visita["goles"]) / 2
     forma_local_victorias = stats_local["forma_victorias"]
     forma_visita_victorias = stats_visita["forma_victorias"]
