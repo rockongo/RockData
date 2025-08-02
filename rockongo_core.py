@@ -175,7 +175,12 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
 
 # === Análisis textual de Gol en Primer Tiempo ===
-    gol_1t_prob = resultado_probabilistico["Gol 1er Tiempo"]["1 gol"]
+    gol_1t_data = resultado_probabilistico.get("Gol 1er Tiempo", {})
+    gol_1t_prob = gol_1t_data.get("1 gol", None)
+
+    if gol_1t_prob is None or not isinstance(gol_1t_prob, (int, float)):
+        print("⚠️ Error: '1 gol' no encontrado o no es número")
+        return None
 
     if gol_1t_prob >= 60:
         gol_1t_texto = "Alta probabilidad de que se abra el marcador antes del descanso."
