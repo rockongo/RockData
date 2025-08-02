@@ -170,6 +170,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     prob_corners = calcular_probabilidad_corners(
         stats_local_data["Corners"], stats_visita_data["Corners"]
     )
+    corners_justificacion = "Probabilidad basada en el promedio combinado de córners del partido."
+
     amarillas_local = float(stats_local.get("amarillas", 0) or 0)
     rojas_local = float(stats_local.get("rojas", 0) or 0)
     amarillas_visita = float(stats_visita.get("amarillas", 0) or 0)
@@ -245,20 +247,16 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         ].dropna(subset=["Fecha"]).sort_values("Fecha")
 
         if not df_filtrado.empty:
-            try:
-                ultima_fecha = df_filtrado["Fecha"].iloc[-1]
-                fecha_valida = pd.to_datetime(ultima_fecha, errors='coerce')
-                fecha_str = fecha_valida.strftime('%d-%m-%Y') if not pd.isnull(fecha_valida) else "Fecha desconocida"
-            except Exception:
-                fecha_str = "Fecha desconocida"
-
+            ultima_fila = df_filtrado.iloc[-1]
+            fecha_valida = pd.to_datetime(ultima_fila["Fecha"], errors='coerce')
+            fecha_str = fecha_valida.strftime('%d-%m-%Y') if not pd.isnull(fecha_valida) else "Fecha desconocida"
             nombre_partido = f"{fecha_str} | {equipo_local} vs {equipo_visita}"
-
         else:
             nombre_partido = f"{equipo_local} vs {equipo_visita}"
-    except Exception as e:
-        print(f"⚠️ Error al determinar fecha del partido: {e}")
-        nombre_partido = f"{equipo_local} vs {equipo_visita}"
+
+        except Exception as e:
+            print(f"⚠️ Error al determinar fecha del partido: {e}")
+            nombre_partido = f"{equipo_local} vs {equipo_visita}"
 
 
     return {
