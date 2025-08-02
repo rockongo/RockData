@@ -161,13 +161,21 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     ambos_marcan = calcular_probabilidad_ambos_marcan(
         stats_local_data["Goles"], stats_visita_data["Goles"]
     )
+    ambos_justificacion = f"{equipo_local} promedia {stats_local_data['Goles']:.2f} goles y {equipo_visita} recibe {stats_visita_data['Goles']:.2f}."
+
     prob_corners = calcular_probabilidad_corners(
         stats_local_data["Corners"], stats_visita_data["Corners"]
     )
+    amarillas_local = float(stats_local.get("amarillas", 0) or 0)
+    rojas_local = float(stats_local.get("rojas", 0) or 0)
+    amarillas_visita = float(stats_visita.get("amarillas", 0) or 0)
+    rojas_visita = float(stats_visita.get("rojas", 0) or 0)
+
     prob_tarjetas = calcular_probabilidad_tarjetas(
-        float(stats_local.get("amarillas", 0)) + float(stats_local.get("rojas", 0)),
-        float(stats_visita.get("amarillas", 0)) + float(stats_visita.get("rojas", 0))
-    )
+        amarillas_local + rojas_local,
+        amarillas_visita + rojas_visita
+    ) 
+
     print("🔍 prob_tarjetas:", prob_tarjetas, type(prob_tarjetas))
 
     resultado_probabilistico = {
