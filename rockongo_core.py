@@ -404,20 +404,27 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
     else:
         justificacion_tarjetas = f"Partido parejo en tarjetas, cuidado con {mayor_prob}."
 
+    
     # === APUESTA SEGURA COMBINADA ===
-    prob_menos_35 = escenarios.get("+3.5", 0) < 30
+    prob_mas_25 = escenarios.get("+2.5", 0)
+    prob_mas_15 = escenarios.get("+1.5", 0)
+    prob_menos_35 = escenarios.get("-3.5", 0)
     promedio_goles_total = (stats_local["Goles"] + stats_visita["Goles"]) / 2
     forma_local_victorias = forma_reciente["Local (últimos 5)"]["Goles"]
     forma_visita_victorias = forma_reciente["Visita (últimos 5)"]["Goles"]
+
     apuesta_segura = generar_apuesta_segura(
         resultado["Local"],
         resultado["Empate"],
         resultado["Visita"],
+        prob_mas_25,
+        prob_mas_15,
         prob_menos_35,
         promedio_goles_total,
         forma_local_victorias,
         forma_visita_victorias
     )
+
 
     # === RETORNO FINAL ===
     resultados = {
