@@ -76,3 +76,13 @@ def generar_apuesta_segura(prob_goles, prob_resultado):
         "Combinación": recomendacion,
         "Motivo": motivo if recomendacion else "No se encontró una combinación segura de goles + resultado."
     }
+
+def generar_sugerencia_corners(probabilidades):
+    # ejemplo de lógica (ajusta según sea tu real implementación)
+    if probabilidades.get('+8.5', 0) >= 85:
+        return "Más de 8.5 córners"
+    elif probabilidades.get('+7.5', 0) >= 80:
+        return "Más de 7.5 córners"
+    else:
+        return "Evitar apuestas por córners altos"
+
