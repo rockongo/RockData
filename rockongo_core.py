@@ -10,7 +10,6 @@ from probabilidades import (
     calcular_probabilidad_tarjetas,
     calcular_probabilidad_gol_1t,
     calcular_probabilidad_ambos_marcan,
-    calcular_probabilidad_goles_rango,
     generar_sugerencia_corners
 )
 
