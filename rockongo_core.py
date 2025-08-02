@@ -299,6 +299,28 @@ def predecir_partido(stats_local, stats_visita):
     media_total_goles = stats_local["goles"] + stats_visita["goles"]
     distribucion_goles = calcular_distribucion_poisson(media_total_goles)
     escenarios = calcular_probabilidades_escenarios(distribucion_goles)
+   
+    resultado_final = calcular_probabilidad_resultado_final(stats_local, stats_visita)
+    promedio_goles_total = (stats_local["goles"] + stats_visita["goles"]) / 2
+    forma_local_victorias = stats_local["forma_victorias"]
+    forma_visita_victorias = stats_visita["forma_victorias"]
+
+    # Llamada a la función de apuesta segura recomendada
+    apuesta_segura = generar_apuesta_segura(
+        resultado_final["Local"],
+        resultado_final["Empate"],
+        resultado_final["Visita"],
+        escenarios["+2.5 goles"],
+        escenarios["+1.5 goles"],
+        escenarios["-3.5 goles"],
+        promedio_goles_total,
+        forma_local_victorias,
+        forma_visita_victorias
+    )
+
+
+    resultado["Apuesta Segura Recomendada"] = apuesta_segura
+
 
     media_goles_1t = stats_local["goles_1T"] + stats_visita["goles_1T"]
     distribucion_goles_1t = calcular_distribucion_poisson(media_goles_1t)
@@ -548,5 +570,65 @@ def formato_rockdata_41(datos):
     print(f"\nPronóstico final: {datos['pronostico_final']}")
     print(f"📊 {datos['resultado_justificacion']}")
 
+def calcular_probabilidades_escenarios(distribucion):
+    probabilidades = {
+        "+1.5 goles": round(sum([v for k, v in distribucion.items()
+                                 if k.split()[0].isdigit() and int(k.split()[0]) >= 2]), 2),
+        "+2.5 goles": round(sum([v for k, v in distribucion.items()
+                                 if k.split()[0].isdigit() and int(k.split()[0]) >= 3]), 2),
+        "+3.5 goles": round(sum([v for k, v in distribucion.items()
+                                 if k.split()[0].isdigit() and int(k.split()[0]) >= 4]), 2),
+        "-2.5 goles": round(sum([v for k, v in distribucion.items()
+                                 if k.split()[0].isdigit() and int(k.split()[0]) <= 2]), 2),
+        "-3.5 goles": round(sum([v for k, v in distribucion.items()
+                                 if k.split()[0].isdigit() and int(k.split()[0]) <= 3]), 2),
+        "exactamente 2 goles": distribucion.get("2 goles", 0.0),
+    }
+    return probabilidades
 
-# Actualización lógica Gol 1T - Confirmado 29 julio
+
+def generar_apuesta_segura(prob_local, prob_empate, prob_visita,
+                            prob_mas_25, prob_mas_15, prob_menos_35,
+                            promedio_goles_total,
+                            forma_local_victorias, forma_visita_victorias):
+    """
+    Devuelve una combinación segura de 2 selecciones tipo BetBuilder.
+    """
+    sugerencias = []
+
+    # Primera parte: Resultado del partido
+    if prob_local > 50:
+        sugerencias.append(("Victoria Local", prob_local))
+    elif prob_visita > 50:
+        sugerencias.append(("Victoria Visita", prob_visita))
+    elif forma_local_victorias >= 3 and forma_visita_victorias <= 1:
+        sugerencias.append(("1X", max(prob_local, prob_empate)))
+    elif forma_visita_victorias >= 3 and forma_local_victorias <= 1:
+        sugerencias.append(("2X", max(prob_visita, prob_empate)))
+    else:
+        if prob_local > prob_visita:
+            sugerencias.append(("1X", max(prob_local, prob_empate)))
+        else:
+            sugerencias.append(("2X", max(prob_visita, prob_empate)))
+
+    # Segunda parte: Goles
+    if prob_menos_35 >= 70:
+        sugerencias.append(("Menos de 3.5 goles", prob_menos_35))
+    elif prob_mas_15 >= 75 and promedio_goles_total > 2:
+        sugerencias.append(("Más de 1.5 goles", prob_mas_15))
+    else:
+        return {
+            "Combinación": None,
+            "Motivo": "No se encontró una combinación segura de goles + resultado."
+        }
+
+    # Calcular probabilidad conjunta
+    prob_final = (sugerencias[0][1] / 100) * (sugerencias[1][1] / 100)
+    cuota_justa = round(1 / prob_final, 2)
+
+    return {
+        "Selección 1": sugerencias[0][0],
+        "Selección 2": sugerencias[1][0],
+        "Probabilidad conjunta": round(prob_final * 100, 2),
+        "Cuota justa estimada": cuota_justa
+    }

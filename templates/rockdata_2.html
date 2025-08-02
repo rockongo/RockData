@@ -122,6 +122,21 @@
     🧾 {{ datos['resultado_justificacion'] }}
   </div>
 
+  {% if resultado["Apuesta Segura Recomendada"]["Combinación"] is not none %}
+  <div class="bloque p-3 border rounded" style="background-color: #fff6e5;">
+    <h5 class="text-center mb-2">🔒 Apuesta Segura Recomendada</h5>
+    <div class="fila">✅ Selección 1 <span>{{ resultado["Apuesta Segura Recomendada"]["Selección 1"] }}</span></div>
+    <div class="fila">✅ Selección 2 <span>{{ resultado["Apuesta Segura Recomendada"]["Selección 2"] }}</span></div>
+    <div class="fila">📈 Probabilidad conjunta <span>{{ resultado["Apuesta Segura Recomendada"]["Probabilidad conjunta"] }}%</span></div>
+    <div class="fila">💰 Cuota justa <span>{{ resultado["Apuesta Segura Recomendada"]["Cuota justa estimada"] }}</span></div>
+  </div>
+  {% else %}
+  <div class="bloque p-3 border rounded text-center" style="background-color: #fff3f3;">
+    ⚠️ No se encontró una apuesta segura para este partido.
+  </div>
+  {% endif %}
+
+
 
   <div class="mt-4">
     <a href="{{ url_for('inicio') }}" class="btn-volver">🔄 Volver a seleccionar equipos</a>
