@@ -211,7 +211,18 @@ def inicio():
                 archivo_excel = os.path.join(RUTA_LIGAS, ligas[pais][liga])
                 resultado = predecir_partido_desde_excel(archivo_excel, equipo_local, equipo_visita)
 
+                if not resultado or "Probabilidades" not in resultado:
+                    flash("❌ No se pudo generar el análisis. Asegúrate de que ambos equipos tengan suficientes partidos jugados.")
+                    return render_template("index.html", 
+                        resultado=None,
+                        sugerencias=[],
+                        paises=paises,
+                        equipo_local=None,
+                        equipo_visita=None
+                    )
+
                 print("DEBUG RESULTADO ===>", resultado)
+
 
                 
                 if resultado:
