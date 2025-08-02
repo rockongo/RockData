@@ -153,6 +153,9 @@ for archivo, config in ligas_config.items():
             "Posesión Local (%)", "Posesión Visita (%)"
         ]
         df_nuevos = pd.DataFrame(nuevas_filas, columns=columnas)
+
+        df_existente["Fecha"] = df_existente["Fecha"].astype(str)  # 👈 Esta línea soluciona el error
+
         df_final = pd.concat([df_existente, df_nuevos], ignore_index=True)
         df_final.to_excel(path_excel, index=False)
         print(f"✅ {len(nuevas_filas)} partidos agregados a {archivo}")
