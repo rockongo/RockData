@@ -204,7 +204,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         ultima_fecha = str(ultima_fecha)
         nombre_partido = f"{ultima_fecha} | {equipo_local} vs {equipo_visita}"
     except Exception:
-        nombre_partido = f"{equipo_local} vs {equipo_visita}
+        nombre_partido = f"{equipo_local} vs {equipo_visita}"
 
 
     return {
