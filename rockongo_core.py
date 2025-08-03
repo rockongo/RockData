@@ -879,8 +879,8 @@ def calcular_probabilidad_resultado_partido(stats_local, stats_visita):
     """Calcula la probabilidad de 1, X, 2 según la media de goles esperados por equipo"""
     from scipy.stats import poisson
 
-    media_local = stats_local['goles']
-    media_visita = stats_visita['goles']
+    media_local = stats_local.get("Goles Local", 0) + stats_local.get("Goles Visita", 0)
+    media_visita = stats_visita.get("Goles Local", 0) + stats_visita.get("Goles Visita", 0)
 
     max_goles = 6
     prob_local, prob_empate, prob_visita = 0, 0, 0
