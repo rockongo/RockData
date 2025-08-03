@@ -106,6 +106,7 @@ def registro():
 
         return redirect(url_for("login"))
 
+    return render_template("registro.html")
 
 # === RUTA: ACTIVAR ===
 @app.route("/activar", methods=["GET", "POST"])
