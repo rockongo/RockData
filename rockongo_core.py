@@ -293,6 +293,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
     resultado_probabilistico["pronostico_final"] = pronostico_final
 
+    return resultado_probabilistico
+
     try:
         print("🎯 resultado_probabilistico:", resultado_probabilistico["Gol 1er Tiempo"].get("1 gol", 0), type(resultado_probabilistico["Gol 1er Tiempo"].get("1 gol", 0)))
     except Exception as e:
