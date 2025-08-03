@@ -251,11 +251,11 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
     if max(prob_local, prob_empate, prob_visita) > 50:
         if prob_local > prob_empate and prob_local > prob_visita:
-        pronostico_final = "Victoria local"
+            pronostico_final = "Victoria local"
         elif prob_visita > prob_local and prob_visita > prob_empate:
-        pronostico_final = "Victoria visitante"
+            pronostico_final = "Victoria visitante"
         else:
-        pronostico_final = "Empate"
+            pronostico_final = "Empate"
     else:
         if prob_local > prob_visita:
             pronostico_final = "1X (Local o Empate)"
