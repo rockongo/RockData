@@ -1,9 +1,10 @@
+
+from funciones_estadisticas import filtrar_partidos
 import scipy.stats
 import pandas as pd
 import os
 import ast
 
-#probabilidadessss
 
 from probabilidades import (
     calcular_probabilidad_goles,
@@ -195,9 +196,9 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     ambos_justificacion = f"{equipo_local} promedia {stats_local_data['Goles']:.2f} goles y {equipo_visita} recibe {stats_visita_data['Goles']:.2f}."
 
     prob_corners = {
-        "+7.5": calcular_probabilidad_corners("mas", 7.5),
-        "+8.5": calcular_probabilidad_corners("mas", 8.5),
-        "+9.5": calcular_probabilidad_corners("mas", 9.5)
+        "+7.5": calcular_probabilidad_corners(promedios_local["Corners"], promedios_visita["Corners"]),
+        "+8.5": calcular_probabilidad_corners(promedios_local["Corners"], promedios_visita["Corners"]),
+        "+9.5": calcular_probabilidad_corners(promedios_local["Corners"], promedios_visita["Corners"]),
     }
     
     corners_justificacion = "Probabilidad basada en el promedio combinado de córners del partido."
