@@ -175,9 +175,6 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         "Rojas": float(stats_visita.get("Rojas Visita", 0)),
     }
 
-    prob_resultado = calcular_probabilidad_resultado_partido(stats_local_data, stats_visita_data)
-    pronostico_final = prob_resultado.get("Sugerencia Resultado", "Sin sugerencia disponible")
-
     # ✅ Calcula forma reciente antes de predecir
     forma_local = simulacion_forma_reciente(df, equipo_local, equipo_local)["Local (últimos 5)"]
     forma_visita = simulacion_forma_reciente(df, equipo_visita, equipo_visita)["Local (últimos 5)"]
@@ -255,18 +252,21 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     prob_empate = float(prob_resultado.get("Empate", 0))
     prob_visita = float(prob_resultado.get("Visita", 0))
 
-    if max(prob_local, prob_empate, prob_visita) > 50:
-        if prob_local > prob_empate and prob_local > prob_visita:
-            pronostico_final = "Victoria local"
-        elif prob_visita > prob_local and prob_visita > prob_empate:
-            pronostico_final = "Victoria visitante"
-        else:
-            pronostico_final = "Empate"
+    # Nueva lógica segura (no se sugiere empate)
+    if prob_local > 50:
+        pronostico_final = "Victoria local"
+        texto_justificacion = "El equipo local muestra mejor promedio ofensivo y defensivo. Su probabilidad de victoria supera el 50%, justificando una apuesta directa."
+    elif prob_visita > 50:
+        pronostico_final = "Victoria visitante"
+        texto_justificacion = "El equipo visitante tiene mejor rendimiento general. Con más del 50% de probabilidad, se respalda una victoria directa."
     else:
-        if prob_local > prob_visita:
+        # Doble oportunidad al equipo más fuerte (sin considerar empate)
+        if prob_local >= prob_visita:
             pronostico_final = "1X (Local o Empate)"
+            texto_justificacion = "Ningún equipo domina claramente, pero el local tiene una leve ventaja en goles y forma. Se sugiere asegurar con doble oportunidad."
         else:
             pronostico_final = "2X (Visita o Empate)"
+            texto_justificacion = "Partido parejo, pero la visita lleva mejor rendimiento reciente o más goles esperados. Se recomienda asegurar con doble oportunidad."
 
     resultado_probabilistico = {
         "Gol 1er Tiempo": {
@@ -378,7 +378,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "X": prob_resultado["Empate"],
             "2": prob_resultado["Visita"],
             "Sugerencia": pronostico_final
-        }
+        },
+        "Justificacion Resultado": texto_justificacion
     }
 
 
