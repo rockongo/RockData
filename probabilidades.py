@@ -2,6 +2,25 @@
 import numpy as np
 from scipy.stats import poisson
 
+def calcular_probabilidad_goles_rango(df, tipo, umbral):
+    """
+    tipo: "menos" o "mas"
+    umbral: número de goles (ej. 2.5)
+    """
+    promedio_local = df["Goles Local"].mean()
+    promedio_visita = df["Goles Visita"].mean()
+    media_total = promedio_local + promedio_visita
+
+    if tipo == "menos":
+        prob = poisson.cdf(int(umbral), media_total)
+    elif tipo == "mas":
+        prob = 1 - poisson.cdf(int(umbral), media_total)
+    else:
+        raise ValueError("Tipo debe ser 'menos' o 'mas'")
+
+    return round(prob * 100, 2)
+
+
 def calcular_probabilidad_goles(prom_local, prom_visita):
     prom_local = max(prom_local, 0.01)
     prom_visita = max(prom_visita, 0.01)

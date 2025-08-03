@@ -10,6 +10,7 @@ from probabilidades import (
     calcular_probabilidad_tarjetas,
     calcular_probabilidad_gol_1t,
     calcular_probabilidad_ambos_marcan,
+    calcular_probabilidad_goles_rango,
     generar_sugerencia_corners
 )
 
@@ -198,8 +199,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "Justificacion": ambos_justificacion
         },
         "Goles": {
-            "+1.5": float(prob_goles.get("+1.5", 0)),
-            "+2.5": float(prob_goles.get("+2.5", 0)),
+            "+1.5": float(escenarios_goles.get("+1.5", 0)),
+            "+2.5": float(escenarios_goles.get("+2.5", 0)),
             "Justificacion": justificacion_goles
         },
         "Córners": {
