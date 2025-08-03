@@ -115,16 +115,18 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
         promedios_local = calcular_promedios(local_partidos, "Local")
         promedios_visita = calcular_promedios(visita_partidos, "Visita")
+        if promedios_local is None or promedios_visita is None:
+            raise ValueError("No se pudieron calcular los promedios de uno o ambos equipos.")
 
         stats_local_data = {
-            "Corners": promedios_local["Corners"],
-            "Tarjetas": promedios_local["Tarjetas"],
-            "Amarillas": promedios_local["amarillas"]
+            "Corners": promedios_local.get("Corners", 0),
+            "Tarjetas": promedios_local.get["Tarjetas", 0],
+            "Amarillas": promedios_local.get["amarillas", 0]
         }
         stats_visita_data = {
-            "Corners": promedios_visita["Corners"],
-            "Tarjetas": promedios_visita["Tarjetas"],
-            "Amarillas": promedios_visita["amarillas"]
+            "Corners": promedios_visita.get("Corners", 0),
+            "Tarjetas": promedios_visita.get["Tarjetas", 0],
+            "Amarillas": promedios_visita.get["amarillas", 0]
         }
 
         prob_goles_menos_25 = calcular_probabilidad_goles_rango(df_partido, "menos", 2.5)
@@ -189,17 +191,18 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     else:
         gol_1t_texto = "No se anticipa un primer tiempo muy activo."
 
-    print("🔍 prob_1t:", prob_1t, type(prob_1t))
+    
     ambos_marcan = calcular_probabilidad_ambos_marcan(
         stats_local_data["Goles"], stats_visita_data["Goles"]
     )
     ambos_justificacion = f"{equipo_local} promedia {stats_local_data['Goles']:.2f} goles y {equipo_visita} recibe {stats_visita_data['Goles']:.2f}."
 
+    prob_corners_raw = calcular_probabilidad_corners(promedios_local["Corners"], promedios_visita["Corners"])
     prob_corners = {
-        "+7.5": calcular_probabilidad_corners(promedios_local["Corners"], promedios_visita["Corners"]),
-        "+8.5": calcular_probabilidad_corners(promedios_local["Corners"], promedios_visita["Corners"]),
-        "+9.5": calcular_probabilidad_corners(promedios_local["Corners"], promedios_visita["Corners"]),
-    }
+        "+7.5": prob_corners_raw["+7.5"],
+        "+8.5": prob_corners_raw["+8.5"],
+        "+9.5": prob_corners_raw["+9.5"]
+}
     
     corners_justificacion = "Probabilidad basada en el promedio combinado de córners del partido."
 
