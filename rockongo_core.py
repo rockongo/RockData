@@ -65,6 +65,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     stats_local = calcular_promedios(local_partidos, "Local")
     stats_visita = calcular_promedios(visita_partidos, "Visita")
 
+
     def calcular_localia_real(df, equipo_local, equipo_visita):
         df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
         df = df.sort_values('Fecha')
@@ -108,6 +109,23 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         df_visita = df[df['Visita'] == equipo_visita].tail(10)
         df_partido = pd.concat([df_local, df_visita])
 
+        local_partidos = filtrar_partidos(df, equipo_local)
+        visita_partidos = filtrar_partidos(df, equipo_visita)
+
+        promedios_local = calcular_promedios(local_partidos, "Local")
+        promedios_visita = calcular_promedios(visita_partidos, "Visita")
+
+        stats_local_data = {
+            "Corners": promedios_local["Corners"],
+            "Tarjetas": promedios_local["Tarjetas"],
+            "Amarillas": promedios_local["amarillas"]
+        }
+        stats_visita_data = {
+            "Corners": promedios_visita["Corners"],
+            "Tarjetas": promedios_visita["Tarjetas"],
+            "Amarillas": promedios_visita["amarillas"]
+        }
+
         prob_goles_menos_25 = calcular_probabilidad_goles_rango(df_partido, "menos", 2.5)
         
         prob_tarjetas_mas_4_5 = calcular_probabilidad_tarjetas(stats_local_data["Amarillas"], stats_visita_data["Amarillas"])
@@ -145,6 +163,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         "Rojas": float(stats_visita.get("Rojas", 0)),
     }
 
+
     # ✅ Calcula forma reciente antes de predecir
     forma_local = simulacion_forma_reciente(df, equipo_local, equipo_local)["Local (últimos 5)"]
     forma_visita = simulacion_forma_reciente(df, equipo_visita, equipo_visita)["Local (últimos 5)"]
@@ -176,9 +195,9 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     ambos_justificacion = f"{equipo_local} promedia {stats_local_data['Goles']:.2f} goles y {equipo_visita} recibe {stats_visita_data['Goles']:.2f}."
 
     prob_corners = {
-        "+7.5": calcular_probabilidad_corners(df_partido, "mas", 7.5),
-        "+8.5": calcular_probabilidad_corners(df_partido, "mas", 8.5),
-        "+9.5": calcular_probabilidad_corners(df_partido, "mas", 9.5)
+        "+7.5": calcular_probabilidad_corners("mas", 7.5),
+        "+8.5": calcular_probabilidad_corners("mas", 8.5),
+        "+9.5": calcular_probabilidad_corners("mas", 9.5)
     }
     
     corners_justificacion = "Probabilidad basada en el promedio combinado de córners del partido."
