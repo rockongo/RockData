@@ -639,10 +639,17 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
         "Tarjetas": prob_tarjetas,
         "Sugerencia Tarjetas": sugerencia_tarjetas,
         "Justificacion Tarjetas": justificacion_tarjetas,
-        "Apuesta Segura Recomendada": apuesta_segura
+        "Apuesta Segura Recomendada": apuesta_segura,
+        "Resultado Partido": {
+            "Local": resultado["Local"],
+            "Empate": resultado["Empate"],
+            "Visita": resultado["Visita"],
+            "Sugerencia": sugerencia_resultado
+        }
     }
 
     return resultados
+
 
 def generar_resumen_formateado(probabilidades: dict) -> dict:
     resumen = {}
