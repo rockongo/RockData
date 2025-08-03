@@ -363,8 +363,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "Goles Totales": stats_local_data["Goles"] + stats_visita_data["Goles"],
             "Corners Totales": stats_local_data["Corners"] + stats_visita_data["Corners"],
             "Tarjetas Totales": (
-                 stats_local_data["Amarillas"] + stats_local_data["Rojas"] +
-                 stats_visita_data["Amarillas"] + stats_visita_data["Rojas"]
+                stats_local_data["Amarillas"] + stats_local_data["Rojas"] +
+                stats_visita_data["Amarillas"] + stats_visita_data["Rojas"]
             )
         },
 
@@ -372,16 +372,13 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         "Gol 1T": {
             "Probabilidad": float(gol_1t_prob),
             "Texto": gol_1t_texto
-
+        },
         "Resultado Partido": {
             "1": prob_resultado["Local"],
             "X": prob_resultado["Empate"],
             "2": prob_resultado["Visita"],
             "Sugerencia": pronostico_final
         }
-
-        }
-
     }
 
 
