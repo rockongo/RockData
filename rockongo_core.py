@@ -223,6 +223,9 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
     sugerencia_tarjetas = "Evitar apuestas por tarjetas altas." if prob_tarjetas.get("+4.5", 0) < 70 else "Más de 4.5 tarjetas recomendadas."
     
+
+    escenarios = eval(escenarios_goles) if isinstance(escenarios_goles, str) else escenarios_goles
+
     resultado_probabilistico = {
         "Gol 1er Tiempo": {
             "1 gol": float(prob_1t.get("1 gol", 0)),
@@ -233,8 +236,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "Justificacion": ambos_justificacion
         },
         "Goles": {
-            "+1.5": float(escenarios_goles.get("+1.5", 0)),
-            "+2.5": float(escenarios_goles.get("+2.5", 0)),
+            "+1.5": float(escenarios.get("+1.5", 0)),
+            "+2.5": float(escenarios.get("+2.5", 0)),
             "Justificacion": justificacion_goles
         },
         "Córners": {
