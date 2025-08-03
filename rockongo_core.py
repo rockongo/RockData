@@ -273,7 +273,9 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "Sugerencia": sugerencia_tarjetas
         }
     }
-    
+    pronostico_final = "Sin sugerencia disponible"
+    resultado_probabilistico["pronostico_final"] = pronostico_final
+
     try:
         print("🎯 resultado_probabilistico:", resultado_probabilistico["Gol 1er Tiempo"].get("1 gol", 0), type(resultado_probabilistico["Gol 1er Tiempo"].get("1 gol", 0)))
     except Exception as e:
@@ -772,7 +774,7 @@ def formato_rockdata_41(datos):
     print(f"  Local: {datos['resultado']['local']}%")
     print(f"  Empate: {datos['resultado']['empate']}%")
     print(f"  Visita: {datos['resultado']['visita']}%")
-    print(f"\nPronóstico final: {datos['pronostico_final']}")
+    print(f"\n📊 Pronóstico Final: {datos.get('pronostico_final', 'Sin sugerencia disponible')}")
     print(f"📊 {datos['resultado_justificacion']}")
 
 def calcular_probabilidades_escenarios(distribucion):
