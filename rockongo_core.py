@@ -383,7 +383,6 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     }
 
 
-
 def predecir_partido_desde_excel(archivo_excel, equipo_local, equipo_visita):
     df = pd.read_excel(archivo_excel)
     return rockongo1_prediccion(df, equipo_local, equipo_visita)
