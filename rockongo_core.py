@@ -223,7 +223,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
     sugerencia_tarjetas = "Evitar apuestas por tarjetas altas." if prob_tarjetas.get("+4.5", 0) < 70 else "Más de 4.5 tarjetas recomendadas."
     
-
+    print("🐞 DEBUG tipo de escenarios_goles:", type(escenarios_goles), escenarios_goles)
     escenarios = eval(escenarios_goles) if isinstance(escenarios_goles, str) else escenarios_goles
 
     resultado_probabilistico = {
