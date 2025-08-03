@@ -119,6 +119,9 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     # NUEVO BLOQUE PROBABILÍSTICO
     # --------------------------
 
+    promedios_local = df_local.mean(numeric_only=True).to_dict()
+    promedios_visita = df_visita.mean(numeric_only=True).to_dict()
+
     stats_local = promedios_local
     stats_visita = promedios_visita
 
@@ -172,9 +175,12 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     )
     ambos_justificacion = f"{equipo_local} promedia {stats_local_data['Goles']:.2f} goles y {equipo_visita} recibe {stats_visita_data['Goles']:.2f}."
 
-    prob_corners = calcular_probabilidad_corners(
-        stats_local_data["Corners"], stats_visita_data["Corners"]
-    )
+    prob_corners = {
+        "+7.5": calcular_probabilidad_corners(df_partido, "mas", 7.5),
+        "+8.5": calcular_probabilidad_corners(df_partido, "mas", 8.5),
+        "+9.5": calcular_probabilidad_corners(df_partido, "mas", 9.5)
+    }
+    
     corners_justificacion = "Probabilidad basada en el promedio combinado de córners del partido."
 
     amarillas_local = float(stats_local.get("amarillas", 0) or 0)
