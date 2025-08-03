@@ -198,7 +198,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     )
     ambos_justificacion = f"{equipo_local} promedia {stats_local_data['Goles']:.2f} goles y {equipo_visita} recibe {stats_visita_data['Goles']:.2f}."
 
-    prob_corners_raw = calcular_probabilidad_corners(promedios_local["corners"], promedios_visita["corners"])
+    prob_corners_raw = calcular_probabilidad_corners(stats_local_data["Corners"], stats_visita_data["Corners"])
     prob_corners = {
         "+7.5": prob_corners_raw["+7.5"],
         "+8.5": prob_corners_raw["+8.5"],
