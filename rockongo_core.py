@@ -233,8 +233,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "Justificacion": ambos_justificacion
         },
         "Goles": {
-            "+1.5": float(ast.literal_eval(escenarios_goles).get("+1.5", 0)),
-            "+2.5": float(ast.literal_eval(escenarios_goles).get("+2.5", 0)),
+            "+1.5": float(escenarios_goles.get("+1.5", 0)),
+            "+2.5": float(escenarios_goles.get("+2.5", 0)),
             "Justificacion": justificacion_goles
         },
         "Córners": {
