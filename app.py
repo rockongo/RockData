@@ -89,7 +89,7 @@ def registro():
         else:
             print(f"[REGISTRO] Código válido: {codigo_ingresado}")
 
-        temporal = (codigo_ingresado == 'PRUEBA2025')
+        nuevo_codigo = generar_codigo_unico()
 
         nuevo_usuario = Usuario(
             email=email,
