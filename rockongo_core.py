@@ -244,6 +244,23 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     sugerencia_corners = generar_sugerencia_corners(prob_corners)
 
     escenarios = eval(escenarios_goles) if isinstance(escenarios_goles, str) else escenarios_goles
+    # --- PRONÓSTICO FINAL ---
+    prob_local = float(prob_resultado.get("Local", 0))
+    prob_empate = float(prob_resultado.get("Empate", 0))
+    prob_visita = float(prob_resultado.get("Visita", 0))
+
+    if max(prob_local, prob_empate, prob_visita) > 50:
+        if prob_local > prob_empate and prob_local > prob_visita:
+        pronostico_final = "Victoria local"
+        elif prob_visita > prob_local and prob_visita > prob_empate:
+        pronostico_final = "Victoria visitante"
+        else:
+        pronostico_final = "Empate"
+    else:
+        if prob_local > prob_visita:
+            pronostico_final = "1X (Local o Empate)"
+        else:
+            pronostico_final = "2X (Visita o Empate)"
 
     resultado_probabilistico = {
         "Gol 1er Tiempo": {
@@ -273,7 +290,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "Sugerencia": sugerencia_tarjetas
         }
     }
-    pronostico_final = "Sin sugerencia disponible"
+
     resultado_probabilistico["pronostico_final"] = pronostico_final
 
     try:
