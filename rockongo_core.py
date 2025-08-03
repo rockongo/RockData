@@ -214,23 +214,35 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     
     corners_justificacion = "Probabilidad basada en el promedio combinado de córners del partido."
 
-    amarillas_local = float(stats_local.get("amarillas", 0) or 0)
-    rojas_local = float(stats_local.get("rojas", 0) or 0)
-    amarillas_visita = float(stats_visita.get("amarillas", 0) or 0)
-    rojas_visita = float(stats_visita.get("rojas", 0) or 0)
+    # --- TARJETAS ---
+    media_tarjetas_local = stats_local_data["Tarjetas"]
+    media_tarjetas_visita = stats_visita_data["Tarjetas"]
+    total_tarjetas_esperadas = media_tarjetas_local + media_tarjetas_visita
 
-    prob_tarjetas = calcular_probabilidad_tarjetas(
-        amarillas_local + rojas_local,
-        amarillas_visita + rojas_visita
-    ) 
+    prob_tarjetas = {
+        "+3.5": float(scipy.stats.poisson.sf(3, total_tarjetas_esperadas)) * 100,
+        "+4.5": float(scipy.stats.poisson.sf(4, total_tarjetas_esperadas)) * 100,
+    }
+
+    # Redondear decimales
+    for k in prob_tarjetas:
+        prob_tarjetas[k] = round(prob_tarjetas[k], 1)
+
+    # Sugerencia inteligente
+    if prob_tarjetas["+4.5"] >= 80:
+        sugerencia_tarjetas = "Más de 4.5 tarjetas"
+    elif prob_tarjetas["+3.5"] >= 75:
+        sugerencia_tarjetas = "Más de 3.5 tarjetas"
+    else:
+        sugerencia_tarjetas = "Evitar apuestas por tarjetas altas."
+
+    # Agregar al resultado
+    prob_tarjetas["Sugerencia"] = sugerencia_tarjetas
 
     print("🔍 prob_tarjetas:", prob_tarjetas, type(prob_tarjetas))
     print("✅ Justificación generada:", ambos_justificacion)
     sugerencia_corners = generar_sugerencia_corners(prob_corners)
 
-    sugerencia_tarjetas = "Evitar apuestas por tarjetas altas." if prob_tarjetas.get("+4.5", 0) < 70 else "Más de 4.5 tarjetas recomendadas."
-    
-    
     escenarios = eval(escenarios_goles) if isinstance(escenarios_goles, str) else escenarios_goles
 
     resultado_probabilistico = {
