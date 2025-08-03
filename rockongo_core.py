@@ -215,8 +215,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     corners_justificacion = "Probabilidad basada en el promedio combinado de córners del partido."
 
     # --- TARJETAS ---
-    media_tarjetas_local = stats_local_data["Tarjetas"]
-    media_tarjetas_visita = stats_visita_data["Tarjetas"]
+    media_tarjetas_local = stats_local_data["Amarillas"] + stats_local_data["Rojas"]
+    media_tarjetas_visita = stats_visita_data["Amarillas"] + stats_visita_data["Rojas"]
     total_tarjetas_esperadas = media_tarjetas_local + media_tarjetas_visita
 
     prob_tarjetas = {
