@@ -271,16 +271,23 @@ def inicio():
                         'ambos_marcan_texto': texto_ambos,
                         'ambos_marcan_justificacion': f'{resultado["Equipo Local"]} promedia {resultado["Promedios Local"]["Goles"]:.2f} goles y {resultado["Equipo Visita"]} recibe {resultado["Promedios Visita"]["Goles"]:.2f}.',
 
-                        'goles_prob_15': prob_15,
-                        'goles_prob_25': prob_25,
+                        'goles_prob_15': round(prob_15, 1),
+                        'goles_prob_25': round(prob_25, 1),
                         'goles_recomendacion': goles_recomendacion,
                         'goles_texto': goles_texto,
 
-                        'corners': corners,
+                        'corners': {
+                            "+7.5": round(corners.get("+7.5", 0), 1),
+                            "+8.5": round(corners.get("+8.5", 0), 1),
+                            "+9.5": round(corners.get("+9.5", 0), 1),
+                        },
                         'corners_sugerencia': corners_sugerencia,
                         'corners_justificacion': corners_justificacion,
 
-                        'tarjetas': resultado["Probabilidades"]["Tarjetas"],
+                        'tarjetas': {
+                            "+3.5": round(resultado["Probabilidades"]["Tarjetas"].get("+3.5", 0), 1),
+                            "+4.5": round(resultado["Probabilidades"]["Tarjetas"].get("+4.5", 0), 1),
+                        },
                         'tarjetas_sugerencia': resultado["Probabilidades"]["Tarjetas"].get("Sugerencia", ""),
                         'tarjetas_justificacion': resultado["Probabilidades"].get("Sugerencia Tarjetas", ""),
 
