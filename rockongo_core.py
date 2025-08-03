@@ -108,6 +108,13 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     try:
         df_local = df[df['Local'] == equipo_local].tail(10)
         df_visita = df[df['Visita'] == equipo_visita].tail(10)
+        print("📊 Columnas df_local:", df_local.columns.tolist())
+        print("📊 Columnas df_visita:", df_visita.columns.tolist())
+        print("📊 Primeras filas df_local:")
+        print(df_local.head())
+        print("📊 Primeras filas df_visita:")
+        print(df_visita.head())       
+
         df_partido = pd.concat([df_local, df_visita])
 
         local_partidos = filtrar_partidos(df, equipo_local)
@@ -147,24 +154,26 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     stats_local = promedios_local
     stats_visita = promedios_visita
 
+    print("🔍 promedios_local:", promedios_local)
+    print("🔍 promedios_visita:", promedios_visita)
+
     stats_local_data = {
-        "Goles": float(stats_local.get("Goles", 0)),
-        "Goles 1T": float(stats_local.get("Goles 1T", 0)),
-        "Goles 2T": float(stats_local.get("Goles 2T", 0)),
-        "Corners": float(stats_local.get("Corners", 0)),
-        "Amarillas": float(stats_local.get("Amarillas", 0)),
-        "Rojas": float(stats_local.get("Rojas", 0)),
+        "Goles": float(stats_local.get("Goles Local", 0)),
+        "Goles 1T": float(stats_local.get("Goles 1T Local", 0)),
+        "Goles 2T": float(stats_local.get("Goles 2T Local", 0)),
+        "Corners": float(stats_local.get("Corners Local", 0)),
+        "Amarillas": float(stats_local.get("Amarillas Local", 0)),
+        "Rojas": float(stats_local.get("Rojas Local", 0)),
     }
 
     stats_visita_data = {
-        "Goles": float(stats_visita.get("Goles", 0)),
-        "Goles 1T": float(stats_visita.get("Goles 1T", 0)),
-        "Goles 2T": float(stats_visita.get("Goles 2T", 0)),
-        "Corners": float(stats_visita.get("Corners", 0)),
-        "Amarillas": float(stats_visita.get("Amarillas", 0)),
-        "Rojas": float(stats_visita.get("Rojas", 0)),
+        "Goles": float(stats_visita.get("Goles Visita", 0)),
+        "Goles 1T": float(stats_visita.get("Goles 1T Visita", 0)),
+        "Goles 2T": float(stats_visita.get("Goles 2T Visita", 0)),
+        "Corners": float(stats_visita.get("Corners Visita", 0)),
+        "Amarillas": float(stats_visita.get("Amarillas Visita", 0)),
+        "Rojas": float(stats_visita.get("Rojas Visita", 0)),
     }
-
 
     # ✅ Calcula forma reciente antes de predecir
     forma_local = simulacion_forma_reciente(df, equipo_local, equipo_local)["Local (últimos 5)"]
@@ -198,10 +207,10 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
     prob_corners_raw = calcular_probabilidad_corners(stats_local_data["Corners"], stats_visita_data["Corners"])
     prob_corners = {
-        "+7.5": prob_corners_raw["+7.5"],
-        "+8.5": prob_corners_raw["+8.5"],
-        "+9.5": prob_corners_raw["+9.5"]
-}
+        "+7.5": round(prob_corners_raw["+7.5"], 1),
+        "+8.5": round(prob_corners_raw["+8.5"], 1),
+        "+9.5": round(prob_corners_raw["+9.5"], 1)
+    }
     
     corners_justificacion = "Probabilidad basada en el promedio combinado de córners del partido."
 
