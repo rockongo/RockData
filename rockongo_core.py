@@ -292,14 +292,12 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     }
 
     resultado_probabilistico["pronostico_final"] = pronostico_final
-
-    return resultado_probabilistico
-
+    
     try:
-        print("🎯 resultado_probabilistico:", resultado_probabilistico["Gol 1er Tiempo"].get("1 gol", 0), type(resultado_probabilistico["Gol 1er Tiempo"].get("1 gol", 0)))
+        valor = resultado_probabilistico["Gol 1er Tiempo"].get("1 gol", 0)
+        print(f"🎯 resultado_probabilistico: {valor} ({type(valor)})")
     except Exception as e:
         print("⚠️ Error al acceder a 'Gol 1er Tiempo':", e)
-        return None
 
 # === Análisis textual de Gol en Primer Tiempo ===
     gol_1t_data = resultado_probabilistico.get("Gol 1er Tiempo", {})
