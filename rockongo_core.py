@@ -119,15 +119,16 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             raise ValueError("No se pudieron calcular los promedios de uno o ambos equipos.")
 
         stats_local_data = {
-            "Corners": promedios_local.get("Corners", 0),
-            "Tarjetas": promedios_local.get["Tarjetas", 0],
-            "Amarillas": promedios_local.get["amarillas", 0]
+            "Corners": promedios_local.get("corners", 0),
+            "Tarjetas": promedios_local.get("amarillas", 0) + promedios_local.get("rojas", 0),
+            "Amarillas": promedios_local.get("amarillas", 0)
         }
         stats_visita_data = {
-            "Corners": promedios_visita.get("Corners", 0),
-            "Tarjetas": promedios_visita.get["Tarjetas", 0],
-            "Amarillas": promedios_visita.get["amarillas", 0]
+            "Corners": promedios_visita.get("corners", 0),
+            "Tarjetas": promedios_visita.get("amarillas", 0) + promedios_visita.get("rojas", 0),
+            "Amarillas": promedios_visita.get("amarillas", 0)
         }
+
 
         prob_goles_menos_25 = calcular_probabilidad_goles_rango(df_partido, "menos", 2.5)
         
@@ -197,7 +198,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     )
     ambos_justificacion = f"{equipo_local} promedia {stats_local_data['Goles']:.2f} goles y {equipo_visita} recibe {stats_visita_data['Goles']:.2f}."
 
-    prob_corners_raw = calcular_probabilidad_corners(promedios_local["Corners"], promedios_visita["Corners"])
+    prob_corners_raw = calcular_probabilidad_corners(promedios_local["corners"], promedios_visita["corners"])
     prob_corners = {
         "+7.5": prob_corners_raw["+7.5"],
         "+8.5": prob_corners_raw["+8.5"],
