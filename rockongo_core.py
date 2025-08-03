@@ -1,6 +1,7 @@
 import scipy.stats
 import pandas as pd
 import os
+import ast
 
 #probabilidadessss
 
@@ -118,6 +119,9 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     # NUEVO BLOQUE PROBABILÍSTICO
     # --------------------------
 
+    stats_local = promedios_local
+    stats_visita = promedios_visita
+
     stats_local_data = {
         "Goles": float(stats_local.get("Goles", 0)),
         "Goles 1T": float(stats_local.get("Goles 1T", 0)),
@@ -199,8 +203,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "Justificacion": ambos_justificacion
         },
         "Goles": {
-            "+1.5": float(escenarios_goles.get("+1.5", 0)),
-            "+2.5": float(escenarios_goles.get("+2.5", 0)),
+            "+1.5": float(ast.literal_eval(escenarios_goles).get("+1.5", 0)),
+            "+2.5": float(ast.literal_eval(escenarios_goles).get("+2.5", 0)),
             "Justificacion": justificacion_goles
         },
         "Córners": {
