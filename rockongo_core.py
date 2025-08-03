@@ -109,7 +109,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
 
         prob_goles_menos_25 = calcular_probabilidad_goles_rango(df_partido, "menos", 2.5)
         
-        prob_tarjetas_mas_4_5 = calcular_probabilidad_tarjetas(df_partido, "mas", 4.5)
+        prob_tarjetas_mas_4_5 = calcular_probabilidad_tarjetas(stats_local_data["Amarillas"], stats_visita_data["Amarillas"])
 
     except Exception as e:
         prob_goles_menos_25 = prob_corners_mas_9_5 = prob_tarjetas_mas_4_5 = None
@@ -199,8 +199,8 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "Justificacion": ambos_justificacion
         },
         "Goles": {
-            "+1.5": float(prob_goles.get("+1.5", 0)),
-            "+2.5": float(prob_goles.get("+2.5", 0)),
+            "+1.5": float(escenarios_goles.get("+1.5", 0)),
+            "+2.5": float(escenarios_goles.get("+2.5", 0)),
             "Justificacion": justificacion_goles
         },
         "Córners": {
