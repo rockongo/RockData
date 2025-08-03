@@ -175,6 +175,9 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         "Rojas": float(stats_visita.get("Rojas Visita", 0)),
     }
 
+    prob_resultado = calcular_probabilidad_resultado_partido(stats_local_data, stats_visita_data)
+    pronostico_final = prob_resultado.get("Sugerencia Resultado", "Sin sugerencia disponible")
+
     # ✅ Calcula forma reciente antes de predecir
     forma_local = simulacion_forma_reciente(df, equipo_local, equipo_local)["Local (últimos 5)"]
     forma_visita = simulacion_forma_reciente(df, equipo_visita, equipo_visita)["Local (últimos 5)"]
@@ -244,6 +247,9 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     sugerencia_corners = generar_sugerencia_corners(prob_corners)
 
     escenarios = eval(escenarios_goles) if isinstance(escenarios_goles, str) else escenarios_goles
+
+    prob_resultado = calcular_probabilidad_resultado_partido(stats_local_data, stats_visita_data)
+
     # --- PRONÓSTICO FINAL ---
     prob_local = float(prob_resultado.get("Local", 0))
     prob_empate = float(prob_resultado.get("Empate", 0))
@@ -366,6 +372,14 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         "Gol 1T": {
             "Probabilidad": float(gol_1t_prob),
             "Texto": gol_1t_texto
+
+        "Resultado Partido": {
+            "1": prob_resultado["Local"],
+            "X": prob_resultado["Empate"],
+            "2": prob_resultado["Visita"],
+            "Sugerencia": pronostico_final
+        }
+
         }
 
     }
