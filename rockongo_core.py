@@ -156,8 +156,6 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         "Rojas": float(stats_local.get("Rojas", 0)),
     }
 
-
-
     stats_visita_data = {
         "Goles": float(stats_visita.get("Goles", 0)),
         "Goles 1T": float(stats_visita.get("Goles 1T", 0)),
@@ -304,25 +302,26 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
         "Equipo Visita": equipo_visita,
         "Nombre Partido": nombre_partido,
         "Promedios Local": {
-            "Goles": float(stats_local["Goles"]),
-            "Goles 1T": float(stats_local["Goles_1T"]),
-            "Corners": float(stats_local["Corners"]),
-            "Tarjetas": float(stats_local["Amarillas"] + stats_local["Rojas"])
+            "Goles": stats_local_data["Goles"],
+            "Goles 1T": stats_local_data["Goles 1T"],
+            "Corners": stats_local_data["Corners"],
+            "Tarjetas": stats_local_data["Amarillas"] + stats_local_data["Rojas"]
         },
         "Promedios Visita": {
-            "Goles": float(stats_visita["Goles"]),
-            "Goles 1T": float(stats_visita["Goles_1T"]),
-            "Corners": float(stats_visita["Corners"]),
-            "Tarjetas": float(stats_visita["Amarillas"] + stats_visita["Rojas"])
+            "Goles": stats_visita_data["Goles"],
+            "Goles 1T": stats_visita_data["Goles 1T"],
+            "Corners": stats_visita_data["Corners"],
+            "Tarjetas": stats_visita_data["Amarillas"] + stats_visita_data["Rojas"]
         },
         "Estadísticas Totales": {
-            "Goles Totales": float(stats_local["Goles"] + stats_visita["Goles"]),
-            "Corners Totales": float(stats_local["Corners"] + stats_visita["Corners"]),
-            "Tarjetas Totales": float(
-                stats_local["Amarillas"] + stats_local["Rojas"] +
-                stats_visita["Amarillas"] + stats_visita["Rojas"]
+            "Goles Totales": stats_local_data["Goles"] + stats_visita_data["Goles"],
+            "Corners Totales": stats_local_data["Corners"] + stats_visita_data["Corners"],
+            "Tarjetas Totales": (
+                 stats_local_data["Amarillas"] + stats_local_data["Rojas"] +
+                 stats_visita_data["Amarillas"] + stats_visita_data["Rojas"]
             )
         },
+
         "Probabilidades": resultado_probabilistico,
         "Gol 1T": {
             "Probabilidad": float(gol_1t_prob),
