@@ -101,7 +101,7 @@ def registro():
         nuevo_usuario.set_password(password)
         db.session.add(nuevo_usuario)
 
-        print(f"[REGISTRO] Registrando usuario {email} con código {codigo_ingresado} - temporal={temporal}")
+        print(f"[REGISTRO] Registrando usuario {email} con código {codigo_ingresado}")
         codigo.usado = True
         db.session.commit()
 
