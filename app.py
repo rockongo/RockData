@@ -88,6 +88,7 @@ def registro():
             return render_template("registro.html", error="Código de acceso inválido o ya utilizado.")
         else:
             print(f"[REGISTRO] Código válido: {codigo_ingresado}")
+           temporal = False
 
         nuevo_codigo = generar_codigo_unico()
 
