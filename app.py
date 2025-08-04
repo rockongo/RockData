@@ -88,7 +88,7 @@ def registro():
             return render_template("registro.html", error="Código de acceso inválido o ya utilizado.")
         else:
             print(f"[REGISTRO] Código válido: {codigo_ingresado}")
-            temporal = False
+            
 
         nuevo_codigo = generar_codigo_unico()
 
@@ -96,7 +96,7 @@ def registro():
             email=email,
             cuenta_activada=True,
             codigo_unico=codigo_ingresado,
-            temporal=temporal
+            
         )
         nuevo_usuario.set_password(password)
         db.session.add(nuevo_usuario)
