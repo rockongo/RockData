@@ -467,7 +467,12 @@ def confirmacion_pago():
         print(f"[CONFIRMACION] Estado de pago: {datos}")
 
         if datos.get("status") == 1:
-            nuevo_codigo = generar_codigo_unico()
+            while True:
+                nuevo_codigo = generar_codigo_unico()
+                existente = CodigoAcceso.query.filter_by(codigo=nuevo_codigo).first()
+                if not existente:
+                    break
+
             codigo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
             db.session.add(codigo)
             db.session.commit()
@@ -477,8 +482,6 @@ def confirmacion_pago():
         else:
             print(f"[CONFIRMACION] ⚠️ Pago no confirmado. Pero respondemos 200 para evitar error en Flow.")
             return "OK", 200
-
-
 
     except Exception as e:
         print(f"[CONFIRMACION] ❌ Error inesperado: {str(e)}")
@@ -561,12 +564,20 @@ def confirmacion_directa():
         print(f"[CONFIRMACION] Estado de pago: {datos}")
 
         if datos.get("status") == 1:
-            nuevo_codigo = generar_codigo_unico()
-            nuevo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
+            email = session.get("pago_directo_email", None)
+
+            # Generar un nuevo código único y asegurarse de que no esté en uso
+            while True:
+                nuevo_codigo = generar_codigo_unico()
+                existente = CodigoAcceso.query.filter_by(codigo=nuevo_codigo).first()
+                if not existente:
+                    break
+
+            nuevo = CodigoAcceso(codigo=nuevo_codigo, usado=False, email=email)
             db.session.add(nuevo)
             db.session.commit()
             session["codigo_generado"] = nuevo_codigo
-            print(f"[CONFIRMACION] ✅ Código generado: {nuevo_codigo}")
+            print(f"[CONFIRMACION] ✅ Código generado: {nuevo_codigo} para {email}")
             return "OK", 200
         else:
             print(f"[CONFIRMACION] ⚠️ Pago no confirmado. Pero respondemos 200 para evitar error en Flow.")
