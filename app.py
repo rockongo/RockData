@@ -296,8 +296,9 @@ def inicio():
 
                     }
 
-                    print("🧾 Reseña del pronóstico:", datos.get('Justificacion Resultado'))
-                
+                    print("🧾 Reseña del pronóstico:", datos.get('Justificacion_justificacion'))
+
+                               
                     return render_template("rockdata_2.html",
                         datos=datos,
                         sugerencias=sugerencias,
