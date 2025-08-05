@@ -305,7 +305,8 @@ def inicio():
                         equipo_local=equipo_local,
                         equipo_visita=equipo_visita,
                         liga=liga,
-                        fecha_partido="Próximo partido"
+                        fecha_partido="Próximo partido",
+                        resultado=datos.get("Probabilidades", {})
                         
                     )
             

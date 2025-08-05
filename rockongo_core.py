@@ -585,15 +585,15 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
 
     # === JUSTIFICACIÓN DEL RESULTADO ===
     if sugerencia_resultado == "Local":
-        texto_justificacion = "El equipo local muestra mejor promedio ofensivo y defensivo. Además, su probabilidad de victoria supera el 55%, justificando la apuesta directa por su triunfo."
+        texto_justificacion = "El equipo local muestra mejor promedio ofensivo y defensivo. Además, su probabilidad de victoria supera el 65%, justificando la apuesta directa por su triunfo."
     elif sugerencia_resultado == "Visita":
-        texto_justificacion = "El equipo visitante destaca sobre el local tanto en goles anotados como en solidez defensiva. La probabilidad supera el 55%, lo que respalda su victoria."
+        texto_justificacion = "El equipo visitante destaca sobre el local tanto en goles anotados como en solidez defensiva. La probabilidad supera el 65%, lo que respalda su victoria."
     elif sugerencia_resultado == "1X":
         texto_justificacion = "El equipo local tiene ventaja ligera, pero sin una dominancia clara. La doble oportunidad a su favor ofrece mayor seguridad."
     elif sugerencia_resultado == "2X":
         texto_justificacion = "El equipo visitante lidera levemente en promedios, aunque sin gran diferencia. Por eso se sugiere asegurar con doble oportunidad a su favor."
     else:
-        texto_justificacion = "Ambos equipos están muy parejos en estadísticas. Ninguno supera el 45% de probabilidad, lo que sugiere un escenario de empate."
+        texto_justificacion = "Ambos equipos están muy parejos en estadísticas. Ninguno supera el 50% de probabilidad, lo que sugiere un escenario de empate."
 
     # === TARJETAS (usando Poisson) ===
     media_tarjetas = stats_local["Amarillas"] + stats_local["Rojas"] + stats_visita["Amarillas"] + stats_visita["Rojas"]
@@ -653,11 +653,13 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
         "Justificacion Tarjetas": justificacion_tarjetas,
         "Apuesta Segura Recomendada": apuesta_segura,
         "Resultado Partido": {
-            "1": prob_resultado["Local"],
-            "X": prob_resultado["Empate"],
-            "2": prob_resultado["Visita"],
-            "Sugerencia": pronostico_final
+            "Local": prob_resultado["Local"],
+            "Empate": prob_resultado["Empate"],
+            "Visita": prob_resultado["Visita"],
+            "Sugerencia": sugerencia_resultado,
+            "Justificación": texto_justificacion
         }
+
     }
 
     return resultados
