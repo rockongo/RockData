@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
-from datetime import timedelta
+from datetime import datetime, timedelta
 import pandas as pd
 import os
 import json
@@ -467,6 +467,9 @@ def confirmacion_pago():
         print(f"[CONFIRMACION] Estado de pago: {datos}")
 
         if datos.get("status") == 1:
+            email_pagador = datos.get("paymentData", {}).get("customerEmail")
+            print(f"[CONFIRMACION] 📧 Email del pagador: {email_pagador}")
+
             while True:
                 nuevo_codigo = generar_codigo_unico()
                 existente = CodigoAcceso.query.filter_by(codigo=nuevo_codigo).first()
@@ -475,10 +478,31 @@ def confirmacion_pago():
 
             codigo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
             db.session.add(codigo)
-            db.session.commit()
+
+            # Crear usuario si no existe
+            if email_pagador:
+                usuario_existente = Usuario.query.filter_by(email=email_pagador).first()
+                if not usuario_existente:
+                    nuevo_usuario = Usuario(
+                        email=email_pagador,
+                        password="",
+                        activado=True,
+                        codigo_usado=nuevo_codigo,
+                        fecha_registro=datetime.now()
+                    )
+                    db.session.add(nuevo_usuario)
+                    print(f"[CONFIRMACION] ✅ Usuario creado: {email_pagador}")
+                else:
+                    print(f"[CONFIRMACION] ⚠️ Usuario ya existía: {email_pagador}")
+            else:
+                print("[CONFIRMACION] ⚠️ No se encontró email del pagador en los datos.")
+
+            # Guardar código en sesión para mostrar luego
             session["codigo_generado"] = nuevo_codigo
-            print(f"[CONFIRMACION] ✅ Código generado: {nuevo_codigo}")
+            db.session.commit()
+            print(f"[CONFIRMACION] ✅ Código generado y guardado: {nuevo_codigo}")
             return "OK", 200
+
         else:
             print(f"[CONFIRMACION] ⚠️ Pago no confirmado. Pero respondemos 200 para evitar error en Flow.")
             return "OK", 200
