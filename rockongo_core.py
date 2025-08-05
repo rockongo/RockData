@@ -373,12 +373,7 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
             "Probabilidad": float(gol_1t_prob),
             "Texto": gol_1t_texto
         },
-        "Resultado Partido": {
-            "1": prob_resultado["Local"],
-            "X": prob_resultado["Empate"],
-            "2": prob_resultado["Visita"],
-            "Sugerencia": pronostico_final
-        },
+     
         "Justificacion Resultado": texto_justificacion
     }
 
@@ -650,12 +645,11 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
         "Justificacion Tarjetas": justificacion_tarjetas,
         "Apuesta Segura Recomendada": apuesta_segura,
         "Resultado Partido": {
-            "Local": resultado["Local"],
-            "Empate": resultado["Empate"],
-            "Visita": resultado["Visita"],
-            "Sugerencia": sugerencia_resultado
+            "1": prob_resultado["Local"],
+            "X": prob_resultado["Empate"],
+            "2": prob_resultado["Visita"],
+            "Sugerencia": pronostico_final
         }
-    }
 
     return resultados
 
