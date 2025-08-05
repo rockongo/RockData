@@ -561,6 +561,11 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
     ganador = max(resultado, key=resultado.get)
     max_prob = resultado[ganador]
 
+    # DEBUG para validar lógica
+    print("📊 Resultado probable:", resultado)
+    print("🏆 Ganador probable:", ganador)
+    print("📈 Máxima probabilidad:", max_prob)
+
     if max_prob >= 55:
         sugerencia_resultado = ganador
     elif 45 <= max_prob < 55:
