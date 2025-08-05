@@ -657,8 +657,8 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
             "Empate": prob_resultado["Empate"],
             "Visita": prob_resultado["Visita"],
             "Sugerencia": sugerencia_resultado,
-            "Justificación": texto_justificacion
-        }
+        },
+        "Justificación": texto_justificacion
 
     }
 
