@@ -76,16 +76,16 @@
 </head>
 <body>
 
-<div class="container mt-4 text-center">
-  <img src="{{ url_for('static', filename='logo_rockdata.png') }}" class="logo mb-1">
-  <div class="subtitulo">No adivinamos. Calculamos.</div>
+<div class="text-center mb-4 py-5 header-rockdata">
+  <img src="{{ url_for('static', filename='logo_rockdata.png') }}" alt="RockData Logo" width="260" class="mb-3 animated-logo">
+  <h5 class="leyenda-seria mt-2">No adivinamos. Calculamos.</h5>
+</div>
 
-  <div style="background-color: #ffdddd; border: 2px solid red; padding: 10px; margin-top: 10px; margin-bottom: 20px; text-align: center;">
-    <strong style="color: black;">
-      ⚠️ Advertencia:  No recomendamos apostar en ligas con menos de 5 fechas disputadas.<br>
-      Los cálculos pueden ser inexactos por falta de datos suficientes.
-    </strong>
-  </div>
+<div style="background-color: #ffdddd; border: 2px solid red; padding: 10px; margin-top: 10px; margin-bottom: 20px; text-align: center;">
+  <strong style="color: black;">
+    ⚠️ Advertencia: No recomendamos apostar en ligas con menos de 5 fechas disputadas.<br>
+    Los cálculos pueden ser inexactos por falta de datos suficientes.
+  </strong>
 </div>
 
   <h4 class="titulo-central">{{ equipo_local }} vs {{ equipo_visita }}</h4>
