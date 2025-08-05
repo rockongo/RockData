@@ -655,6 +655,7 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
             "2": prob_resultado["Visita"],
             "Sugerencia": pronostico_final
         }
+    }
 
     return resultados
 
