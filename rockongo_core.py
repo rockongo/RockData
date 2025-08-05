@@ -252,21 +252,22 @@ def rockongo1_prediccion(df, equipo_local, equipo_visita):
     prob_empate = float(prob_resultado.get("Empate", 0))
     prob_visita = float(prob_resultado.get("Visita", 0))
 
-    # Nueva lógica segura (no se sugiere empate)
-    if prob_local > 50:
-        pronostico_final = "Victoria local"
-        texto_justificacion = "El equipo local muestra mejor promedio ofensivo y defensivo. Su probabilidad de victoria supera el 50%, justificando una apuesta directa."
-    elif prob_visita > 50:
-        pronostico_final = "Victoria visitante"
-        texto_justificacion = "El equipo visitante tiene mejor rendimiento general. Con más del 50% de probabilidad, se respalda una victoria directa."
+    if prob_local > 65:
+        pronostico_final = "Local"
+        texto_justificacion = "El equipo local supera el 65% de probabilidad. Se sugiere victoria directa."
+    elif prob_visita > 65:
+        pronostico_final = "Visita"
+        texto_justificacion = "El equipo visitante supera el 65% de probabilidad. Se sugiere victoria directa."
+    elif prob_local > prob_visita:
+        pronostico_final = "1X"
+        texto_justificacion = "Partido parejo, pero el local tiene mayor probabilidad. Se recomienda doble oportunidad 1X."
+    elif prob_visita > prob_local:
+        pronostico_final = "2X"
+        texto_justificacion = "Partido parejo, pero la visita tiene mayor probabilidad. Se recomienda doble oportunidad 2X."
     else:
-        # Doble oportunidad al equipo más fuerte (sin considerar empate)
-        if prob_local >= prob_visita:
-            pronostico_final = "1X (Local o Empate)"
-            texto_justificacion = "Ningún equipo domina claramente, pero el local tiene una leve ventaja en goles y forma. Se sugiere asegurar con doble oportunidad."
-        else:
-            pronostico_final = "2X (Visita o Empate)"
-            texto_justificacion = "Partido parejo, pero la visita lleva mejor rendimiento reciente o más goles esperados. Se recomienda asegurar con doble oportunidad."
+        pronostico_final = "Empate"
+        texto_justificacion = "Probabilidades igualadas. Empate como escenario más seguro."
+
 
     resultado_probabilistico = {
         "Gol 1er Tiempo": {
