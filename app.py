@@ -323,8 +323,6 @@ def inicio():
 
     return redirect(url_for("login"))
 
-
-
 # === API ===
 @app.route("/get_ligas", methods=["POST"])
 def get_ligas():
