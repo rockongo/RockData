@@ -568,12 +568,17 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
     print("🏆 Ganador probable:", ganador)
     print("📈 Máxima probabilidad:", max_prob)
 
-    if max_prob >= 55:
-        sugerencia_resultado = ganador
-    elif 45 <= max_prob < 55:
-        sugerencia_resultado = "1X" if ganador == "Local" else "2X" if ganador == "Visita" else "Empate"
+    if resultado["Local"] > 65:
+        sugerencia_resultado = "Local"
+    elif resultado["Visita"] > 65:
+        sugerencia_resultado = "Visita"
+    elif resultado["Local"] > resultado["Visita"]:
+        sugerencia_resultado = "1X"
+    elif resultado["Visita"] > resultado["Local"]:
+        sugerencia_resultado = "2X"
     else:
         sugerencia_resultado = "Empate"
+
 
     # === JUSTIFICACIÓN DEL RESULTADO ===
     if sugerencia_resultado == "Local":
