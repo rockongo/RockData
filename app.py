@@ -565,7 +565,9 @@ def confirmacion_directa():
 
         if datos.get("status") == 1:
             email = session.get("pago_directo_email", None)
-
+            if not email:
+                print("[CONFIRMACION] ❌ No se recibió el email del cliente.")
+                return "Error: Email no recibido", 400
             # Generar un nuevo código único y asegurarse de que no esté en uso
             while True:
                 nuevo_codigo = generar_codigo_unico()
