@@ -579,6 +579,9 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
     else:
         sugerencia_resultado = "Empate"
 
+    print(f"🎯 Sugerencia calculada: {sugerencia_resultado}")
+
+
 
     # === JUSTIFICACIÓN DEL RESULTADO ===
     if sugerencia_resultado == "Local":
