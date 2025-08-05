@@ -76,7 +76,7 @@
 </head>
 <body>
 
-<div class="text-center mb-4 py-5 header-rockdata">
+<div class="text-center mb-2 py-2 header-rockdata">
   <img src="{{ url_for('static', filename='logo_rockdata.png') }}" alt="RockData Logo" width="260" class="mb-3 animated-logo">
   <h5 class="leyenda-seria mt-2">No adivinamos. Calculamos.</h5>
 </div>
@@ -121,10 +121,6 @@
 
   <div class="bloque justificacion-resultado">
   🧾 Reseña del pronóstico: {{ resultado_justificacion }}
-  </div>
-
-  <div class="text-center text-muted" style="font-size: 0.92rem; max-width: 640px; margin: 0 auto 20px auto;">
-    🧾 {{ datos['resultado_justificacion'] }}
   </div>
 
   {% if datos.get("Probabilidades") and datos["Probabilidades"].get("Apuesta Segura Recomendada") and datos["Probabilidades"]["Apuesta Segura Recomendada"].get("Combinación") %}
