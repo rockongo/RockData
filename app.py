@@ -306,7 +306,9 @@ def inicio():
                         equipo_visita=equipo_visita,
                         liga=liga,
                         fecha_partido="Próximo partido",
-                        resultado=datos.get("Probabilidades", {})
+                        resultado=datos.get("Probabilidades", {}),
+                        pronostico_final=datos.get("pronostico_final", ""),
+                        resultado_justificacion=datos.get("resultado_justificacion", "")
                         
                     )
             
