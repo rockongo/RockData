@@ -86,12 +86,10 @@ def registro():
         if not codigo:
             print(f"[REGISTRO] Código inválido o ya usado: {codigo_ingresado}")
             return render_template("registro.html", error="Código de acceso inválido o ya utilizado.")
-        else:
-            print(f"[REGISTRO] Código válido: {codigo_ingresado}")
+        
+        print(f"[REGISTRO] Código válido: {codigo_ingresado}")
             
-
-        nuevo_codigo = generar_codigo_unico()
-
+      
         nuevo_usuario = Usuario(
             email=email,
             cuenta_activada=True,
@@ -427,12 +425,11 @@ def retorno_pago():
 
 @app.route("/post_pago", methods=["GET", "POST"])
 def post_pago():
-    # Intentamos mostrar el último código generado (último en DB)
-    ultimo = CodigoAcceso.query.order_by(CodigoAcceso.id.desc()).first()
-    if ultimo:
-        return render_template("codigo_entregado.html", codigo=ultimo.codigo)
+    codigo = session.get("codigo_generado")
+    if codigo:
+        return render_template("codigo_entregado.html", codigo=codigo)
     else:
-        return "⚠️ No se ha generado ningún código aún. Intenta contactar con soporte."
+        return "⚠️ No se ha generado ningún código aún o tu sesión expiró. Intenta contactar con soporte."
 
 
 @app.route("/confirmacion", methods=["POST"])
