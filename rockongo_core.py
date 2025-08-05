@@ -561,6 +561,13 @@ def predecir_partido(stats_local, stats_visita, forma_reciente):
     ganador = max(resultado, key=resultado.get)
     max_prob = resultado[ganador]
 
+    print("🔢 Resultado probable (Poisson):")
+    print(f"   Local:  {resultado['Local']}%")
+    print(f"   Empate: {resultado['Empate']}%")
+    print(f"   Visita: {resultado['Visita']}%")
+    print(f"🎯 Ganador con mayor probabilidad: {ganador} ({max_prob}%)")
+
+
     # DEBUG para validar lógica
     print("📊 Resultado probable:", resultado)
     print("🏆 Ganador probable:", ganador)
