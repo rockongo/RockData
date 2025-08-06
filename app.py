@@ -444,14 +444,18 @@ def confirmacion_pago():
 
         # Extraer token
         token = request.form.get("token")
+
         if not token and request.is_json:
-            token = request.json.get("token")
+            json_data = request.get_json()
+            print("📦 JSON recibido:", json_data)
+            token = json_data.get("token") if json_data else None
 
         if not token:
-            print("❌ Token no recibido")
+            print("❌ No se recibió token en ningún formato.")
             return "Token no recibido", 400
 
-        print(f"✅ Token recibido: {token}")
+        print(f"✅ Token recibido correctamente: {token}")
+
 
         # Firmar usando token
         cadena = f"apiKey={FLOW_API_KEY}&token={token}"
