@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 from datetime import datetime, timedelta
+import urllib.parse
 import pandas as pd
 import os
 import json
@@ -442,80 +443,51 @@ def confirmacion_pago():
     try:
         print("🛰️ CONFIRMACION FLOW (registro):", request.data)
 
-        # Extraer token
-        token = request.form.get("token")
+        # Extraer token desde request.data tipo string
+        body = request.data.decode("utf-8")
+        print("🔍 Cuerpo recibido:", body)
 
-        if not token and request.is_json:
-            json_data = request.get_json()
-            print("📦 JSON recibido:", json_data)
-            token = json_data.get("token") if json_data else None
+        parsed = urllib.parse.parse_qs(body)
+        token = parsed.get("token", [None])[0]
 
         if not token:
-            print("❌ No se recibió token en ningún formato.")
+            print("❌ No se encontró el token en el cuerpo.")
             return "Token no recibido", 400
 
         print(f"✅ Token recibido correctamente: {token}")
-
 
         # Firmar usando token
         cadena = f"apiKey={FLOW_API_KEY}&token={token}"
         firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
 
+        # Armar payload
         payload = {
             "apiKey": FLOW_API_KEY,
             "token": token,
             "s": firma
         }
 
+        # Solicitar estado de pago
         response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
         datos = response.json()
-
-        print(f"[CONFIRMACION] Estado de pago: {datos}")
+        print("📩 Respuesta de getStatus:", datos)
 
         if datos.get("status") == 1:
-            email_pagador = datos.get("paymentData", {}).get("customerEmail")
-            print(f"[CONFIRMACION] 📧 Email del pagador: {email_pagador}")
-
-            while True:
-                nuevo_codigo = generar_codigo_unico()
-                existente = CodigoAcceso.query.filter_by(codigo=nuevo_codigo).first()
-                if not existente:
-                    break
-
-            codigo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
-            db.session.add(codigo)
-
-            # Crear usuario si no existe
-            if email_pagador:
-                usuario_existente = Usuario.query.filter_by(email=email_pagador).first()
-                if not usuario_existente:
-                    nuevo_usuario = Usuario(
-                        email=email_pagador,
-                        password="",
-                        activado=True,
-                        codigo_usado=nuevo_codigo,
-                        fecha_registro=datetime.now()
-                    )
-                    db.session.add(nuevo_usuario)
-                    print(f"[CONFIRMACION] ✅ Usuario creado: {email_pagador}")
-                else:
-                    print(f"[CONFIRMACION] ⚠️ Usuario ya existía: {email_pagador}")
+            email = session.get("pago_directo_email", None)
+            if email:
+                # lógica para activar cuenta o generar código...
+                print(f"💡 Pago verificado exitosamente para: {email}")
+                return "Pago confirmado", 200
             else:
-                print("[CONFIRMACION] ⚠️ No se encontró email del pagador en los datos.")
-
-            # Guardar código en sesión para mostrar luego
-            session["codigo_generado"] = nuevo_codigo
-            db.session.commit()
-            print(f"[CONFIRMACION] ✅ Código generado y guardado: {nuevo_codigo}")
-            return "OK", 200
-
+                print("⚠️ No se encontró email en sesión")
+                return "Sesión expirada", 400
         else:
-            print(f"[CONFIRMACION] ⚠️ Pago no confirmado. Pero respondemos 200 para evitar error en Flow.")
-            return "OK", 200
+            return "Pago no completado", 400
 
     except Exception as e:
-        print(f"[CONFIRMACION] ❌ Error inesperado: {str(e)}")
-        return f"Error interno: {str(e)}", 500
+        print("🚨 Error en confirmación:", str(e))
+        return "Error interno", 500
+
 
 
 @app.route('/pago_directo')
@@ -574,10 +546,16 @@ def confirmacion_directa():
 
         token = request.form.get("token")
         if not token and request.is_json:
-            token = request.json.get("token")
+            json_data = request.get_json(silent=True)
+            if json_data:
+                token = json_data.get("token")
 
         if not token:
-            return "Token no recibido", 400
+            try:
+                body = request.data.decode()
+        token = dict(urllib.parse.parse_qsl(body)).get("token")
+    except:
+        pass
 
         cadena = f"apiKey={FLOW_API_KEY}&token={token}"
         firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
