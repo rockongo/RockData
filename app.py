@@ -462,20 +462,31 @@ def confirmacion():
             "s": firma
         }
 
-        # Solicitar estado de pago
+        # Consultar a Flow
         response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
         datos = response.json()
         print("📩 Respuesta de getStatus:", datos)
 
         if datos.get("status") == 1:
             email = session.get("pago_directo_email", None)
-            if email:
-                # lógica para activar cuenta o generar código...
-                print(f"💡 Pago verificado exitosamente para: {email}")
-                return "Pago confirmado", 200
-            else:
+            if not email:
                 print("⚠️ No se encontró email en sesión")
-                return "Sesión expirada", 400
+                return "Sesión expirada o email no disponible", 400
+
+            # Generar código único sin duplicados
+            while True:
+                nuevo_codigo = generar_codigo_unico()
+                if not CodigoAcceso.query.filter_by(codigo=nuevo_codigo).first():
+                    break
+
+            nuevo = CodigoAcceso(codigo=nuevo_codigo, usado=False, email=email)
+            db.session.add(nuevo)
+            db.session.commit()
+
+            print(f"✅ Código generado: {nuevo_codigo} para {email}")
+
+            # Redirigir directamente a la vista con el código como parámetro
+            return redirect(url_for("codigo_entregado", codigo=nuevo_codigo))
         else:
             return "Pago no completado", 400
 
@@ -596,17 +607,17 @@ def confirmacion_directa():
         print(f"[CONFIRMACION] ❌ Error: {str(e)}")
         return f"Error interno: {str(e)}", 500
 
-@app.route('/codigo_entregado', methods=["GET", "POST"])
+@app.route('/codigo_entregado', methods=["GET"])
 def codigo_entregado():
-    codigo = session.get("codigo_generado")
+    codigo = request.args.get("codigo")
 
-    # Alternativa si el código no está en sesión pero existe uno reciente
     if not codigo:
+        # Fallback: último código generado
         ultimo = CodigoAcceso.query.order_by(CodigoAcceso.id.desc()).first()
         if ultimo:
             codigo = ultimo.codigo
         else:
-            return "No se ha generado ningún código aún."
+            return "⚠️ No se ha generado ningún código aún."
 
     return render_template("codigo_entregado.html", codigo=codigo)
 
