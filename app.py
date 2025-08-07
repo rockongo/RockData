@@ -187,6 +187,9 @@ ligas = {
     "Suecia": {
         "Allsvenskan": "Liga_Suecia_2025.xlsx"
     },
+    "Suiza": {
+        "Super League": "Liga_suiza_2025.xlsx"
+    },
     "Uruguay": {
         "Primera Division": "Liga_uruguay_2025.xlsx"
     },
