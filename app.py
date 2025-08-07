@@ -465,7 +465,42 @@ def confirmacion():
             return "Token no recibido", 400
 
         print("✅ TOKEN RECIBIDO:", token)
-        return "Token procesado correctamente", 200
+
+        # 🚀 NUEVO BLOQUE: consultar estado del pago
+        cadena = f"apiKey={FLOW_API_KEY}&token={token}"
+        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
+
+        payload = {
+            "apiKey": FLOW_API_KEY,
+            "token": token,
+            "s": firma
+        }
+
+        response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
+        datos = response.json()
+        print("📄 RESPUETA FLOW:", datos)
+
+        if datos.get("status") != 1:
+            print("⚠️ El pago NO está aprobado")
+            return "Pago no aprobado", 400
+
+        email = datos.get("payer", {}).get("email", "sin_email")
+        print("📧 Email pagador:", email)
+
+        # ⚙️ Generar y guardar código
+        codigo_generado = generar_codigo_unico()
+        guardar_codigo(codigo_generado, usado=True, email=email)
+
+        # ⚙️ Crear usuario si no existe
+        if not Usuario.query.filter_by(email=email).first():
+            nuevo_usuario = Usuario(email=email, password="pagado", activado=True)
+            db.session.add(nuevo_usuario)
+            db.session.commit()
+
+        session['usuario'] = email
+        session['autenticado'] = True
+
+        return redirect('/post_pago')
 
     except Exception as e:
         print("❌ ERROR:", str(e))
