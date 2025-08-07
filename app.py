@@ -431,42 +431,53 @@ def retorno_pago():
 
 @app.route("/post_pago", methods=["GET", "POST"])
 def post_pago():
-    token = (
-        request.form.get("token")
-        or request.args.get("token")
-        or (request.json.get("token") if request.is_json else None)
-    )
-
-    if token:
-        try:
-            cadena = f"apiKey={FLOW_API_KEY}&token={token}"
-            firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
-            payload = {
-                "apiKey": FLOW_API_KEY,
-                "token": token,
-                "s": firma
-            }
-            response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
-            datos = response.json()
-            print("📩 POST_PAGO: Respuesta de getStatus:", datos)
-
-            if datos.get("status") == 1:
-                email = datos.get("payer", {}).get("email", "desconocido")
-                codigo = generar_codigo_unico()
-                guardar_codigo_en_bd(email, codigo)
-                session["codigo_generado"] = codigo
-                print(f"✅ Código generado desde post_pago para {email}: {codigo}")
-                return render_template("codigo_entregado.html", codigo=codigo)
-        except Exception as e:
-            print("🔥 Error en post_pago:", e)
-
-    # Si ya existía un código en la sesión
     codigo = session.get("codigo_generado")
     if codigo:
         return render_template("codigo_entregado.html", codigo=codigo)
     else:
         return "⚠️ No se ha generado ningún código aún o tu sesión expiró. Intenta contactar con soporte."
 
+
+@app.route('/confirmacion', methods=['POST'])
+def confirmacion():
+    try:
+        print("📥 CONFIRMACION FLOW:", request.data)
+
+        token = (
+            request.form.get("token")
+            or request.args.get("token")
+            or (request.json.get("token") if request.is_json else None)
+        )
+
+        if not token:
+            return "Token no recibido", 400
+
+        cadena = f"apiKey={FLOW_API_KEY}&token={token}"
+        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
+
+        payload = {
+            "apiKey": FLOW_API_KEY,
+            "token": token,
+            "s": firma
+        }
+
+        response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
+        datos = response.json()
+        print("📩 CONFIRMACION: Respuesta de getStatus:", datos)
+
+        if datos.get("status") == 1:
+            email = datos.get("payer", {}).get("email", "desconocido")
+            codigo = generar_codigo_unico()
+            guardar_codigo_en_bd(email, codigo)
+            print(f"✅ Código generado desde confirmación para {email}: {codigo}")
+            return "OK", 200
+        else:
+            print("⚠️ La transacción no fue válida.")
+            return "Transacción no válida", 400
+
+    except Exception as e:
+        print("🔥 Error en /confirmacion:", e)
+        return "Error interno", 500
 
 @app.route('/pago_directo')
 def pago_directo():
