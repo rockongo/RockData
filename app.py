@@ -464,6 +464,8 @@ def confirmacion():
         if not token:
             return "Token no recibido", 400
 
+        session["token_confirmado"] = token
+
         print("✅ TOKEN RECIBIDO:", token)
 
         # 🚀 NUEVO BLOQUE: consultar estado del pago
