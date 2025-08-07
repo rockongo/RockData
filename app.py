@@ -730,6 +730,12 @@ def ver_usuarios():
     usuarios = Usuario.query.all()
     return "<br>".join([f"{u.email} (activado: {u.cuenta_activada})" for u in usuarios])
 
+@app.route("/admin/ver_todos_los_codigos")
+def ver_todos_los_codigos():
+    from models import CodigoAcceso  # Asegúrate de tener esto arriba si no lo tienes ya
+    codigos = CodigoAcceso.query.order_by(CodigoAcceso.id.desc()).all()
+    return render_template("ver_todos_codigos.html", codigos=codigos)
+
 @app.route("/admin/ver_codigos_disponibles")
 def admin_ver_codigos_disponibles():
     codigos = CodigoAcceso.query.filter_by(usado=False).order_by(CodigoAcceso.id.desc()).all()
@@ -770,13 +776,6 @@ def test_getstatus():
 
     except Exception as e:
         return f"Error: {str(e)}", 500
-
-
-@app.route("/admin/ver_todos_los_codigos")
-def ver_todos_los_codigos():
-    from models import CodigoAcceso  # Asegúrate de tener esto arriba si no lo tienes ya
-    codigos = CodigoAcceso.query.order_by(CodigoAcceso.id.desc()).all()
-    return render_template("ver_todos_codigos.html", codigos=codigos)
 
 
 
