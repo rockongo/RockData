@@ -438,42 +438,42 @@ def post_pago():
         return "⚠️ No se ha generado ningún código aún o tu sesión expiró. Intenta contactar con soporte."
 
 
-@app.route('/confirmacion', methods=['POST'])
+@app.route('/confirmacion', methods=["POST"])
 def confirmacion():
-    try:
-        print("🔔 CONFIRMACION FLOW:", request.data)
+    print("🔔 CONFIRMACION FLOW:", request.data)
 
-        token = request.form.get("token") or request.args.get("token")
-        if not token:
-            print("❌ Token no recibido")
-            return "Token no recibido", 400
+    token = (
+        request.form.get("token")
+        or request.args.get("token")
+        or (request.json.get("token") if request.is_json else None)
+    )
 
-        cadena = f"apiKey={FLOW_API_KEY}&token={token}"
-        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
+    if not token:
+        print("⚠️ Token NO recibido en confirmacion.")
+        return "Token no recibido", 400
 
-        payload = {
-            "apiKey": FLOW_API_KEY,
-            "token": token,
-            "s": firma
-        }
+    cadena = f"apiKey={FLOW_API_KEY}&token={token}"
+    firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
 
-        response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
-        datos = response.json()
-        print("📩 Respuesta de getStatus:", datos)
+    payload = {
+        "apiKey": FLOW_API_KEY,
+        "token": token,
+        "s": firma
+    }
 
-        if datos.get("status") == 1:
-            email = datos.get("payer", {}).get("email", "desconocido")
-            codigo = generar_codigo_unico()
-            guardar_codigo_en_bd(email, codigo)
-            print(f"✅ Código generado y guardado para {email}: {codigo}")
-            return "OK", 200
-        else:
-            print("⚠️ La transacción no fue válida.")
-            return "Transacción no válida", 400
+    response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
+    datos = response.json()
+    print("📩 Respuesta de getStatus:", datos)
 
-    except Exception as e:
-        print("🔥 Error en confirmación:", e)
-        return "Error interno", 500
+    if datos.get("status") == 1:
+        email = datos.get("payer", {}).get("email", "desconocido")
+        codigo = generar_codigo_unico()
+        guardar_codigo_en_bd(email, codigo)
+        print(f"✅ Código generado y guardado para {email}: {codigo}")
+        return "OK", 200
+    else:
+        print("⚠️ La transacción no fue válida.")
+        return "Transacción no válida", 400
 
 @app.route('/pago_directo')
 def pago_directo():
