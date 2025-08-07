@@ -448,7 +448,7 @@ def confirmacion():
             or request.args.get("token")
             or (request.json.get("token") if request.is_json else None)
         )
-
+        print("TOKEN RECIBIDO:", token)
         if not token:
             return "Token no recibido", 400
 
