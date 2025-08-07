@@ -595,7 +595,10 @@ def confirmacion_directa():
 
         print(f"[CONFIRMACION] Estado de pago: {datos}")
 
-        if datos.get("status") == 1:
+        estado_pago = datos.get("status_description", "").lower()
+        print(f"📊 Estado de pago (status_description): {estado_pago}")
+
+        if "pagado" in estado_pago or "por depositar" in estado_pago or datos.get("status") == 1:
             email = session.get("pago_directo_email", None)
             if not email:
                 print("[CONFIRMACION] ❌ No se recibió el email del cliente.")
