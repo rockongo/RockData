@@ -553,9 +553,9 @@ def confirmacion_directa():
         if not token:
             try:
                 body = request.data.decode()
-        token = dict(urllib.parse.parse_qsl(body)).get("token")
-    except:
-        pass
+                token = dict(urllib.parse.parse_qsl(body)).get("token")
+            except:
+                pass
 
         cadena = f"apiKey={FLOW_API_KEY}&token={token}"
         firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
