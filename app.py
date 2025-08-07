@@ -438,60 +438,41 @@ def post_pago():
         return "⚠️ No se ha generado ningún código aún o tu sesión expiró. Intenta contactar con soporte."
 
 
-@app.route("/confirmacion", methods=["POST"])
+@app.route('/confirmacion', methods=['POST'])
 def confirmacion():
     try:
-        print("🛰️ CONFIRMACION FLOW (registro):", request.data)
-        print("🔍 Headers:", request.headers)
-        print("🔍 Formulario recibido:", request.form)
+        print("🔔 CONFIRMACION FLOW:", request.data)
 
-        token = request.form.get("token")
+        token = request.form.get("token") or request.args.get("token")
         if not token:
+            print("❌ Token no recibido")
             return "Token no recibido", 400
 
-        print(f"✅ Token recibido correctamente: {token}")
-
-        # Firmar usando token
         cadena = f"apiKey={FLOW_API_KEY}&token={token}"
         firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
 
-        # Armar payload
         payload = {
             "apiKey": FLOW_API_KEY,
             "token": token,
             "s": firma
         }
 
-        # Consultar a Flow
         response = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
         datos = response.json()
         print("📩 Respuesta de getStatus:", datos)
 
         if datos.get("status") == 1:
-            email = session.get("pago_directo_email", None)
-            if not email:
-                print("⚠️ No se encontró email en sesión")
-                return "Sesión expirada o email no disponible", 400
-
-            # Generar código único sin duplicados
-            while True:
-                nuevo_codigo = generar_codigo_unico()
-                if not CodigoAcceso.query.filter_by(codigo=nuevo_codigo).first():
-                    break
-
-            nuevo = CodigoAcceso(codigo=nuevo_codigo, usado=False, email=email)
-            db.session.add(nuevo)
-            db.session.commit()
-
-            print(f"✅ Código generado: {nuevo_codigo} para {email}")
-
-            # Redirigir directamente a la vista con el código como parámetro
-            return redirect(url_for("codigo_entregado", codigo=nuevo_codigo))
+            email = datos.get("payer", {}).get("email", "desconocido")
+            codigo = generar_codigo_unico()
+            guardar_codigo_en_bd(email, codigo)
+            print(f"✅ Código generado y guardado para {email}: {codigo}")
+            return "OK", 200
         else:
-            return "Pago no completado", 400
+            print("⚠️ La transacción no fue válida.")
+            return "Transacción no válida", 400
 
     except Exception as e:
-        print("🚨 Error en confirmación:", str(e))
+        print("🔥 Error en confirmación:", e)
         return "Error interno", 500
 
 @app.route('/pago_directo')
