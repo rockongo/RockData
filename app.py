@@ -439,19 +439,14 @@ def post_pago():
 
 
 @app.route("/confirmacion", methods=["POST"])
-def confirmacion_pago():
+def confirmacion():
     try:
         print("🛰️ CONFIRMACION FLOW (registro):", request.data)
+        print("🔍 Headers:", request.headers)
+        print("🔍 Formulario recibido:", request.form)
 
-        # Extraer token desde request.data tipo string
-        body = request.data.decode("utf-8")
-        print("🔍 Cuerpo recibido:", body)
-
-        parsed = urllib.parse.parse_qs(body)
-        token = parsed.get("token", [None])[0]
-
+        token = request.form.get("token")
         if not token:
-            print("❌ No se encontró el token en el cuerpo.")
             return "Token no recibido", 400
 
         print(f"✅ Token recibido correctamente: {token}")
@@ -487,8 +482,6 @@ def confirmacion_pago():
     except Exception as e:
         print("🚨 Error en confirmación:", str(e))
         return "Error interno", 500
-
-
 
 @app.route('/pago_directo')
 def pago_directo():
