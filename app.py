@@ -543,6 +543,11 @@ def crear_orden_directa():
 def confirmacion_directa():
     try:
         print("CONFIRMACION FLOW:", request.data)
+        print(f"🔍 Headers: {dict(request.headers)}")
+        print(f"🔍 Form: {request.form}")
+        print(f"🔍 JSON: {request.get_json(silent=True)}")
+        print(f"🔍 Raw data: {request.data}")
+
 
         token = request.form.get("token")
         if not token and request.is_json:
