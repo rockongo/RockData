@@ -772,6 +772,12 @@ def test_getstatus():
         return f"Error: {str(e)}", 500
 
 
+@app.route("/admin/ver_todos_los_codigos")
+def ver_todos_los_codigos():
+    from models import CodigoAcceso  # Asegúrate de tener esto arriba si no lo tienes ya
+    codigos = CodigoAcceso.query.order_by(CodigoAcceso.id.desc()).all()
+    return render_template("ver_todos_codigos.html", codigos=codigos)
+
 
 
 # === INIT DB ===
@@ -781,5 +787,3 @@ with app.app_context():
 # === RUN ===
 if __name__ == "__main__":
     app.run(debug=True)
-
-#seguimos

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todos los Códigos</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h2 { color: #333; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        tr:hover { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h2>📋 Todos los Códigos Generados</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Usado</th>
+                <th>Email Asociado</th>
+                <th>Fecha de Creación</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in codigos %}
+            <tr>
+                <td>{{ c.id }}</td>
+                <td>{{ c.codigo }}</td>
+                <td>{{ 'Sí' if c.usado else 'No' }}</td>
+                <td>{{ c.email or '—' }}</td>
+                <td>{{ c.fecha_creacion.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
