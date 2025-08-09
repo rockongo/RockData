@@ -825,7 +825,9 @@ def test_getstatus():
     except Exception as e:
         return f"Error: {str(e)}", 500
 
-
+@app.route("/links")
+def links():
+    return render_template("links.html")
 
 # === INIT DB ===
 with app.app_context():
