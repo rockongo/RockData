@@ -827,6 +827,7 @@ def test_getstatus():
 
 @app.route("/links")
 def links():
+    print("[BOOT] Ruta /links cargada")
     return render_template("links.html")
 
 # === INIT DB ===
