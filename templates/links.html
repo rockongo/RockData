@@ -86,7 +86,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="RockData Logo" class="logo">
+        <img src="{{ url_for('static', filename='img/logo.png') }}?v=2" alt="RockData Logo" class="logo">
         <h1>RockData</h1>
         <p>No adivinamos. Calculamos.</p>
 
@@ -96,11 +96,11 @@
 
         <div>
             <a href="https://instagram.com/TU_USUARIO" class="btn-link">
-                <img src="{{ url_for('static', filename='img/instagram.png') }}" alt="Instagram" class="icono">
+                <img src="{{ url_for('static', filename='img/instagram.png') }}" alt="Instagram" style="height: 20px; margin-right: 5px;">
                 Seguir en Instagram
             </a>
             <a href="https://t.me/TU_USUARIO" class="btn-link">
-                <img src="{{ url_for('static', filename='img/telegram.png') }}" alt="Telegram" class="icono">
+                <img src="{{ url_for('static', filename='img/telegram.png') }}" alt="Telegram" style="height: 20px; margin-right: 5px;">
                 Unirme a Telegram
             </a>
         </div>
