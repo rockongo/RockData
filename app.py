@@ -210,7 +210,7 @@ ligas = {
 def home_redirect():
     return redirect("/links", code=302)
 
-@app.route("/", methods=["GET", "POST"], endpoint="inicio")
+@app.route("/inicio", methods=["GET", "POST"], endpoint="inicio")
 def inicio():
     if "usuario_id" in session:
         usuario = Usuario.query.get(session["usuario_id"])
