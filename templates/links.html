@@ -52,6 +52,10 @@
       box-shadow: 0 10px 24px rgba(14,165,255,.22), inset 0 0 0 1px rgba(255,255,255,.1);
       font-size: clamp(16px,2.4vw,18px);
     }
+    .btn img.icon {
+      height: 18px;
+      width: 18px;
+    }
     .btn:hover{ background:var(--blue-600); transform: translateY(-1px);}
     .btn:active{ transform: translateY(0);}
     .btn.secondary{
@@ -87,7 +91,7 @@
       </header>
       <div class="badge">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l7 3v6c0 5-3.5 9-7 9s-7-4-7-9V6l7-3z" stroke="#79c7ff" stroke-width="1.4"/><path d="M8.5 12.5l2.5 2.5 4.5-5" stroke="#0ea5ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Datos en % para apostar con ventaja
+        Gana ventaja con datos reales, no con corazonadas.
       </div>
       <div class="links">
         <a class="btn" href="https://rockdata.onrender.com/?utm_source=links&utm_medium=bridge&utm_campaign=ig_stories" target="_blank" rel="noopener noreferrer">
@@ -95,10 +99,10 @@
         </a>
         <div class="grid">
           <a class="btn secondary" href="https://www.instagram.com/rockdata.app/" target="_blank" rel="noopener noreferrer">
-            Seguir en Instagram
+            <img src="{{ url_for('static', filename='icon_instagram.png') }}" alt="Instagram" class="icon"/> Seguir en Instagram
           </a>
           <a class="btn secondary" href="https://t.me/rockdata_oficial" target="_blank" rel="noopener noreferrer">
-            Unirme a Telegram
+            <img src="{{ url_for('static', filename='icon_telegram.png') }}" alt="Telegram" class="icon"/> Unirme a Telegram
           </a>
         </div>
       </div>
