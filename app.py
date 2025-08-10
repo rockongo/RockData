@@ -205,6 +205,10 @@ ligas = {
         "MLS": "Liga_MLS_2025.xlsx"
     }
 }
+# Redirección automática del dominio raíz a /links
+@app.route("/")
+def home_redirect():
+    return redirect("/links", code=302)
 
 @app.route("/", methods=["GET", "POST"], endpoint="inicio")
 def inicio():
