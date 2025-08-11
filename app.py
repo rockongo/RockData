@@ -566,7 +566,7 @@ def crear_orden_directa():
         "currency": "CLP",
         "email": email,
         "urlConfirmation": "https://rockdata.onrender.com/confirmacion_directa",
-        "urlReturn": "https://rockdata.onrender.com/codigo_entregado"
+        "urlReturn": "https://rockdata.onrender.com/post_pago"
 
     }
 
