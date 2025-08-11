@@ -1,7 +1,9 @@
+from sqlalchemy import and_
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 from datetime import datetime, timedelta
 import urllib.parse
 import pandas as pd
+import time
 import os
 import json
 import hmac
@@ -12,6 +14,7 @@ import requests
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from rockongo_core import predecir_partido_desde_excel
+from models import CodigoAcceso
 
 app = Flask(__name__)
 app.secret_key = "Racg@1981"
@@ -126,7 +129,7 @@ def activar():
 
     if request.method == "POST":
         codigo_ingresado = request.form["codigo"].strip()
-        ccodigo = CodigoAcceso.query.filter(and_(
+        codigo = CodigoAcceso.query.filter(and_(
             CodigoAcceso.codigo == codigo_ingresado,
             CodigoAcceso.usado == False
         )).first()
@@ -377,6 +380,61 @@ FLOW_CREATE_URL = "https://www.flow.cl/api/payment/create"
 from collections import OrderedDict
 from urllib.parse import urlencode
 
+def _procesar_flow_por_token(token):
+    """Consulta getStatus y, si el pago es válido, genera/retorna el código."""
+    cadena = f"apiKey={FLOW_API_KEY}&token={token}"
+    firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
+    payload = {"apiKey": FLOW_API_KEY, "token": token, "s": firma}
+
+    try:
+        r = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload, timeout=12)
+        datos = r.json()
+    except Exception as e:
+        print("❌ ERROR getStatus:", str(e))
+        datos = {}
+
+    # Upsert PagoFlow
+    pf = PagoFlow.query.filter_by(token=token).first()
+    if not pf:
+        pf = PagoFlow(token=token)
+        db.session.add(pf)
+
+    # Si hay error desde Flow, guarda traza y termina
+    if not isinstance(datos, dict) or ("code" in datos and datos.get("code") != 0):
+        pf.estado = "error_getstatus"
+        db.session.commit()
+        return None
+
+    estado_desc = (datos.get("status_description") or "").lower()
+    estado_valido = ("pagado" in estado_desc) or ("por depositar" in estado_desc) or (datos.get("status") == 1)
+    pf.estado = estado_desc or str(datos.get("status"))
+
+    if not estado_valido:
+        db.session.commit()
+        return None
+
+    email = (datos.get("payer") or {}).get("email") or pf.email
+    pf.email = email
+
+    if not pf.codigo_generado:
+        codigo = generar_codigo_unico()
+        db.session.add(CodigoAcceso(codigo=codigo, usado=False))
+        pf.codigo_generado = codigo
+
+        # Activar/crear usuario
+        usu = Usuario.query.filter_by(email=email).first()
+        if not usu:
+            usu = Usuario(email=email, cuenta_activada=True, codigo_unico=codigo)
+            usu.set_password("changeme")
+            db.session.add(usu)
+        else:
+            usu.cuenta_activada = True
+            if not usu.codigo_unico:
+                usu.codigo_unico = codigo
+
+    db.session.commit()
+    return pf.codigo_generado
+
 @app.route("/crear_orden", methods=["POST"])
 def crear_orden():
     try:
@@ -425,10 +483,6 @@ def crear_orden():
         return f"⚠️ Error inesperado: {str(e)}"
 
 
-
-
-
-
 # === CONFIRMACIÓN DE PAGO FLOW ===
 def generar_codigo_unico():
     while True:
@@ -436,13 +490,13 @@ def generar_codigo_unico():
         if not CodigoAcceso.query.filter_by(codigo=codigo).first():
             return codigo
 
-@app.route("/retorno")
-def retorno_pago():
-    nuevo_codigo = generar_codigo_unico()
-    nuevo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
-    db.session.add(nuevo)
-    db.session.commit()
-    return render_template("codigo_entregado.html", codigo=nuevo_codigo)
+# @app.route("/retorno")
+# def retorno_pago():
+#    nuevo_codigo = generar_codigo_unico()
+#    nuevo = CodigoAcceso(codigo=nuevo_codigo, usado=False)
+#    db.session.add(nuevo)
+#    db.session.commit()
+#   return render_template("codigo_entregado.html", codigo=nuevo_codigo)
 
 @app.route("/post_pago", methods=["GET", "POST"])
 def post_pago():
@@ -450,89 +504,40 @@ def post_pago():
     if not token:
         return "⚠️ Falta 'token' en el retorno de Flow.", 400
 
-    pago = PagoFlow.query.filter_by(token=token).first()
-    if pago and pago.codigo_generado:
-        return render_template("codigo_entregado.html", codigo=pago.codigo_generado)
-    else:
-        # Todavía no llega la confirmación server-to-server; dar feedback claro
-        return "✅ Pago recibido. Estamos validando con Flow… actualiza en 15 segundos.", 200
+    # ¿Ya lo tenemos?
+    pf = PagoFlow.query.filter_by(token=token).first()
+    if pf and pf.codigo_generado:
+        return render_template("codigo_entregado.html", codigo=pf.codigo_generado)
+
+    # Forzar verificación en vivo (4 intentos ~8s)
+    codigo = None
+    for _ in range(4):
+        codigo = _procesar_flow_por_token(token)
+        if codigo:
+            break
+        time.sleep(2)
+
+    if codigo:
+        return render_template("codigo_entregado.html", codigo=codigo)
+
+    return "✅ Pago recibido. Estamos validando con Flow… actualiza en 15 segundos.", 200
 
 @app.route('/confirmacion', methods=['POST'])
 def confirmacion():
     try:
-        print("📥 CONFIRMACION FLOW:", request.get_data())
-
         token = request.form.get("token")
         if not token and request.is_json:
             jd = request.get_json(silent=True) or {}
             token = jd.get("token")
         if not token:
             token = request.args.get("token")
-
         if not token:
-            return "Token no recibido", 400
+            return "OK", 200  # no cortar reintentos
 
-        # firmar getStatus
-        cadena = f"apiKey={FLOW_API_KEY}&token={token}"
-        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
-        payload = {"apiKey": FLOW_API_KEY, "token": token, "s": firma}
-
-        r = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
-        datos = r.json()
-        print("📄 RESPUESTA FLOW:", datos)
-
-        # Manejo de error 105 u otros: no cortar con 400 (Flow reintenta)
-        if "code" in datos and datos.get("code") != 0:
-            print(f"⚠️ Flow getStatus con código de error: {datos}")
-            # Registrar igual el intento para trazabilidad
-            pf = PagoFlow.query.filter_by(token=token).first()
-            if not pf:
-                pf = PagoFlow(token=token, estado="error_getstatus")
-                db.session.add(pf)
-                db.session.commit()
-            return "OK", 200
-
-        estado_desc = (datos.get("status_description") or "").lower()
-        estado_valido = ("pagado" in estado_desc) or ("por depositar" in estado_desc) or (datos.get("status") == 1)
-
-        # Upsert del registro de pago
-        pf = PagoFlow.query.filter_by(token=token).first()
-        if not pf:
-            pf = PagoFlow(token=token)
-            db.session.add(pf)
-
-        pf.estado = estado_desc or str(datos.get("status"))
-
-        if estado_valido:
-            email = (datos.get("payer") or {}).get("email") or pf.email
-            pf.email = email
-
-            # generar código solo si no existe aún
-            if not pf.codigo_generado:
-                codigo = generar_codigo_unico()
-                # guardar código "emitido" disponible (no usado)
-                ca = CodigoAcceso(codigo=codigo, usado=False)
-                db.session.add(ca)
-
-                pf.codigo_generado = codigo
-
-                # activar/crear usuario
-                usu = Usuario.query.filter_by(email=email).first()
-                if not usu:
-                    usu = Usuario(email=email, cuenta_activada=True, codigo_unico=codigo)
-                    usu.set_password("changeme")
-                    db.session.add(usu)
-                else:
-                    usu.cuenta_activada = True
-                    if not usu.codigo_unico:
-                        usu.codigo_unico = codigo
-
-        db.session.commit()
+        _procesar_flow_por_token(token)
         return "OK", 200
-
     except Exception as e:
         print("❌ ERROR confirmacion:", str(e))
-        # Nunca devolver 5xx a Flow para no cortar su ciclo de reintentos
         return "OK", 200
 
 @app.route('/pago_directo')
@@ -587,74 +592,17 @@ def crear_orden_directa():
 @app.route('/confirmacion_directa', methods=['POST'])
 def confirmacion_directa():
     try:
-        print("📥 CONFIRMACION FLOW:", request.get_data())
-
         token = request.form.get("token")
         if not token and request.is_json:
             jd = request.get_json(silent=True) or {}
             token = jd.get("token")
         if not token:
             token = request.args.get("token")
-
         if not token:
-            return "Token no recibido", 400
-
-        # firmar getStatus
-        cadena = f"apiKey={FLOW_API_KEY}&token={token}"
-        firma = hmac.new(FLOW_SECRET_KEY.encode(), cadena.encode(), hashlib.sha256).hexdigest()
-        payload = {"apiKey": FLOW_API_KEY, "token": token, "s": firma}
-
-        r = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload)
-        datos = r.json()
-        print("📄 RESPUESTA FLOW:", datos)
-
-        # Manejo de error 105 u otros: no cortar con 400 (Flow reintenta)
-        if "code" in datos and datos.get("code") != 0:
-            print(f"⚠️ Flow getStatus con código de error: {datos}")
-            pf = PagoFlow.query.filter_by(token=token).first()
-            if not pf:
-                pf = PagoFlow(token=token, estado="error_getstatus")
-                db.session.add(pf)
-                db.session.commit()
             return "OK", 200
 
-        estado_desc = (datos.get("status_description") or "").lower()
-        estado_valido = ("pagado" in estado_desc) or ("por depositar" in estado_desc) or (datos.get("status") == 1)
-
-        # Upsert del registro de pago
-        pf = PagoFlow.query.filter_by(token=token).first()
-        if not pf:
-            pf = PagoFlow(token=token)
-            db.session.add(pf)
-
-        pf.estado = estado_desc or str(datos.get("status"))
-
-        if estado_valido:
-            email = (datos.get("payer") or {}).get("email") or pf.email
-            pf.email = email
-
-            # generar código solo si no existe aún
-            if not pf.codigo_generado:
-                codigo = generar_codigo_unico()
-                ca = CodigoAcceso(codigo=codigo, usado=False)
-                db.session.add(ca)
-
-                pf.codigo_generado = codigo
-
-                # activar/crear usuario
-                usu = Usuario.query.filter_by(email=email).first()
-                if not usu:
-                    usu = Usuario(email=email, cuenta_activada=True, codigo_unico=codigo)
-                    usu.set_password("changeme")
-                    db.session.add(usu)
-                else:
-                    usu.cuenta_activada = True
-                    if not usu.codigo_unico:
-                        usu.codigo_unico = codigo
-
-        db.session.commit()
+        _procesar_flow_por_token(token)
         return "OK", 200
-
     except Exception as e:
         print("❌ ERROR confirmacion_directa:", str(e))
         return "OK", 200
@@ -784,7 +732,6 @@ def ver_usuarios():
 
 @app.route("/admin/ver_todos_los_codigos")
 def ver_todos_los_codigos():
-    from models import CodigoAcceso  # Asegúrate de tener esto arriba si no lo tienes ya
     codigos = CodigoAcceso.query.order_by(CodigoAcceso.id.desc()).all()
     return render_template("ver_todos_codigos.html", codigos=codigos)
 
