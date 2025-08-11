@@ -388,6 +388,7 @@ def _procesar_flow_por_token(token):
     try:
         r = requests.post("https://www.flow.cl/api/payment/getStatus", data=payload, timeout=12)
         datos = r.json()
+        print("[FLOW getStatus]", datos)
     except Exception as e:
         print("❌ ERROR getStatus:", str(e))
         datos = {}
@@ -510,7 +511,7 @@ def post_pago():
 
     # Forzar verificación en vivo (4 intentos ~8s)
     codigo = None
-    for _ in range(4):
+    for _ in range(8):
         codigo = _procesar_flow_por_token(token)
         if codigo:
             break
