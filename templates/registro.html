@@ -1,54 +1,107 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Registro - RockData</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Registro - RockData</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 <div class="container mt-5">
-    <div class="card p-4 shadow">
-        <h2 class="mb-4 text-center">Crea tu cuenta en RockData</h2>
+  <div class="card p-4 shadow">
+    <h2 class="mb-4 text-center">Crea tu cuenta en RockData</h2>
 
-        <!-- Botón de pago con campo de correo -->
-        <div class="mb-4 text-center">
-            <form action="/crear_orden" method="POST">
-                <input type="email" name="email_pago" class="form-control mb-2" placeholder="Ingresa tu correo para pagar" required>
-                <button type="submit" class="btn btn-success btn-lg">
-                    💳 Pagar ahora para obtener tu código de acceso
-                </button>
-            </form>
-            <p class="mt-2 text-muted">Después de pagar, recibirás un código único que te permitirá completar el registro.</p>
-        </div>
+    <!-- Instrucciones de pago por transferencia -->
+    <div class="alert alert-info">
+      <h5 class="mb-3 text-center">💳 Pago por Transferencia</h5>
 
+      <div id="datos-transferencia" class="small">
+        <p class="mb-1"><b>Nombre:</b> ROBERTO ANDRES CONTRERAS GOMEZ</p>
+        <p class="mb-1"><b>RUT:</b> 13.995.680-K</p>
+        <p class="mb-1"><b>Banco:</b> Bci / Banco Crédito e Inversiones</p>
+        <p class="mb-1"><b>Tipo de cuenta:</b> Cuenta Corriente</p>
+        <p class="mb-1"><b>N° Cuenta:</b> 777913995680</p>
+        <p class="mb-1"><b>Correo de contacto:</b> <a href="mailto:contacto.rockdata@gmail.com">contacto.rockdata@gmail.com</a></p>
+        <hr class="my-2">
+        <p class="mb-1"><b>Monto:</b> $5.500 CLP (plan 30 días)</p>
+        <p class="mb-0 text-muted">
+          ⚠️ <b>Importante:</b> Realiza la transferencia y envía el <b>comprobante</b> a
+          <a href="mailto:contacto.rockdata@gmail.com">contacto.rockdata@gmail.com</a> indicando tu <b>correo de registro</b>.
+          Recibirás tu <b>código de acceso</b> para completar el registro.
+        </p>
+      </div>
 
-        <!-- Formulario de registro -->
-        <form method="POST">
-            <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre completo</label>
-                <input type="text" class="form-control" name="nombre" required>
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" name="email" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" name="password" required>
-            </div>
-            <div class="mb-3">
-                <label for="codigo_acceso" class="form-label">Código de acceso</label>
-                <input type="text" class="form-control" id="codigo_acceso" name="codigo_acceso" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
-        </form>
+      <!-- Acciones rápidas -->
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <button id="btnCopiar" class="btn btn-outline-secondary btn-sm">📋 Copiar datos de transferencia</button>
 
-        <div class="mt-3 text-center">
-            <a href="/login">¿Ya tienes cuenta? Inicia sesión</a>
-        </div>
+        <!-- Mailto con asunto/cuerpo prellenados -->
+        <a
+          id="btnMail"
+          class="btn btn-primary btn-sm"
+          href="mailto:contacto.rockdata@gmail.com?subject=Comprobante%20transferencia%20-%20Registro%20RockData&body=Hola%2C%20adjunto%20comprobante%20de%20transferencia.%0D%0A%0D%0A%2D%20Correo%20de%20registro%3A%20%5Bescribe%20tu%20correo%5D%0D%0A%2D%20Monto%3A%20%245.500%20CLP%0D%0A%2D%20Nombre%20titular%20que%20transfiere%3A%20%5Bescribe%20tu%20nombre%5D%0D%0A%2D%20Banco%20de%20origen%3A%20%5Bescribe%20tu%20banco%5D%0D%0A%0D%0AGracias."
+        >✉️ Enviar comprobante</a>
+      </div>
     </div>
+
+    <!-- Formulario de registro (con código) -->
+    <form method="POST">
+      <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre completo</label>
+        <input type="text" class="form-control" name="nombre" required>
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Correo electrónico</label>
+        <input type="email" class="form-control" name="email" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Contraseña</label>
+        <input type="password" class="form-control" name="password" required>
+      </div>
+      <div class="mb-3">
+        <label for="codigo_acceso" class="form-label">Código de acceso</label>
+        <input type="text" class="form-control" id="codigo_acceso" name="codigo_acceso" placeholder="Ej: 1234-5678-9012" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+    </form>
+
+    <div class="mt-3 text-center">
+      <a href="/login">¿Ya tienes cuenta? Inicia sesión</a>
+    </div>
+  </div>
 </div>
+
+<script>
+  (function () {
+    const btn = document.getElementById('btnCopiar');
+    const cont = document.getElementById('datos-transferencia');
+
+    function textoPlanoDesdeHTML(el) {
+      // Convierte el bloque en texto con saltos de línea limpios
+      const etiqueta = el.cloneNode(true);
+      // Elimina enlaces dejando solo el texto
+      etiqueta.querySelectorAll('a').forEach(a => { a.replaceWith(document.createTextNode(a.textContent)); });
+      // Reemplaza <br> por saltos de línea
+      etiqueta.querySelectorAll('br').forEach(br => { br.replaceWith(document.createTextNode('\n')); });
+      const temp = document.createElement('div');
+      temp.appendChild(etiqueta);
+      let t = temp.innerText
+        .replace(/\n{3,}/g, '\n\n')
+        .replace(/\s+\n/g, '\n')
+        .trim();
+      return t;
+    }
+
+    btn.addEventListener('click', async () => {
+      try {
+        const texto = textoPlanoDesdeHTML(cont);
+        await navigator.clipboard.writeText(texto);
+        btn.textContent = '✅ Copiado';
+        setTimeout(() => btn.textContent = '📋 Copiar datos de transferencia', 1800);
+      } catch (e) {
+        alert('No se pudo copiar automáticamente. Selecciona y copia manualmente.');
+      }
+    });
+  })();
+</script>
 </body>
 </html>
-
-
