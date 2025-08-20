@@ -66,20 +66,35 @@
 <script>
   (function () {
     const btn = document.getElementById('btnCopiar');
-    const cont = document.getElementById('datos-transferencia');
 
-    function textoPlanoDesdeHTML(el) {
-      const etiqueta = el.cloneNode(true);
-      etiqueta.querySelectorAll('a').forEach(a => { a.replaceWith(document.createTextNode(a.textContent)); });
-      etiqueta.querySelectorAll('br').forEach(br => { br.replaceWith(document.createTextNode('\n')); });
-      const temp = document.createElement('div'); temp.appendChild(etiqueta);
-      return temp.innerText.replace(/\n{3,}/g, '\n\n').replace(/\s+\n/g, '\n').trim();
+    const datos = {
+      nombre: 'ROBERTO ANDRES CONTRERAS GOMEZ',
+      rut: '13.995.680-K',
+      banco: 'Bci / Banco Crédito e Inversiones',
+      tipo: 'Cuenta Corriente',
+      numero: '777913995680',
+      correo: 'contacto.rockdata@gmail.com',
+      monto: '$5.500 CLP (plan 30 días)',
+      nota: 'Importante: Realiza la transferencia y envía el comprobante a contacto.rockdata@gmail.com indicando tu correo de registro. Recibirás tu código de acceso para completar el registro.'
+    };
+
+    function textoParaCopiar() {
+      return [
+        `Nombre: ${datos.nombre}`,
+        `RUT: ${datos.rut}`,
+        `Banco: ${datos.banco}`,
+        `Tipo de cuenta: ${datos.tipo}`,
+        `N° Cuenta: ${datos.numero}`,
+        `Correo de contacto: ${datos.correo}`,
+        `Monto: ${datos.monto}`,
+        '',
+        datos.nota
+      ].join('\\n');
     }
 
     btn.addEventListener('click', async () => {
       try {
-        const texto = textoPlanoDesdeHTML(cont);
-        await navigator.clipboard.writeText(texto);
+        await navigator.clipboard.writeText(textoParaCopiar());
         btn.textContent = '✅ Copiado';
         setTimeout(() => btn.textContent = '📋 Copiar datos de transferencia', 1800);
       } catch (e) {
