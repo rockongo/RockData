@@ -73,9 +73,7 @@
       banco: 'Bci / Banco Crédito e Inversiones',
       tipo: 'Cuenta Corriente',
       numero: '777913995680',
-      correo: 'contacto.rockdata@gmail.com',
-      monto: '$5.500 CLP (plan 30 días)',
-      nota: 'Importante: Realiza la transferencia y envía el comprobante a contacto.rockdata@gmail.com indicando tu correo de registro. Recibirás tu código de acceso para completar el registro.'
+      correo: 'contacto.rockdata@gmail.com'
     };
 
     function textoParaCopiar() {
@@ -85,11 +83,8 @@
         `Banco: ${datos.banco}`,
         `Tipo de cuenta: ${datos.tipo}`,
         `N° Cuenta: ${datos.numero}`,
-        `Correo de contacto: ${datos.correo}`,
-        `Monto: ${datos.monto}`,
-        '',
-        datos.nota
-      ].join('\\n');
+        `Correo de contacto: ${datos.correo}`
+      ].join('\n');
     }
 
     btn.addEventListener('click', async () => {
