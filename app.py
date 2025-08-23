@@ -166,6 +166,9 @@ ligas = {
     "Colombia": {
         "Primera A": "Liga_colombia_2025.xlsx"
     },
+    "Dinamarca": {
+        "Super Liga": "Liga_dinamarca_2025.xlsx"
+    },
     "Ecuador": {
         "Liga Pro": "Liga_ecuador_2025.xlsx"
     },
